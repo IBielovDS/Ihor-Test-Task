@@ -1,0 +1,51 @@
+{%- comment -%}
+  This snippet renders a section in the side cart for upsell products using a swiper carousel.
+
+  Variables:
+  - upsells [required]: A collection of products to be displayed as upsells.
+{%- endcomment -%}
+{% liquid
+  assign upsells = upsells | where: 'available', true
+  assign upsells_in_cart = 0
+
+  for product in upsells
+    for cartProduct in cart.items
+      if cartProduct.product.id == product.id
+        assign upsells_in_cart = upsells_in_cart | plus: 1
+      endif
+    endfor
+  endfor
+
+  assign difference = upsells.size | minus: upsells_in_cart
+%}
+
+{%- if upsells != blank and upsells_in_cart < upsells.size -%}
+  <side-cart-upsells class="block w-full mt-32 pl-16 md:pl-32">
+    <h3 class="text-20 leading-24 text-black-200 font-heading tracking-0.5 mb-8">
+      {{- 'cart.drawer.upsells_header' | t -}}
+    </h3>
+    <div class="swiper">
+      <div class="swiper-wrapper">
+        {%- for product in upsells -%}
+          {% liquid
+            assign is_in_cart = false
+            for cartProduct in cart.items
+              if cartProduct.product.id == product.id
+                assign is_in_cart = true
+              endif
+            endfor
+          %}
+          {%- if product.available and is_in_cart == false -%}
+            <div class="swiper-slide pr-16 md:pr-0">
+              {%- render 'small-product-card', product: product -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      {%- if difference > 1 -%}
+        <div class="swiper-pagination !static !text-left"></div>
+      {%- endif -%}
+    </div>
+  </side-cart-upsells>
+{%- endif -%}

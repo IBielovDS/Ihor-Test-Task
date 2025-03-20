@@ -1,0 +1,293 @@
+{%- liquid
+  assign margin_top = section.settings.margin_top
+  assign margin_bottom = section.settings.margin_bottom
+  assign margin_top_mobile = section.settings.margin_top_mobile
+  assign margin_bottom_mobile = section.settings.margin_bottom_mobile
+  assign title = section.settings.title
+-%}
+
+{%- if section.blocks.size > 0 -%}
+  <style>
+    :root #shopify-section-{{section.id}} {
+      --margin-top: {{margin_top}}px;
+      --margin-bottom: {{margin_bottom}}px;
+      --margin-top-mobile: {{margin_top_mobile}}px;
+      --margin-bottom-mobile: {{margin_bottom_mobile}}px;
+    }
+  </style>
+
+  <our-products-section>
+    <div class="container">
+      {%- if title != blank -%}
+        <h2 class="text-center mb-40 lg:mb-48">{{- title -}}</h2>
+      {%- endif -%}
+
+      <div class="lg:hidden">
+        <div class="swiper js-our-products-slider !pb-72 [&:not(.swiper-initialized)_.swiper-slide]:mr-8">
+          <div class="swiper-wrapper">
+            {%- for block in section.blocks -%}
+              {%- if block.settings.title != blank
+                and block.settings.link != blank
+                and block.settings.image_desktop != blank
+                and block.settings.image_mobile != blank
+              -%}
+                <div
+                  class="swiper-slide"
+                  {{ block.shopify_attributes }}
+                >
+                  {%- render 'our-products-card',
+                    link: block.settings.link,
+                    title: block.settings.title,
+                    title_color: block.settings.title_color,
+                    image_desktop: block.settings.image_desktop,
+                    image_mobile: block.settings.image_mobile,
+                    button_text: block.settings.button_text,
+                    tag: 'h5'
+                  -%}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+      </div>
+
+      <div class="hidden lg:block">
+        <div class="grid grid-cols-[1fr_2fr] gap-24">
+          <div>
+            {%- for block in section.blocks -%}
+              {%- if forloop.index == 1
+                and block.settings.title != blank
+                and block.settings.link != blank
+                and block.settings.image_desktop != blank
+                and block.settings.image_mobile != blank
+              -%}
+                {%- render 'our-products-card',
+                  link: block.settings.link,
+                  title: block.settings.title,
+                  title_color: block.settings.title_color,
+                  image_desktop: block.settings.image_desktop,
+                  image_mobile: block.settings.image_mobile,
+                  tag: 'h4'
+                -%}
+                {%- break -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+          <div class="lg:flex lg:flex-col lg:justify-between">
+            <div class="grid grid-cols-2 gap-24 mb-24">
+              <div>
+                {%- for block in section.blocks -%}
+                  {%- if forloop.index == 2
+                    and block.settings.title != blank
+                    and block.settings.link != blank
+                    and block.settings.image_desktop != blank
+                    and block.settings.image_mobile != blank
+                  -%}
+                    {%- render 'our-products-card',
+                      link: block.settings.link,
+                      title: block.settings.title,
+                      title_color: block.settings.title_color,
+                      image_desktop: block.settings.image_desktop,
+                      image_mobile: block.settings.image_mobile,
+                      tag: 'h4'
+                    -%}
+                    {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+              <div>
+                {%- for block in section.blocks -%}
+                  {%- if forloop.index == 3
+                    and block.settings.title != blank
+                    and block.settings.link != blank
+                    and block.settings.image_desktop != blank
+                    and block.settings.image_mobile != blank
+                  -%}
+                    {%- render 'our-products-card',
+                      link: block.settings.link,
+                      title: block.settings.title,
+                      title_color: block.settings.title_color,
+                      image_desktop: block.settings.image_desktop,
+                      image_mobile: block.settings.image_mobile,
+                      tag: 'h4'
+                    -%}
+                    {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-24">
+              <div>
+                {%- for block in section.blocks -%}
+                  {%- if forloop.index == 4
+                    and block.settings.title != blank
+                    and block.settings.link != blank
+                    and block.settings.image_desktop != blank
+                    and block.settings.image_mobile != blank
+                  -%}
+                    {%- render 'our-products-card',
+                      link: block.settings.link,
+                      title: block.settings.title,
+                      title_color: block.settings.title_color,
+                      image_desktop: block.settings.image_desktop,
+                      image_mobile: block.settings.image_mobile,
+                      tag: 'h4'
+                    -%}
+                    {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+              <div>
+                {%- for block in section.blocks -%}
+                  {%- if forloop.index == 5
+                    and block.settings.title != blank
+                    and block.settings.link != blank
+                    and block.settings.image_desktop != blank
+                    and block.settings.image_mobile != blank
+                  -%}
+                    {%- render 'our-products-card',
+                      link: block.settings.link,
+                      title: block.settings.title,
+                      title_color: block.settings.title_color,
+                      image_desktop: block.settings.image_desktop,
+                      image_mobile: block.settings.image_mobile,
+                      tag: 'h4'
+                    -%}
+                    {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+              <div>
+                {%- for block in section.blocks -%}
+                  {%- if forloop.index == 6
+                    and block.settings.title != blank
+                    and block.settings.link != blank
+                    and block.settings.image_desktop != blank
+                    and block.settings.image_mobile != blank
+                  -%}
+                    {%- render 'our-products-card',
+                      link: block.settings.link,
+                      title: block.settings.title,
+                      title_color: block.settings.title_color,
+                      image_desktop: block.settings.image_desktop,
+                      image_mobile: block.settings.image_mobile,
+                      tag: 'h4'
+                    -%}
+                    {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </our-products-section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Our Products",
+  "tag": "section",
+  "class": "global-spacing",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "OUR PRODUCTS"
+    },
+    {
+      "type": "header",
+      "content": "Outer Spaces"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin top",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin bottom",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin top",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin bottom",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text (Mobile only)",
+          "default": "SHOP NOW"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_desktop",
+          "label": "Image Desktop"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Image Mobile"
+        },
+        {
+          "type": "color",
+          "id": "title_color",
+          "label": "Title color",
+          "default": "#0A0300"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Our Products"
+    }
+  ]
+}
+{% endschema %}

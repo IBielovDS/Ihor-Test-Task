@@ -1,0 +1,192 @@
+{%- comment -%}
+  Usage:
+    {%- render 'drawer-mega-menu'
+      menu: linklist,
+      top_title: top_title,
+      brands_title: brands_title,
+      models_title: models_title,
+      parent_title: parent_title
+    -%}
+{%- endcomment -%}
+<mega-menu data-parent="{{ parent_title }}" >
+  <div
+    class="mega-menu invisible opacity-0 transition-all duration-300 ease-in-out fixed top-0 left-0 w-full h-full [&.active]:visible [&.active]:opacity-100 bg-black/20 z-50"
+  >
+    <div class="mega-menu-content absolute top-8 left-8 w-full max-w-[1010px] rounded-14 ">
+      <div class="flex h-[calc(99vh_-_8px)]">
+        {%- comment -%} First Level Menu {%- endcomment -%}
+        <div
+          class="menu-content-block transition-all duration-200 ease-in-out flex-shrink-0 max-w-0 opacity-0 overflow-hidden whitespace-nowrap w-1/3 menu-section [&.active]:max-w-[33.3%] [&.active]:opacity-100 menu-section--first border-r bg-white active rounded-[15px_0_0_15px]"
+        >
+          <div class="flex justify-between items-center w-full py-24 px-32">
+            {%- if top_title != blank -%}
+              <h4 class="uppercase text-32 leading-32" >{{- top_title -}}</h4>
+            {%- endif -%}
+            <button
+              class="close-menu"
+            >
+              {%- render 'icon_v2', icon: 'mega-close' -%}
+            </button>
+          </div>
+          <div class="submenu-scroll">
+            <div>
+              {%- for link in menu.links -%}
+                {%- liquid
+                  assign link_index = forloop.index
+                  assign has_dropdown = false
+                  assign link_image = ''
+                  if link.links.size > 0
+                    assign tag = 'div'
+                    assign closing_tag = '/div'
+                    assign has_dropdown = true
+                  else
+                    assign tag = 'a href="' | append: link.url | append: '"'
+                    assign closing_tag = '/a'
+                    assign has_dropdown = false
+                  endif
+                -%}
+                {%- comment -%}{{- tag -}} is braking HTML so that's why there is no hyphens here{%- endcomment -%}
+                <{{tag}}
+                  class="menu-item cursor-pointer {% if has_dropdown %} menu-item--dropdown {% endif %} relative [&.active]:bg-grey-100 transition-all hover:bg-grey-100 block"
+                  data-category="{{- link.handle -}}-{{ link_index }}"
+                >
+                  <div class="flex justify-start mx-32 border-b border-grey-100 border-solid  items-center gap-8 py-20 min-h-[88px]">
+                    {%- liquid
+                      assign link_image = link.object.metafields.custom.menu_image.value | default: link.object.image | default: link.object.featured_image
+                    -%}
+
+                    {%- if link_image != blank -%}
+                      {%- render 'responsive-image-dynamic_v2',
+                        image: link_image,
+                        class: 'aspect-square h-[64px] w-fit object-cover',
+                        width: 64,
+                        height: 64,
+                        sizes: '(max-width: 768px) 64px, 128px'
+                      -%}
+                    {%- endif -%}
+                    {%- assign link_image = '' -%}
+                    <span class="body-2 font-bold whitespace-normal">{{- link.title -}}</span>
+                    {%- if link.links.size > 0 -%}
+                      <button class="menu-arrow ml-auto">
+                        {%- render 'icon_v2', icon: 'navigation-expand', class: 'group-hover:fill-black-200 transition-all' -%}
+                      </button>
+                    {%- endif -%}
+                  </div>
+                <{{ closing_tag }}>
+              {%- endfor -%}
+            </div>
+          </div>
+        </div>
+
+        {%- comment -%} Second Level Menu (Brands) {%- endcomment -%}
+        <div
+          class="menu-content-block transition-all duration-200 ease-in-out flex-shrink-0 max-w-0 opacity-0 overflow-hidden whitespace-nowrap w-1/3 menu-section [&.active]:max-w-[33.3%] [&.active]:opacity-100 menu-section--second bg-grey rounded-[0_15px_15px_0]"
+        >
+          {%- for link in menu.links -%}
+            {%- assign link_index = forloop.index -%}
+            <div
+              class="hidden translate-x-full transition-transform duration-300 ease-in-out brands-section [&.active]:flex [&.active]:translate-x-0 [&.active]:!opacity-100 h-full flex-col"
+              data-for="{{- link.handle -}}-{{ link_index }}"
+            >
+              <div class="p-32 pb-0 flex gap-32 flex-col">
+                <div class="text-grey-600 font-medium uppercase label-text">{{ brands_title }}</div>
+                <a
+                  href="{{- link.url -}}"
+                  class="body-3 text-black font-heading mb-16 uppercase hover:underline justify-start gap-8 flex items-start"
+                >
+                  {{- 'header.mega-menu.view_all_by' | t: title: link.title, brand: brands_title -}}
+                  {%- render 'icon_v2', icon: 'arrow-right' -%}
+                </a>
+              </div>
+              <div class="submenu-scroll">
+                <div>
+                  {%- for childlink in link.links -%}
+                    {%- liquid
+                      assign childlink_index = forloop.index
+                      assign has_dropdown = false
+                      if childlink.links.size > 0
+                        assign tag = 'div'
+                        assign closing_tag = '/div'
+                        assign has_dropdown = true
+                      else
+                        assign tag = 'a href="' | append: link.url | append: '"'
+                        assign closing_tag = '/a'
+                        assign has_dropdown = false
+                      endif
+                    -%}
+                    <{{ tag }}
+                      class="menu-item cursor-pointer {% if has_dropdown %} menu-item--dropdown {% endif %}  transition-all [&.active]:bg-grey-100 hover:bg-grey-100 block relative before:content-[''] before:absolute before:h-[1px] before:bg-grey-100 before:top-[-1px] before:transition-opacity before:left-0 before:w-full before:opacity-0 [&.active]:before:opacity-100 hover:before:opacity-100"
+                      data-brand="{{- link.handle -}}-{{ link_index }}-{{- childlink.handle -}}-{{ childlink_index }}"
+                    >
+                      <div class="flex items-center justify-between p-2 transition-all font-medium  mx-32 py-12 border-b border-grey-100 border-solid  ">
+                        <span class="body-3">{{ childlink.title -}}</span>
+                        {%- if childlink.links.size > 0 -%}
+                          <button class="menu-arrow">
+                            {%- render 'icon_v2', icon: 'navigation-expand', class: 'group-hover:fill-black-200 transition-all' -%}
+                          </button>
+                        {%- endif -%}
+                      </div>
+                    <{{ closing_tag }}>
+                  {%- endfor -%}
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- comment -%} Third Level Menu (Models) {%- endcomment -%}
+        <div
+          class="menu-content-block transition-all duration-200 ease-in-out flex-shrink-0 max-w-[33.3%] opacity-0 overflow-hidden whitespace-nowrap w-1/3 menu-section [&.active]:max-w-[33.3%] [&.active]:opacity-100 menu-section--third bg-grey-100 rounded-[0_15px_15px_0]"
+        >
+          {%- for link in menu.links -%}
+            {%- assign link_index = forloop.index -%}
+            {%- for childlink in link.links -%}
+              {%- assign childlink_index = forloop.index -%}
+              <div
+                class="hidden translate-x-full transition-transform duration-300 ease-in-out models-section [&.active]:block [&.active]:translate-x-0 [&.active]:!opacity-100"
+                data-for="{{- link.handle -}}-{{ link_index }}-{{- childlink.handle -}}-{{ childlink_index }}"
+              >
+                <div class="p-32 pb-0 flex gap-32 flex-col">
+                  <div class="text-grey-600 font-medium uppercase label-text">{{ models_title }}</div>
+                  <a
+                    href="{{- childlink.url -}}"
+                    class="body-3 text-black font-heading mb-16 uppercase hover:underline justify-start gap-8 flex items-start"
+                  >
+                    {{- 'header.mega-menu.view_all' | t: title: childlink.title -}}
+                    {%- render 'icon_v2', icon: 'arrow-right' -%}
+                  </a>
+                </div>
+                <div class="submenu-scroll">
+                  <div>
+                    {%- for grandchildlink in childlink.links -%}
+                      {%- assign assign link_image = '' -%}
+                      <a
+                        href="{{- grandchildlink.url -}}"
+                        class="w-full transition-all hover:bg-white block"
+                      >
+                        <div class="flex justify-start gap-8 items-center py-12 mx-32" >
+                          {%- liquid
+                            assign link_image = grandchildlink.object.metafields.custom.menu_image.value | default: grandchildlink.object.image | default: grandchildlink.object.featured_image
+                          -%}
+                          {%- if link_image != blank -%}
+                            {% render 'responsive-image-dynamic_v2',
+                              image: link_image,
+                              class: 'aspect-square h-[64px] w-fit object-cover'
+                            %}
+                          {%- endif -%}
+                          {%- assign link_image = '' -%}
+                          <span class="body-2 font-bold whitespace-normal">{{- grandchildlink.title -}}</span>
+  
+                        </div>
+                      </a>
+                    {%- endfor -%}
+                  </div>
+                </div>
+              </div>
+            {%- endfor -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</mega-menu>

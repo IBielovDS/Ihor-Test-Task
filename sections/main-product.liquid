@@ -1,0 +1,656 @@
+{%- liquid
+  assign padding_top = section.settings.padding_top
+  assign padding_bottom = section.settings.padding_bottom
+  assign padding_top_mobile = section.settings.padding_top_mobile
+  assign padding_bottom_mobile = section.settings.padding_bottom_mobile
+
+  assign margin_top = section.settings.margin_top
+  assign margin_bottom = section.settings.margin_bottom
+  assign margin_top_mobile = section.settings.margin_top_mobile
+  assign margin_bottom_mobile = section.settings.margin_bottom_mobile
+
+  assign block_common_class = 'mb-8 lg:mb-24'
+  assign icon_blocks = section.blocks | where: 'type', 'icon_with_text'
+-%}
+<style>
+  :root #shopify-section-{{ section.id }} {
+    --padding-top: {{padding_top}}px;
+    --padding-bottom: {{padding_bottom}}px;
+    --padding-top-mobile: {{padding_top_mobile}}px;
+    --padding-bottom-mobile: {{padding_bottom_mobile}}px;
+    --margin-top: {{margin_top}}px;
+    --margin-bottom: {{margin_bottom}}px;
+    --margin-top-mobile: {{margin_top_mobile}}px;
+    --margin-bottom-mobile: {{margin_bottom_mobile}}px;
+  }
+</style>
+
+<div
+  class="main-product-wrapper flex flex-col lg:gap-32 {% if product.media.size > 0 and section.blocks.size > 0 %}lg:flex-row{% endif %}"
+>
+  <div class="main-product-wrapper__gallery w-full lg:w-[55%]">
+    <div class="main-product-wrapper__gallery-mobile"></div>
+    {% render 'product-media-gallery', product: product, section: section %}
+  </div>
+  {%- if section.blocks.size > 0 -%}
+    <main-product-info class="main-product-wrapper__product-info w-full lg:pl-32 lg:w-[45%] lg:border-l-1 lg:border-black-200">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when '@app' -%}
+            <div
+              class="{{ block_common_class }}"
+              {{ block.shopify_attributes }}
+            >
+              {%- render block -%}
+            </div>
+          {%- when 'title' -%}
+            <div
+              class="{{ block_common_class }} product_title"
+              {{ block.shopify_attributes }}
+            >
+              {%- if block.settings.title != blank -%}
+                <h1
+                  class="h5 uppercase"
+                  {{ block.shopify_attributes }}
+                >
+                  {{ block.settings.title }}
+                </h1>
+              {%- endif -%}
+            </div>
+          {%- when 'tag_with_stars' -%}
+            <div
+              class="{{ block_common_class }} tag_with_stars flex flex-col lg:flex-row justify-between mt-16 lg:mt-32"
+              {{ block.shopify_attributes }}
+            >
+              {%- render 'product-badges', product: product, classes: 'hidden lg:flex' -%}
+              <a href="#looxReviews">
+                <div
+                  class="loox-rating"
+                  data-id="{{ product.id }}"
+                  data-rating="{{ product.metafields.loox.avg_rating }}"
+                  data-raters="{{ product.metafields.loox.num_reviews }}"
+                ></div>
+              </a>
+            </div>
+          {%- when 'price' -%}
+            <div
+              id="price-{{ section.id }}"
+              class="{{ block_common_class }} price_block flex flex-row justify-start items-center gap-8 lg:gap-16"
+              {{ block.shopify_attributes }}
+            >
+              <span class="heading-5">
+                {{ product.selected_or_first_available_variant.price | money_without_currency | prepend: cart.currency.symbol }}
+              </span>
+              {%- if product.compare_at_price != blank and product.compare_at_price > product.price -%}
+                <span class="body-3 text-grey-300 line-through">
+                  {{
+                    product.selected_or_first_available_variant.compare_at_price
+                    | money_without_currency
+                    | prepend: cart.currency.symbol
+                  }}
+                </span>
+              {%- endif -%}
+            </div>
+          {%- when 'modals' -%}
+            <div
+              class="mb-16 lg:mb-24 modals-wrapper grid grid-cols-2 gap-8 lg:flex lg:flex-row lg:gap-16 empty:hidden"
+              {{ block.shopify_attributes }}
+            >
+              {%- for i in (1..2) -%}
+                {%- liquid
+                  assign icon_setting = 'modal_' | append: i | append: '_icon'
+                  assign trigger_setting = 'modal_' | append: i | append: '_trigger'
+                  assign image_setting = 'modal_' | append: i | append: '_image'
+                  assign video_setting = 'modal_' | append: i | append: '_video'
+
+                  assign icon = block.settings[icon_setting]
+                  assign trigger = block.settings[trigger_setting]
+                  assign image = block.settings[image_setting]
+                  assign video = block.settings[video_setting]
+                -%}
+
+                {%- if icon != blank and trigger != blank and image != blank or video != blank -%}
+                  <a
+                    data-fancybox="modal-{{ forloop.index }}"
+                    href="{%- if video != blank -%}{{ video }}{%- else -%}{{ image | img_url: 'master' }}{%- endif -%}"
+                    class="modal-trigger bg-grey-600 flex flex-row w-full items-center rounded-4 px-20 py-4 gap-4 lg:gap-8 lg:px-16 lg:w-fit"
+                  >
+                    {%- render 'responsive-image-dynamic_v2',
+                      image: icon,
+                      loading: 'lazy',
+                      width: 50,
+                      class: 'aspect-square w-16 h-16 object-contain'
+                    -%}
+                    <span class="label-text text-white ">
+                      {{- trigger -}}
+                    </span>
+                  </a>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          {%- when 'product_form' -%}
+            <div
+              class="{{ block_common_class }}"
+              {{ block.shopify_attributes }}
+            >
+              {%- render 'product-form', product: product, section: section -%}
+            </div>
+          {%- when 'icon_with_text' -%}
+            {%- if block.settings.text != blank and block.settings.icon != blank -%}
+              {%- liquid
+                assign has_modal = false
+                if block.settings.is_modal == true and block.settings.modal_content != blank
+                  assign has_modal = true
+                endif
+              -%}
+              <div
+                {% if has_modal %}
+                  data-fancybox
+                  data-src="#pdp-modal-{{ block.id }}"
+                {% endif %}
+                class="flex flex-row justify-start items-center gap-8 mb-8 {% if has_modal %} underline cursor-pointer {% endif %}"
+                {{ block.shopify_attributes }}
+              >
+                {%- render 'responsive-image-dynamic_v2',
+                  image: block.settings.icon,
+                  loading: 'lazy',
+                  width: 50,
+                  class: 'aspect-square w-20 h-20 object-contain'
+                -%}
+                <span class="body-3 text-grey-600">
+                  {{- block.settings.text -}}
+                </span>
+              </div>
+            {%- endif -%}
+          {%- when 'features_grid' -%}
+            {%- if block.settings.product_types_to_show != blank -%}
+              {%- liquid
+                assign product_types_to_show = block.settings.product_types_to_show | split: ','
+                assign product_types_to_show_downcase = product_types_to_show
+                assign product_type_downcase = product.type | handleize
+                assign show_features = false
+                for type in product_types_to_show_downcase
+                  assign type_downcase = type | handleize
+                  if type_downcase == product_type_downcase
+                    assign show_features = true
+                    break
+                  endif
+                endfor
+                unless show_features
+                  continue
+                endunless
+              -%}
+
+              <div
+                class="mb-24 mt-40 lg:mt-24 grid grid-cols-2 lg:grid-cols-4 scale-110 md:scale-100 border-b-1 border-b-black-200 border-solid"
+                {{ block.shopify_attributes }}
+              >
+                {%- for i in (1..4) -%}
+                  {%- liquid
+                    assign icon_setting = 'icon_' | append: i
+                    assign text_setting = 'text_' | append: i
+
+                    assign icon = block.settings[icon_setting]
+                    assign text = block.settings[text_setting]
+                  -%}
+                  {%- if icon != blank and text != blank -%}
+                    <div class="border-t border-black [&:nth-child(3n)]:border-r [&:first-child]:border-r lg:[&:not(:last-child)]:border-r flex flex-col gap-8 justify-center p-16 text-center items-center">
+                      {%- render 'responsive-image-dynamic_v2',
+                        image: icon,
+                        loading: 'lazy',
+                        width: 50,
+                        class: 'aspect-square w-32 h-32 object-contain'
+                      -%}
+                      <span class="body-3 block w-full text-center">
+                        {{- text -}}
+                      </span>
+                    </div>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          {%- when 'richtext' -%}
+            {%- if block.settings.text != blank -%}
+              <div
+                class="{{ block_common_class }} richtext body-3 text-left text-grey-600 [&_a]:underline [&_a]:text-black-200"
+                {{ block.shopify_attributes }}
+              >
+                {{- block.settings.text -}}
+              </div>
+            {%- endif -%}
+          {%- when 'complementary_products' -%}
+            {%- liquid
+              if block.settings.products == blank or block.settings.title == blank or block.settings.atc_text == blank or block.settings.atc_text_1_item == blank or block.settings.total_text == blank
+                continue
+              endif
+            -%}
+            <div
+              class="{{ block_common_class }} mt-48 lg:mt-80"
+              {{ block.shopify_attributes }}
+            >
+              {%- render 'complementary-products', block: block -%}
+            </div>
+          {%- when 'view_details' -%}
+            <div class="flex items-center justify-center lg:-mt-6">
+              <a
+                href="{{- product.url | split: '?' | first -}}?variant={{- product.selected_or_first_available_variant.id -}}"
+                class="js-view-details flex items-center button-text-2 text-black-200 uppercase"
+              >
+                {{- 'product.view_details' | t -}}
+                {%- render 'icon_v2',
+                  icon: 'navigation-arrow-left',
+                  class: 'ml-8 rotate-180 [&_path]:fill-black-200'
+                -%}
+              </a>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </main-product-info>
+  {%- endif -%}
+</div>
+
+{%- for block in icon_blocks -%}
+  {%- liquid
+    if block.settings.is_modal == true and block.settings.modal_content != blank
+      assign has_modal = true
+    endif
+  -%}
+  <div
+    class="main-product-modal [&_button]:!top-0 [&_button]:bg-white [&_button]:opacity-100 [&_button]:border-none [&_button]:text-black-200 hidden p-16 original-scrollbar max-h-[70vh]  bg-white rounded-8 lg:p-24 [&_a]:underline [&_a]:text-black-200 [&_h6]:text-black-200 [&_h6]:uppercase [&_h6]:mb-8 [&_li]:text-12 [&_li]:tracking-1 [&_li]:text-grey-600 [&_p]:text-12 [&_p]:tracking-1 [&_p]:text-grey-600 [&_strong]:block [&_strong]:mt-16 [&_strong]:font-bold [&_strong]:text-14 [&_strong]:leading-15 [&_strong]:text-black-200 [&_strong]:mb-8 [&_li]:ml-20 [&_li]:list-[square]"
+    id="pdp-modal-{{ block.id }}"
+  >
+    <button
+      data-fancybox-close=""
+      class="f-button is-close-btn"
+      title="Close"
+    >
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M13.5907 12L21 4.59075L19.4093 3L12 10.4093L4.59075 3L3 4.59075L10.4093 12L3 19.4093L4.59075 21L12 13.5907L19.4093 21L21 19.4093L13.5907 12Z" fill="white"/>
+      </svg>
+    </button>
+    {{- block.settings.modal_content -}}
+    {%- if block.settings.modal_btn_text != blank and block.settings.modal_btn_url != blank -%}
+      <a
+        class="w-full mt-16 lg:mt-24 !bg-black-200 button--primary flex flex-row rounded-8 gap-8 py-16 justify-center items-center"
+        href="{{ block.settings.modal_btn_url }}"
+      >
+        <span class="text-white font-heading font-normal uppercase text-14 lg:text-18">
+          {{- block.settings.modal_btn_text -}}
+        </span>
+      </a>
+    {%- endif -%}
+  </div>
+{%- endfor -%}
+
+<script type="application/ld+json">
+  {{ product | structured_data }}
+</script>
+
+{% capture vArray %}{ {%- for variant in product.variants -%}
+  {%- liquid
+    assign variantMeta = variant.metafields.custom.location_with_inventory
+    if variantMeta != blank
+      assign variantMeta = variantMeta | remove: "FBA " | remove: "ML - " | replace: "Canada", "CA" | split: ","
+    else 
+      assign variantMeta = variant.available
+    endif
+  -%}
+  {{variant.title | json}}: {
+    "available": {{variant.available | json}},
+    "id": {{variant.id | json}},
+    "price": {{variant.price | money | strip_html | json}},
+    "sale": {{variant.compare_at_price | money | strip_html | json}},
+    "options": {{variant.options | json}},
+    "metadata": {{ variantMeta | json }},
+    "continueSelling": "{{ variant.metafields.custom.continue_selling | default: false }}"
+  }{%- unless forloop.last -%},{%- endunless -%}
+{%- endfor -%}}{% endcapture %}
+
+<noscript id="{{product.id}}">
+  {{ vArray }}
+</noscript>
+
+{% if product.variants.size == 1 %}
+  {% capture vArray %}{ {%- for variant in product.variants -%}
+    {%- liquid
+      assign variantMeta = variant.metafields.custom.location_with_inventory
+      if variantMeta != blank
+        assign variantMeta = variantMeta | remove: "FBA " | remove: "ML - " | replace: "Canada", "CA" | split: ","
+      else 
+        assign variantMeta = variant.available
+      endif
+    -%}
+    {{variant.title | json}}: {
+      "available": {{variant.available | json}},
+      "id": {{variant.id | json}},
+      "price": {{variant.price | money | strip_html | json}},
+      "sale": {{variant.compare_at_price | money | strip_html | json}},
+      "options": {{variant.options | json}},
+      "metadata": {{ variantMeta | json }},
+      "continueSelling": "{{ variant.metafields.custom.continue_selling | default: false }}"
+    }{%- unless forloop.last -%},{%- endunless -%}
+  {%- endfor -%}}{% endcapture %}
+  <noscript id="single-{{product.id}}">
+    {{ vArray }}
+  </noscript>
+{% endif %}
+{% schema %}
+{
+  "name": "Main Product",
+  "class": "js-main-product-section container global-spacing",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Inner Spaces"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Padding bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Padding bottom",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Outer Spaces"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Margin top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Margin bottom",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Margin top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Margin bottom",
+      "default": 20
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "title",
+      "name": "Title",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        }
+      ]
+    },
+    {
+      "type": "tag_with_stars",
+      "name": "Tags with stars"
+    },
+    {
+      "type": "price",
+      "name": "Price"
+    },
+    {
+      "type": "modals",
+      "name": "Modals",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "modal_1_icon",
+          "label": "Modal 1 icon"
+        },
+        {
+          "type": "text",
+          "id": "modal_1_trigger",
+          "label": "Modal 1 trigger",
+          "default": "Compatibility list"
+        },
+        {
+          "type": "image_picker",
+          "id": "modal_1_image",
+          "label": "Modal 1 image"
+        },
+        {
+          "type": "image_picker",
+          "id": "modal_2_icon",
+          "label": "Modal 2 icon"
+        },
+        {
+          "type": "text",
+          "id": "modal_2_trigger",
+          "label": "Modal 2 trigger",
+          "default": "Installation Video"
+        },
+        {
+          "type": "text",
+          "id": "modal_2_video",
+          "label": "Modal 2 video",
+          "info": "Only YouTube video links are supported"
+        }
+      ]
+    },
+    {
+      "type": "product_form",
+      "name": "Product form"
+    },
+    {
+      "type": "icon_with_text",
+      "name": "Icon with text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "More payment options"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "checkbox",
+          "id": "is_modal",
+          "label": "Is modal?",
+          "default": false
+        },
+        {
+          "type": "richtext",
+          "id": "modal_content",
+          "label": "Modal content"
+        },
+        {
+          "type": "text",
+          "id": "modal_btn_text",
+          "label": "Modal button text",
+          "default": "Click here to begin your return process"
+        },
+        {
+          "type": "url",
+          "id": "modal_btn_url",
+          "label": "Modal button URL"
+        }
+      ]
+    },
+    {
+      "type": "features_grid",
+      "name": "Features grid",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "product_types_to_show",
+          "label": "Product types to show via comma"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_1",
+          "label": "Icon 1"
+        },
+        {
+          "type": "text",
+          "id": "text_1",
+          "label": "Text 1",
+          "default": "Comes as a Pair"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_2",
+          "label": "Icon 2"
+        },
+        {
+          "type": "text",
+          "id": "text_2",
+          "label": "Text 2",
+          "default": "Easy Installation"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_3",
+          "label": "Icon 3"
+        },
+        {
+          "type": "text",
+          "id": "text_3",
+          "label": "Text 3",
+          "default": "High Quality"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_4",
+          "label": "Icon 4"
+        },
+        {
+          "type": "text",
+          "id": "text_4",
+          "label": "Text 4",
+          "default": "Fast Shipping"
+        }
+      ]
+    },
+    {
+      "type": "richtext",
+      "name": "Richtext",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Not sure if this is the best product for you?</p><p><a href='\/pages\/contact'>Contact Us<\/a> and we will help you find the right product for you.</p>"
+        }
+      ]
+    },
+    {
+      "type": "complementary_products",
+      "name": "Complementary products",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Pairs well with"
+        },
+        {
+          "type": "product_list",
+          "id": "products",
+          "label": "Products"
+        },
+        {
+          "type": "text",
+          "id": "total_text",
+          "label": "Total text",
+          "default": "Total:"
+        },
+        {
+          "type": "text",
+          "id": "atc_text",
+          "label": "ATC Text",
+          "default": "Add [x] items to cart",
+          "info": "[x] - number of items, will be replaced with the actual number automatically"
+        },
+        {
+          "type": "text",
+          "id": "atc_text_1_item",
+          "label": "ATC Text One item",
+          "default": "Add 1 item to cart"
+        },
+        {
+          "type": "text",
+          "id": "buttom_text",
+          "label": "Bottom text",
+          "default": "Purchase these products and get 15% discount"
+        }
+      ]
+    },
+    {
+      "type": "view_details",
+      "name": "View details"
+    }
+  ]
+}
+{% endschema %}

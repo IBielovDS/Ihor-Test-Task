@@ -1,0 +1,11 @@
+[environments.dev]
+store = "domaine-ta"
+path = "."
+output = "json"
+
+
+[environments.prod]
+store = "domaine-ta"
+path = "."
+output = "json"
+theme-editor-sync = true

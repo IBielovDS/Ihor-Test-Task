@@ -1,0 +1,13 @@
+{%- if settings.enable_quick_view -%}
+  <quick-view-btn>
+    <button
+      class="js-quick-view-btn quickview-button button button--secondary !py-8 !px-22 [&_svg]:m-0 !w-full {% unless hide_text %}lg:!py-16 lg:[&_svg]:!mr-8{% endunless %}"
+      data-url="{{- product.url -}}"
+    >
+      {%- render 'icon_v2', icon: 'eye-opened', class: 'min-w-20 [&_path]:stroke-white' -%}
+      <span class="hidden{% unless hide_text %} lg:block{% endunless %}">
+        {{- 'products.quick_view.button_label' | t -}}
+      </span>
+    </button>
+  </quick-view-btn>
+{%- endif -%}

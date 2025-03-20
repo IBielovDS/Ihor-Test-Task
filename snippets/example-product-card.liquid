@@ -1,0 +1,138 @@
+{%- liquid
+  assign selected_variant = selected_variant | default: product.selected_or_first_available_variant
+-%}
+
+<example-product-card class="block px-22 pt-27 pb-34 bg-white" role="article">
+  <a href="{{- product.url -}}?variant={{- selected_variant.id -}}" class="example-product-card__image relative border border-grey-light rounded-10 p-20 group block mb-15" data-product-card-link aria-label="{{ 'accessibility.view_product_details' | t: title: product.title }}">
+    {%- render 'example-product-card-image', selected_variant: selected_variant, product: product -%}
+    <div data-product-card-badges class="absolute top-20 left-20" aria-label="{{ 'accessibility.product_badges' | t }}">
+      {%- render 'product-badges', product: product, selected_variant: selected_variant, badge_class: 'body-5 px-12 py-6 text-dark-red rounded-25 border border-dark-red' -%}
+    </div>
+  </a>
+  
+  {%- render 'example-product-card-swatches', product: product, selected_variant: selected_variant -%}
+
+  <a href="{{- product.url -}}?variant={{- selected_variant.id -}}" class="example-product-card__link" aria-label="{{ 'accessibility.view_product_details' | t: title: product.title }}" data-product-card-link>
+    {%- if product.vendor != blank -%}
+      <div class="example-product-card__vendor mb-6 body-4 font-roboto text-dark-black" aria-label="{{ 'accessibility.brand_label' | t: brand: product.vendor }}">
+        {{- product.vendor -}}
+      </div>
+    {%- endif -%}
+    
+    <h3 class="example-product-card__title mb-6 body-5 text-blue-light font-roboto font-medium" id="product-title-{{ product.id }}">
+      {{- product.title -}}
+    </h3>
+  
+    <div class="example-product-card__price body-4 font-roboto" data-product-card-price aria-labelledby="product-title-{{ product.id }}" aria-label="{% if selected_variant.compare_at_price > selected_variant.price %}{{ 'accessibility.price.sale' | t: price: selected_variant.price | money | append: '|' | append: selected_variant.compare_at_price | money }}{% else %}{{ 'accessibility.price.regular' | t: price: selected_variant.price | money }}{% endif %}">
+      {%- if selected_variant.compare_at_price > selected_variant.price -%}
+        <div class="flex items-center gap-8">
+          <span class="text-dark-black body-4 line-through">{{- selected_variant.compare_at_price | money -}}</span>
+          <span class="text-dark-red body-4">{{- selected_variant.price | money -}}</span>
+        </div>
+      {%- else -%}
+        <span class="text-dark-black body-4">{{- selected_variant.price | money -}}</span>
+      {%- endif -%}
+    </div>
+  </a>
+
+  <template data-variant-template>
+    {%- for option in product.options_with_values -%}
+      {%- if option.name == 'Color' -%}
+        {%- for value in option.values -%}
+          {%- liquid
+            assign name = value.name | downcase | replace: ' ', '-'
+            assign fallback_main_image_name = name | append: '-first'
+            assign fallback_hover_image_name = name | append: '-second'
+            
+            assign image_gallery = product.images
+
+            if image_gallery.size > 1
+              for image in image_gallery
+                if image.src contains fallback_main_image_name
+                  assign fallback_main_image = image
+                endif
+                if image.src contains fallback_hover_image_name
+                  assign fallback_hover_image = image
+                endif
+              endfor
+            endif
+
+            if fallback_main_image.src contains 'no-image'
+              assign fallback_main_image = product.featured_image
+            endif
+
+            if fallback_hover_image.src contains 'no-image'
+              assign fallback_hover_image = product.featured_image
+            endif
+
+            assign variant = product.variants | where: 'option1', value.name | first
+
+            assign main_image_aria_label = 'accessibility.product_image.main' | t: title: product.title
+            assign hover_image_aria_label = 'accessibility.product_image.hover' | t: title: product.title
+            assign placeholder_aria_label = 'accessibility.product_image.placeholder' | t: title: product.title
+          -%}
+
+          <div data-variant-item="{{- value.id -}}" role="region" aria-labelledby="product-title-{{ product.id }}">
+            <div data-variant-images role="group" aria-label="{{ 'accessibility.product_image.main' | t: title: product.title }}">
+              <div class="absolute inset-0 transition-opacity duration-300 ease-in-out group-hover:opacity-0">
+                {%- if fallback_main_image -%}
+                  {%- render 'responsive-image-dynamic_v2', 
+                    image: fallback_main_image, 
+                    class: 'w-full h-full object-contain', 
+                    sizes: '275px',
+                    aria_label: main_image_aria_label
+                  -%}
+                {%- else -%}
+                  {{- 'accessibility.product_image.placeholder_key' | t | placeholder_svg_tag: 'w-full h-full object-contain', placeholder_aria_label -}}
+                {%- endif -%} 
+              </div>
+              <div class="absolute inset-0 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100">
+                {%- if fallback_hover_image -%}
+                  {%- render 'responsive-image-dynamic_v2', 
+                    image: fallback_hover_image, 
+                    class: 'w-full h-full object-contain', 
+                    sizes: '275px',
+                    aria_label: hover_image_aria_label
+                  -%}
+                {%- else -%}
+                  {{- 'accessibility.product_image.placeholder_key' | t | placeholder_svg_tag: 'w-full h-full object-contain', placeholder_aria_label -}}
+                {%- endif -%}
+              </div>
+            </div>
+
+            <div data-variant-price-content role="group" aria-label="{% if variant.compare_at_price > variant.price %}{{ 'accessibility.price.sale' | t: price: variant.price | money | append: '|' | append: variant.compare_at_price | money }}{% else %}{{ 'accessibility.price.regular' | t: price: variant.price | money }}{% endif %}">
+              {%- if variant -%}
+                {%- if variant.compare_at_price > variant.price -%}
+                  <div class="flex items-center gap-8">
+                    <span class="text-dark-black body-4 line-through">{{- variant.compare_at_price | money -}}</span>
+                    <span class="text-dark-red body-4">{{- variant.price | money -}}</span>
+                  </div>
+                {%- else -%}
+                  <span class="text-dark-black body-4">{{- variant.price | money -}}</span>
+                {%- endif -%}
+              {%- else -%}
+                <span class="text-dark-black body-4">{{- product.price | money -}}</span>
+              {%- endif -%}
+            </div>
+
+            <div data-variant-url-content>
+              {%- if variant -%}
+                {{- product.url -}}?variant={{- variant.id -}}
+              {%- else -%}
+                {{- product.url -}}
+              {%- endif -%}
+            </div>
+
+            <div data-variant-badges-content role="group" aria-label="{{ 'accessibility.product_badges' | t }}">
+              {%- if variant and variant.compare_at_price > variant.price -%}
+                <div class="product-badges flex flex-col" tabindex="0" aria-label="{{ 'accessibility.product_badges' | t }}">
+                  <span class="badge body-5 px-12 py-6 text-dark-red rounded-25 border border-dark-red badge--sale" aria-label="{{ 'accessibility.sale_badge' | t }}">{{- 'products.badges.sale' | t -}}</span>
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </template>
+</example-product-card>

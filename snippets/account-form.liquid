@@ -1,0 +1,16 @@
+{%- liquid
+  assign template_name = template_name | default: template.name
+-%}
+
+{%- case template_name -%}
+  {%- when 'register' -%}
+    {% render 'register-form' %}
+  {%- when 'login' -%}
+    {% render 'login-form' %}
+    {% render 'recover-password-email-form' %}
+  {%- when 'reset_password' -%}
+    {% render 'reset-password-form' %}
+  {%- when 'activate_account' -%}
+    {% render 'activate-account-form' %}
+  {%- else -%}
+{%- endcase -%}

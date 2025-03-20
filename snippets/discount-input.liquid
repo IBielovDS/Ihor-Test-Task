@@ -1,0 +1,79 @@
+{%- comment -%}
+  This snippet renders a discount input section within the cart sidebar. It includes:
+  - An input field for entering a discount code.
+  - A label for the input field.
+  - A warning message box for displaying input errors.
+  - A button to either apply or clear the discount code.
+
+  Variables:
+  - input_error: Translated error message for discount input.
+  - discount_code: The first discount code applied at the cart level.
+  - class: Additional CSS classes for the discount input wrapper.
+
+  Elements:
+  - <discount-input>: Wrapper for the discount input section.
+  - <input>: Text input for entering the discount code.
+  - <label>: Label for the discount code input.
+  - <div>: Container for the warning message box.
+  - <button>: Button to apply or clear the discount code.
+
+  Conditional Logic:
+  - If a discount code is already applied, the input field is readonly and the button clears the discount.
+  - If no discount code is applied, the input field is editable and the button applies the discount.
+{%- endcomment -%}
+
+{%- liquid
+  assign input_error = 'cart.discount_input.error' | t
+  assign discount_code = cart.cart_level_discount_applications | first
+  assign class = class
+%}
+
+<discount-input class="cart-sidebar-discount discount-input flex gap-16 items-center mx-16 md:mx-32 mt-16 md:mt-32 {{class}}">
+  <div class="input-wrapper dark relative flex-1">
+    <input
+      type="text"
+      id="discount-code-input-{{- section.id -}}"
+      autocomplete="on"
+      value="{%- if discount_code -%}{{- discount_code.title -}}{%- endif -%}"
+      class="input !mb-0 {% if discount_code %} pointer-events-none{% endif %}"
+      placeholder="Discount code"
+      {% if discount_code %}
+        readonly
+      {% endif %}
+    >
+    <label
+      for="discount-code-input-{{- section.id -}}"
+      class="input-label"
+    >
+      {{- 'cart.discount_input.label' | t -}}
+    </label>
+    <div
+      aria-live="polite"
+      role="status"
+    >
+      {%- render 'warning-message-box', text: input_error -%}
+    </div>
+  </div>
+
+  {%- if discount_code -%}
+    <button
+      class="button button--secondary !py-8 !px-24 !body-3 relative"
+      data-clear-discount
+    >
+      <span class="btn__text transition-opacity">{{- 'cart.discount_input.clear' | t -}}</span>
+      <span class="btn__loader absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 transition-opacity [&_svg]:mr-0">
+        {%- render 'icon_v2', icon: 'spinner-arrow', class: '[&_path]:stroke-white' -%}
+      </span>
+    </button>
+  {%- else -%}
+    <button
+      class="button button--secondary !py-8 !px-24 !body-3 relative"
+      data-apply-discount
+    >
+      <span class="btn__text transition-opacity">{{- 'cart.discount_input.apply' | t -}}</span>
+      <span class="btn__loader absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 transition-opacity [&_svg]:mr-0">
+        {%- render 'icon_v2', icon: 'spinner-arrow', class: '[&_path]:stroke-white' -%}
+      </span>
+    </button>
+  {%- endif -%}
+</discount-input>

@@ -1,0 +1,45 @@
+<div
+  data-type="{{ type | handleize }}"
+  data-brand="{{ brand  | handleize }}"
+  {% if model != blank %}
+    data-model="{{ model | handleize }}"
+  {% endif %}
+  class="relative bg-grey py-8 px-4 rounded-8 group overflow-hidden"
+>
+  {%- render 'responsive-image-dynamic_v2',
+    image: image_desktop,
+    image_mobile: image_mobile,
+    alt_text: image_desktop.alt,
+    class: 'w-full',
+    sizes: '33vw'
+  -%}
+
+  <div
+    class="absolute left-0 top-0 w-full h-full flex flex-col justify-between items-start px-4 py-8 lg:p-32"
+  >
+    <h5
+      class="text-center uppercase text-black-200 mx-auto lg:mr-auto lg:ml-0 lg:text-left"
+    >
+      {%- if shop_now_url != blank -%}
+        {{- model -}}
+      {%- else -%}
+        {{- brand -}}
+      {%- endif -%}
+    </h5>
+    {%- if shop_now_url != blank -%}
+      <a
+        href="{{ shop_now_url }}"
+        class="button button--primary desktop-button transition-all"
+      >
+        {{- 'brands-page.shop_now' | t -}}
+      </a>
+    {%- else -%}
+      <button
+        type="button"
+        class="button button--primary desktop-button transition-all"
+      >
+        {{- 'brands-page.view_models' | t -}}
+      </button>
+    {%- endif -%}
+  </div>
+</div>

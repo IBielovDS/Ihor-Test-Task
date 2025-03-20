@@ -1,0 +1,13 @@
+{%- if product != blank -%}
+  <button
+    class="js-add-to-cart-btn product-card-add-to-cart-btn button button--primary !py-8 !px-22 [&_svg]:m-0 !w-full {% unless hide_text %}lg:!py-16 lg:[&_svg]:!mr-8{% endunless %}"
+    data-variant-id="{{- product.selected_or_first_available_variant.id -}}"
+  >
+    {%- render 'icon_v2', icon: 'cart', class: 'icon-cart min-w-20 [&_path]:stroke-white' -%}
+    {%- render 'icon_v2', icon: 'loading', class: 'hidden icon-loading min-w-20 [&_path]:stroke-white' -%}
+    {%- render 'icon_v2', icon: 'done', class: 'hidden icon-done min-w-20 [&_path]:stroke-white' -%}
+    <span class="hidden{% unless hide_text %} lg:block{% endunless %}">
+      {{- 'products.product.add_to_cart' | t -}}
+    </span>
+  </button>
+{%- endif -%}

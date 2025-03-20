@@ -1,0 +1,64 @@
+{%- liquid
+  assign layout_content = layout_content
+-%}
+
+{{ 'fonts.min.css' | asset_url | stylesheet_tag: preload: true }}
+{{ 'tailwind.min.css' | asset_url | stylesheet_tag: preload: true }}
+
+{% comment %} Swiper styles {% endcomment %}
+{%- if layout_content contains 'swiper'
+  or layout_content contains 'product-recommendations'
+  or layout_content contains 'quick-view-modal'
+-%}
+  {{ 'swiper-bundle.min.css' | asset_url | stylesheet_tag: preload: true }}
+  <noscript>{{ 'swiper-bundle.min.css' | asset_url | stylesheet_tag }}</noscript>
+{%- endif -%}
+
+{% comment %} Fancybox library {% endcomment %}
+{%- if layout_content contains 'fancybox' -%}
+  {{ 'fancybox.css' | asset_url | stylesheet_tag: preload: false }}
+{%- endif -%}
+
+{% comment %} product-media-gallery.liquid {% endcomment %}
+{%- if layout_content contains 'product-media-gallery' -%}
+  {{ 'product-media-gallery.min.css' | asset_url | stylesheet_tag: preload: true }}
+{%- endif -%}
+
+{% comment %} video-reviews-carousel.liquid {% endcomment %}
+{%- if layout_content contains 'video-reviews-carousel' -%}
+  {{ 'video-reviews-carousel.min.css' | asset_url | stylesheet_tag: preload: false }}
+{%- endif -%}
+
+{% comment %} section-products-slider.liquid {% endcomment %}
+{%- if layout_content contains 'products-slider' or layout_content contains 'product-recommendations' -%}
+  {{ 'products-slider.min.css' | asset_url | stylesheet_tag: preload: true }}
+{%- endif -%}
+
+{% comment %} drawer-mega-menu.liquid {% endcomment %}
+{%- if layout_content contains 'mega-menu' -%}
+  {{ 'drawer-mega-menu.min.css' | asset_url | stylesheet_tag: preload: false }}
+{%- endif -%}
+
+{% comment %} currency-selector.liquid {% endcomment %}
+{% comment %} Works only when using link stylesheet tag {% endcomment %}
+{%- if layout_content contains 'localization-form' -%}
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"
+  >
+{%- endif -%}
+
+{% comment %} main-product.liquid {% endcomment %}
+{%- if layout_content contains 'complementary-product-card' -%}
+  {{ 'complementary-product-card.min.css' | asset_url | stylesheet_tag: preload: false }}
+{%- endif -%}
+
+{%- if template contains 'product' or layout_content contains 'quick-view-modal' -%}
+  {{ 'product.min.css' | asset_url | stylesheet_tag: preload: false }}
+  {{ 'fancybox.css' | asset_url | stylesheet_tag: preload: false }}
+{%- endif -%}
+
+{% comment %} sticky-add-to-cart.liquid {% endcomment %}
+{%- if layout_content contains 'sticky-add-to-cart' -%}
+  {{ 'sticky-add-to-cart.min.css' | asset_url | stylesheet_tag: preload: false }}
+{%- endif -%}

@@ -1,0 +1,156 @@
+{%- liquid
+  assign default_title = 'customer.login_page.title' | t
+  assign title = title | default: default_title
+  assign success_title = 'customer.recover_password.success_title' | t
+  assign email_error_message = 'customer.error_messages.email_error_message' | t
+  assign password_error_message = 'customer.error_messages.password_error_message' | t
+-%}
+
+<form-validation
+  class="
+    grid grid-cols-1 lg:max-w-[442px] mx-auto opacity-100 transition-opacity duration-300 z-0
+    [&.hide]:opacity-0 [&.hide]:-z-10 [&.hide]:hidden
+    [&.recover-success_.form-header]:hidden [&.recover-success_form]:hidden [&:not(.recover-success)_.form-success]:hidden
+    [&.recover-success_.form-success]:block
+  "
+  data-form-type="login"
+>
+  <div class="form-success text-center mb-24 ">
+    <h1 class="mb-24 font-heading text-32 leading-32 tracking-0.5">{{- success_title -}}</h1>
+    <p>
+      <span class="body-3 text-grey-600">{{- 'customer.recover_password.success' | t -}}</span>
+    </p>
+    <a
+      href="{{- routes.root_url -}}"
+      type="button"
+      class="button button--primary !w-full max-w-[219px] mt-16 lg:mt-32 col-span-2 !p-16 mx-auto"
+    >
+      {{- 'customer.recover_password.back_to_home' | t -}}
+    </a>
+  </div>
+
+  <div class="form-header text-center mb-24 ">
+    <h1 class="mb-24 font-heading text-32 leading-32 tracking-0.5">{{- title -}}</h1>
+    <p>
+      <span class="body-3 text-grey-600">{{- 'customer.login_page.create_account_prev_text' | t -}}</span>
+      <a
+        href="{{- routes.account_register_url -}}"
+        class="body-3 font-bold font-regular text-black-200 underline "
+      >
+        {{- 'customer.login_page.create_account' | t -}}
+      </a>
+    </p>
+  </div>
+
+  {%- form 'customer_login', novalidate: 'novalidate', class: 'grid grid-cols-2', return_to: routes.account_url -%}
+    {%- if form.errors -%}
+      <ul class="grid grid-cols-1 lg:col-start-1 lg:col-end-3">
+        {%- for field in form.errors -%}
+          <li class="bg-grey py-8 px-16 label-text flex items-center flex-1-0-auto rounded-4 mb-16 gap-8">
+            <div class="flex justify-center items-center bg-error rounded-[50%] w-32 h-32 flex-grow-0 flex-shrink-0 basis-auto">
+              {%- render 'icon_v2', icon: 'warning-icon', class: '[&_path]:stroke-white' -%}
+            </div>
+
+            <span class="[&_a]:underline">
+              {%- if field == 'form' -%}
+                {{- form.errors.messages[field] -}}
+              {%- else -%}
+                <a
+                  href="#RegisterForm-{{- field -}}"
+                  class="underline"
+                >
+                  {{- form.errors.translated_fields[field] | capitalize -}}
+                  {{- form.errors.messages[field] -}}
+                </a>
+              {%- endif -%}
+            </span>
+
+            <button
+              type="button"
+              class="block w-12 h-12 ml-auto flex-grow-0 flex-shrink-0 basis-auto"
+              data-hide-default-error
+            >
+              {%- render 'icon_v2', icon: 'cross' -%}
+            </button>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <div class="input-wrapper dark col-span-2">
+      <input
+        type="email"
+        name="customer[email]"
+        id="CustomerEmail"
+        autocomplete="email"
+        autocorrect="off"
+        autocapitalize="off"
+        {% if form.errors contains 'form' %}
+          aria-invalid="true"
+        {% endif %}
+        placeholder="{{- 'customer.login_page.email' | t -}}"
+        class="input"
+        required
+        pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+      >
+      <label
+        for="CustomerEmail"
+        class="input-label"
+      >
+        {{- 'customer.login_page.email' | t -}}
+      </label>
+      {%- render 'warning-message-box', text: email_error_message -%}
+    </div>
+
+    {%- if form.password_needed -%}
+      <div class="input-wrapper dark col-span-2">
+        <div class="relative w-full">
+          <button
+            type="button"
+            class="cursor-pointer absolute w-20 h-20 bottom-16 right-0 [&:not(.show)_.opened]:opacity-100 [&.show_.opened]:opacity-0 [&:not(.show)_.closed]:opacity-0 [&.show_.closed]:opacity-100 transition-opacity"
+            data-show-password
+          >
+            {%- render 'icon_v2', icon: 'eye-opened', class: 'opened absolute top-0 left-0 w-full h-full' -%}
+            {%- render 'icon_v2', icon: 'eye-closed', class: 'closed absolute top-0 left-0 w-full h-full' -%}
+          </button>
+          <input
+            type="password"
+            value=""
+            name="customer[password]"
+            id="CustomerPassword"
+            autocomplete="current-password"
+            {% if form.errors contains 'form' %}
+              aria-invalid="true"
+            {% endif %}
+            placeholder="{{- 'customer.login_page.password' | t -}}"
+            class="input !pr-20"
+            pattern="^.{8,}$"
+            required
+          >
+          <label
+            for="CustomerPassword"
+            class="input-label"
+          >
+            {{- 'customer.login_page.password' | t -}}
+          </label>
+        </div>
+
+        {%- render 'warning-message-box', text: password_error_message -%}
+      </div>
+    {%- endif -%}
+
+    <button
+      type="submit"
+      class="button button--primary !w-full max-w-full mt-16 lg:mt-32 col-span-2"
+    >
+      {{- 'customer.login_page.sign_in' | t -}}
+    </button>
+
+    <a
+      href="#recover"
+      class="col-start-2 justify-self-end mt-8 underline body-3"
+    >
+      {{- 'customer.login_page.forgot_password' | t -}}
+    </a>
+  {%- endform -%}
+</form-validation>

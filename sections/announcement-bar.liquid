@@ -1,0 +1,61 @@
+{%- assign s = section.settings -%}
+
+<div class="py-8 lg:py-14 bg-black-200 text-grey-200">
+  <div class="container">
+    <div class="flex flex-col items-center justify-between lg:flex-row">
+      <div class="hidden lg:block">
+        {%- if s.show_lang_selector -%}
+          {%- render 'currency-selector', countries: section.settings.available_countries, position: 'bottom' -%}
+        {%- endif -%}
+      </div>
+      {%- if s.text != blank -%}
+        <div class="body-3 [&_strong]:text-white">{{- s.text -}}</div>
+      {%- endif -%}
+      {%- if s.links != blank -%}
+        <nav class="hidden lg:flex items-center">
+          {%- for link in s.links.links -%}
+            <a
+              href="{{- link.url -}}"
+              class="announcement-bar__link body-3 mr-16 last-of-type:mr-0"
+            >
+              {{- link.title -}}
+            </a>
+          {%- endfor -%}
+        </nav>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Anouncement Bar",
+  "class": "js-announcement-bar-section",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "available_countries",
+      "label": "Available countries",
+      "default": "United States, United Kingdom, Canada, Europe",
+      "info": "Countries via comma. By default will output all. Europe = first matching EU country."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_lang_selector",
+      "label": "Show Language Selector",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text"
+    },
+    {
+      "type": "link_list",
+      "id": "links",
+      "label": "Navigation Links"
+    }
+  ]
+}
+{% endschema %}

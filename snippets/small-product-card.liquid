@@ -1,0 +1,65 @@
+{%- comment -%}
+  This snippet renders a small product card with the following features:
+  - Displays the product image using the 'responsive-image-dynamic_v2' snippet.
+  - Shows the product title.
+  - Displays the product price and, if applicable, the compare-at price.
+  - Includes a form to add the product to the cart with a button styled as a primary button.
+  - The form uses the 'ajax-cart-product-form' custom element for AJAX functionality.
+
+  Classes and styles:
+  - The main container uses a grid layout with specific column and row settings, padding, and border styles.
+  - The image container is positioned relative with fixed width and height.
+  - The product title and price are styled with specific text classes.
+  - The add-to-cart button is styled with custom classes for appearance and layout.
+
+  Dependencies:
+  - 'responsive-image-dynamic_v2' snippet for rendering responsive images.
+  - 'icon_v2' snippet for rendering icons within the button.
+{%- endcomment -%}
+
+<div class="grid grid-cols-cart-item auto-rows-auto items-center gap-x-8 gap-y-4 p-16 border-1 border-solid border-grey-100">
+  <div class="col-start-1 row-span-full relative w-64 h-64">
+    {%- render 'responsive-image-dynamic_v2',
+      image: product.featured_image,
+      width: 64,
+      height: 64,
+      sizes: '64px',
+      class: 'object-cover w-full h-full absolute top-0 left-0'
+    -%}
+  </div>
+
+  <span class="col-start-2 col-span-full font-bold body-3 text-black-200 pr-8">{{- product.title | escape -}}</span>
+
+  <span class="col-start-2 row-start-2 text-black-200 body-3">
+    <span class="text-black-200 body-3">
+      {{- product.price | money_without_currency | prepend: cart.currency.symbol -}}
+    </span>
+    {%- if product.compare_at_price != blank and product.compare_at_price > product.price -%}
+      <span class="body-3 text-grey-300 line-through">
+        {{- product.compare_at_price | money_without_currency | prepend: cart.currency.symbol -}}
+      </span>
+    {%- endif -%}
+  </span>
+
+  <ajax-cart-product-form class="col-start-3 row-start-2">
+    <product-form>
+      {% form 'product', product %}
+        <input
+          type="hidden"
+          name="id"
+          value="{{ product.selected_or_first_available_variant.id }}"
+        >
+
+        <button
+          type="submit"
+          name="add"
+          class="button button--primary button--w-full flex flex-row !rounded-8 !py-4 !px-16 justify-center items-center"
+          aria-label="{{ 'cart.drawer.upsells_atc_button' | t }}"
+        >
+          {%- render 'icon_v2', icon: 'atc-plus' -%}
+          <span>{{ 'cart.drawer.upsells_atc_button' | t }}</span>
+        </button>
+      {% endform %}
+    </product-form>
+  </ajax-cart-product-form>
+</div>

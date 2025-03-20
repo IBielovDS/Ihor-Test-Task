@@ -1,0 +1,353 @@
+{%- liquid
+  assign filters = ''
+
+  if template == 'collection'
+    assign filters = collection.filters
+  elsif template == 'search'
+    assign filters = search.filters
+  endif
+
+  for filter in filters
+    if filter.type == 'list'
+      assign active_filters_count = active_filters_count | plus: filter.active_values.size
+    elsif filter.type == 'price_range' and filter.min_value.value or filter.max_value.value
+      assign active_filters_count = active_filters_count | plus: 1
+    endif
+  endfor
+
+  assign form_id = form_id
+-%}
+
+{% if filters.size > 0 %}
+  <facet-filters
+    id="facet-filters"
+    data-original-section="{{- section.id -}}"
+    data-url="{{- page_url -}}"
+    data-replace-content
+    class="
+      w-full border-black-200 border-solid lg:border-r-1 fixed top-0 left-0 h-full -z-10 opacity-0 lg:opacity-100
+      [&.open]:z-50 [&.open]:bg-black-200-50 [&.open]:opacity-100 [&.open]:visible [&:not(.open)]:invisible
+      [&.open_.facet-content]:translate-x-0 [&:not(.open)_.facet-content]:-translate-x-full
+      lg:border-t-1 flex flex-col lg:static lg:[&.open]:opacity-1 lg:[&:not(.open)]:opacity-0 lg:[&.open]:z-10 lg:[&:not(.open)]:z-[-1]
+      lg:transition-opacity transition-all duration-300 ease-in-out lg:duration-150
+      row-start-2 row-end-3
+    "
+  >
+    <div class="facet-content lg:transition-none transition-all duration-300 ease-in-out max-w-[375px] lg:max-w-[232px] w-full h-full bg-white pt-24 z-50 lg:z-10 lg:min-w-[232px] flex flex-col">
+      <button
+        type="button"
+        class="mobile-filters__close flex lg:hidden p-8 bg-grey [&_svg]:w-24 [&_svg]:h-24 rounded-4 ml-auto mr-16"
+        data-action="close-popup"
+      >
+        {%- render 'icon_v2', icon: 'close-filter-icon', class: '[&_path]:fill-black-200' -%}
+      </button>
+
+      <div class="filters-title-wrapper flex items-center justify-between mb-24 mt-24 lg:mt-0 px-16 lg:px-0 lg:mr-24">
+        <div class="filters__title text-18 leading-20 font-heading uppercase">
+          {{- 'collection_filters.general.filtration_title' | t -}}
+        </div>
+        {%- if active_filters_count > 0 -%}
+          <button
+            type="button"
+            data-href="{{- clear_url -}}"
+            data-action="clear-filters"
+            class="text-12 leading-20 font-regular uppercase text-grey-600 flex gap-8 items-center"
+          >
+            {%- render 'icon_v2', icon: 'spinner-arrow', class: '[&_path]:stroke-grey-600' -%}
+            <span>{{- 'collection_filters.general.clear_all' | t -}}</span>
+          </button>
+        {%- endif -%}
+      </div>
+
+      <div class="active-filters  flex flex-wrap gap-4 px-16 lg:px-0 lg:mr-24 empty:hidden mb-24 empty:mb-0">
+        {%- for filter in filters -%}
+          {%- for filter_value in filter.active_values -%}
+            <button
+              data-href="{{- filter_value.url_to_remove -}}"
+              data-reset-filters
+              type="button"
+              class="flex items-center gap-6 border-black-200 border-solid border-1 rounded-4 px-8 py-4 cursor-pointer"
+            >
+              <span class="text-12 leading-20 font-regular text-black-200">{{- filter_value.label -}}</span>
+              {%- render 'icon_v2', icon: 'close-filter-icon', class: 'w-12 h-12 [&_path]:fill-black-200' -%}
+            </button>
+          {%- endfor -%}
+        {%- endfor -%}
+      </div>
+
+      <form
+        id="{{form_id}}"
+        class="facet-filters-form flex flex-col justify-between lg:h-full overflow-y-auto flex-1"
+      >
+        <div class="product-facet__filter-list px-16 lg:px-0 lg:mr-24">
+          {%- for filter in filters -%}
+            {% unless filter.type == 'price_range' or filter.label == 'Product type' %}
+              <custom-accordion
+                data-index="{{- forloop.index -}}"
+                class="
+                  accordion block mb-24 border-grey-100 border-b-1 border-solid pb-24
+                  [&.show-more_.accordion-show-more-content]:grid-rows-[1fr] [&.show-more_.accordion-show-more-content]:duration-300 [&.show-more_.accordion-show-more-btn]:hidden
+                "
+              >
+                <details
+                  class="
+                    accordion__details
+                    [&[open]+.accordion-content]:grid-rows-[1fr]
+                    [&:not([open])_svg]:rotate-180 [&:not([open])_svg]:duration-300 [&_svg]:duration-300
+                  "
+                >
+                  <summary class="accordion__summary flex items-center justify-between cursor-pointer">
+                    <div
+                      class="accordion__title"
+                      role="term"
+                      aria-details="faq-1"
+                    >
+                      <span class="text-16 leading-24 font-bold font-regular text-black-200">{{- filter.label -}}</span>
+                      <span class="text-14 leading-22 font-regular text-grey-300"
+                        >(
+                        {{- filter.active_values.size -}}
+                        )</span
+                      >
+                    </div>
+                    {%- render 'icon_v2', icon: 'accordion-chevron-icon', class: '[&_path]:stroke-black-200' -%}
+                  </summary>
+                </details>
+
+                <div
+                  class="accordion-content grid grid-rows-[0fr] duration-300 "
+                  role="definition"
+                >
+                  <div class="accordion-content-body overflow-hidden">
+                    {%- for filter_value in filter.values limit: 5 -%}
+                      {%- liquid
+                        assign input_id = filter_value.param_name | escape | append: '-' | append: forloop.index
+                        assign disabled = false
+
+                        if filter_value.count == 0
+                          assign disabled = true
+                        endif
+
+                        assign class = 'mb-12 last-of-type:mb-0 first-of-type:mt-16'
+
+                        if disabled == true
+                          assign class = class | append: ' opacity-30 pointer-events-none'
+                        endif
+
+                        render 'checkbox', label: filter_value.label, name : filter_value.param_name, id : input_id, is_dark : true, value : filter_value.value | escape, disabled : disabled, checked : filter_value.active, class : class, label_class : "!text-16 !leading-24 font-regular !text-grey-600",
+                      -%}
+                    {%- endfor -%}
+
+                    {%- if filter.values.size > 5 -%}
+                      <button
+                        type="button"
+                        class="accordion-show-more-btn text-14 leading-22 font-regular underline cursor-pointer mt-16 text-grey-600"
+                        data-action="show-more"
+                      >
+                        {%- assign count = filter.values.size | minus: 5 -%}
+                        <span>{{- 'collection_filters.view_all' | t: count: count -}}</span>
+                      </button>
+
+                      <div class="accordion-show-more-content grid grid-rows-[0fr] duration-300 pointer">
+                        <div class="overflow-hidden">
+                          {%- for filter_value in filter.values offset: 5 -%}
+                            {%- liquid
+                              assign index = forloop.index | plus: 5
+                              assign input_id = filter_value.param_name | escape | append: '-' | append: index
+
+                              if filter_value.count == 0
+                                assign disabled = true
+                              endif
+
+                              assign class = 'mb-12 last-of-type:mb-0 first-of-type:mt-16'
+
+                              if disabled == true
+                                assign class = class | append: ' opacity-30 pointer-events-none'
+                              endif
+
+                              render 'checkbox', label: filter_value.label, name: filter_value.param_name, id: input_id, is_dark: true, value: filter_value.value | escape, disabled: disabled, checked: filter_value.active, class: class, label_class: "!text-16 !leading-24 font-regular !text-grey-600",
+                            -%}
+                          {%- endfor -%}
+                        </div>
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </custom-accordion>
+            {% endunless %}
+          {%- endfor -%}
+        </div>
+      </form>
+
+      <div class="filters-footer px-16 pb-24 lg:px-0 lg:mr-24">
+        <button
+          type="button"
+          form="{{- form_id -}}"
+          data-action="apply-filters"
+          class="!w-full bg-orange-100 text-white p-16 rounded-4 text-18 leading-24 font-heading uppercase cursor-pointer lg:hidden button"
+          value="{{- 'collection_filters.general.apply' | t -}}"
+        >
+          {{- 'collection_filters.general.apply' | t -}}
+        </button>
+      </div>
+    </div>
+
+    <template data-search-drawer-results>
+      <div class="content-wrapper">
+        <div class="facet-content transition-transform max-w-[375px] lg:max-w-[210px] w-full h-full  bg-white lg:bg-grey pt-24 z-50 lg:z-10 lg:min-w-[210px] duration-150 flex flex-col lg:px-16 lg:py-16">
+          <button
+            type="button"
+            class="mobile-filters__close flex lg:hidden p-8 bg-grey [&_svg]:w-24 [&_svg]:h-24 rounded-4 ml-auto mr-16 -order-1 mb-16"
+            data-action="close-popup"
+          >
+            {%- render 'icon_v2', icon: 'close-filter-icon', class: '[&_path]:fill-black-200' -%}
+          </button>
+          <div class="filters-title-wrapper flex items-center justify-between mb-24 mt-24 lg:mt-0 px-16 lg:px-0 lg:mr-24 empty:hidden">
+            {%- if active_filters_count > 0 -%}
+              <button
+                type="button"
+                data-href="{{- clear_url -}}"
+                data-action="clear-filters"
+                class="text-12 leading-20 font-regular uppercase text-grey-600 flex gap-8 items-center"
+              >
+                {%- render 'icon_v2', icon: 'spinner-arrow', class: '[&_path]:stroke-grey-600' -%}
+                <span>{{- 'collection_filters.general.clear_all' | t -}}</span>
+              </button>
+            {%- endif -%}
+          </div>
+
+          <div class="active-filters  flex flex-wrap gap-4 px-16 lg:px-0 lg:mr-24 empty:hidden mb-24 empty:mb-0">
+            {%- for filter in filters -%}
+              {%- for filter_value in filter.active_values -%}
+                <button
+                  data-href="{{- filter_value.url_to_remove -}}"
+                  data-reset-filters
+                  type="button"
+                  class="flex items-center gap-6 border-black-200 border-solid border-1 rounded-4 px-8 py-4 cursor-pointer"
+                >
+                  <span class="text-12 leading-20 font-regular text-black-200">{{- filter_value.label -}}</span>
+                  {%- render 'icon_v2', icon: 'close-filter-icon', class: 'w-12 h-12 [&_path]:fill-black-200' -%}
+                </button>
+              {%- endfor -%}
+            {%- endfor -%}
+          </div>
+
+          <form
+            id="{{form_id}}"
+            class="facet-filters-form flex flex-col justify-between lg:h-full flex-1"
+          >
+            <div class="product-facet__filter-list px-16 lg:px-0">
+              {%- for filter in filters -%}
+                {% unless filter.type == 'price_range' %}
+                  <custom-accordion
+                    data-index="{{- forloop.index -}}"
+                    class="
+                      accordion block mb-24 border-grey-100 border-b-1 border-solid pb-24
+                      [&.show-more_.accordion-show-more-content]:grid-rows-[1fr] [&.show-more_.accordion-show-more-content]:duration-300 [&.show-more_.accordion-show-more-btn]:hidden
+                    "
+                  >
+                    <details
+                      class="
+                        accordion__details
+                        [&[open]+.accordion-content]:grid-rows-[1fr] text-left
+                        [&:not([open])_svg]:rotate-180 [&:not([open])_svg]:duration-300 [&_svg]:duration-300
+                      "
+                    >
+                      <summary class="accordion__summary flex items-center justify-between cursor-pointer">
+                        <div
+                          class="accordion__title"
+                          role="term"
+                          aria-details="faq-1"
+                        >
+                          <span class="text-16 leading-24 font-bold font-regular text-black-200">
+                            {{- filter.label -}}
+                          </span>
+                          <span class="text-14 leading-22 font-regular text-grey-300"
+                            >(
+                            {{- filter.active_values.size -}}
+                            )</span
+                          >
+                        </div>
+                        {%- render 'icon_v2', icon: 'accordion-chevron-icon', class: '[&_path]:stroke-black-200' -%}
+                      </summary>
+                    </details>
+
+                    <div
+                      class="accordion-content grid grid-rows-[0fr] duration-300 text-left"
+                      role="definition"
+                    >
+                      <div class="accordion-content-body overflow-hidden">
+                        {%- for filter_value in filter.values limit: 5 -%}
+                          {%- liquid
+                            assign input_id = filter_value.param_name | escape | append: '-' | append: forloop.index
+                            assign disabled = false
+
+                            if filter_value.count == 0
+                              assign disabled = true
+                            endif
+
+                            assign class = 'mb-12 last-of-type:mb-0 first-of-type:mt-16'
+
+                            if disabled == true
+                              assign class = class | append: ' opacity-30 pointer-events-none'
+                            endif
+
+                            render 'checkbox', label: filter_value.label, name : filter_value.param_name, id : input_id, is_dark : true, value : filter_value.value | escape, disabled : disabled, checked : filter_value.active, class : class, label_class : "!text-16 !leading-24 font-regular !text-grey-600",
+                          -%}
+                        {%- endfor -%}
+
+                        {%- if filter.values.size > 5 -%}
+                          <button
+                            type="button"
+                            class="accordion-show-more-btn text-14 leading-22 font-regular underline cursor-pointer mt-16 text-grey-600"
+                            data-action="show-more"
+                          >
+                            {%- assign count = filter.values.size | minus: 5 -%}
+                            <span>{{- 'collection_filters.view_all' | t: count: count -}}</span>
+                          </button>
+
+                          <div class="accordion-show-more-content grid grid-rows-[0fr] duration-300 pointer">
+                            <div class="overflow-hidden">
+                              {%- for filter_value in filter.values offset: 5 -%}
+                                {%- liquid
+                                  assign index = forloop.index | plus: 5
+                                  assign input_id = filter_value.param_name | escape | append: '-' | append: index
+
+                                  if filter_value.count == 0
+                                    assign disabled = true
+                                  endif
+
+                                  assign class = 'mb-12 last-of-type:mb-0 first-of-type:mt-16'
+
+                                  if disabled == true
+                                    assign class = class | append: ' opacity-30 pointer-events-none'
+                                  endif
+
+                                  render 'checkbox', label: filter_value.label, name: filter_value.param_name, id: input_id, is_dark: true, value: filter_value.value | escape, disabled: disabled, checked: filter_value.active, class: class, label_class: "!text-16 !leading-24 font-regular !text-grey-600",
+                                -%}
+                              {%- endfor -%}
+                            </div>
+                          </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </custom-accordion>
+                {% endunless %}
+              {%- endfor -%}
+            </div>
+          </form>
+
+          <div class="filters-footer px-16 pb-24 lg:px-0 lg:mr-24">
+            <button
+              type="button"
+              form="{{- form_id -}}"
+              data-action="apply-filters"
+              class="!w-full bg-orange-100 text-white p-16 rounded-4 text-18 leading-24 font-heading uppercase cursor-pointer lg:hidden button"
+            >
+              {{- 'collection_filters.general.apply' | t -}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+  </facet-filters>
+{% endif %}

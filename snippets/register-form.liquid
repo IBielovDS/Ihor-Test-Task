@@ -1,0 +1,197 @@
+{%- liquid
+  assign default_title = 'customer.register.title' | t
+  assign title = title | default: default_title
+  assign email_error_message = 'customer.error_messages.email_error_message' | t
+  assign password_error_message = 'customer.error_messages.password_error_message' | t
+  assign first_name_error_message = 'customer.error_messages.first_name_error_message' | t
+  assign last_name_error_message = 'customer.error_messages.last_name_error_message' | t
+  assign marketing_error_message = 'customer.error_messages.marketing_error_message' | t
+  assign marketing_label = 'customer.register.marketing_label_html' | t
+-%}
+
+<form-validation
+  class="grid grid-cols-1 lg:max-w-[442px] mx-auto"
+  data-form-type="register"
+>
+  <div class="form-header text-center mb-24 ">
+    <h1 class="mb-24 font-heading text-32 leading-32 tracking-0.5">{{- title -}}</h1>
+    <p>
+      <span class="body-3 text-grey-600">{{- 'customer.register.have_an_account' | t -}}</span>
+      <a
+        href="{{- routes.account_login_url -}}"
+        class="body-3 font-bold font-regular text-black-200 underline "
+      >
+        {{- 'customer.register.to_login' | t -}}
+      </a>
+    </p>
+  </div>
+
+  {%- form 'create_customer',
+    novalidate: 'novalidate',
+    class: 'grid grid-col-1 lg:grid-col-2 lg:gap-x-16 [&.loading]:pointer-events-none opacity-100 transition-opacity [&.loading]:opacity-50 ',
+    return_to: routes.account_url
+  -%}
+    {%- if form.errors -%}
+      <ul class="grid grid-cols-1 lg:col-start-1 lg:col-end-3">
+        {%- for field in form.errors -%}
+          <li class="bg-grey py-8 px-16 label-text flex items-center flex-1-0-auto rounded-4 mb-16 gap-8">
+            <div class="flex justify-center items-center bg-error rounded-[50%] w-32 h-32 flex-grow-0 flex-shrink-0 basis-auto">
+              {%- render 'icon_v2', icon: 'warning-icon', class: '[&_path]:stroke-white' -%}
+            </div>
+
+            <span class="[&_a]:underline">
+              {%- if field == 'form' -%}
+                {{- form.errors.messages[field] -}}
+              {%- else -%}
+                <a
+                  href="#RegisterForm-{{- field -}}"
+                  class="underline"
+                >
+                  {{- form.errors.translated_fields[field] | capitalize -}}
+                  {{- form.errors.messages[field] -}}
+                </a>
+              {%- endif -%}
+            </span>
+
+            <button
+              type="button"
+              class="block w-12 h-12 ml-auto flex-grow-0 flex-shrink-0 basis-auto"
+              data-hide-default-error
+            >
+              {%- render 'icon_v2', icon: 'cross' -%}
+            </button>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <div class="input-wrapper dark lg:col-start-1 ">
+      <input
+        type="text"
+        name="customer[first_name]"
+        id="RegisterForm-FirstName"
+        {% if form.first_name %}
+          value="{{- form.first_name -}}"
+        {% endif %}
+        autocomplete="given-name"
+        placeholder="{{- 'customer.register.first_name' | t -}}"
+        class="input"
+        required
+      >
+      <label
+        for="RegisterForm-FirstName"
+        class="input-label"
+      >
+        {{- 'customer.register.first_name' | t -}}
+      </label>
+      {%- render 'warning-message-box', text: first_name_error_message -%}
+    </div>
+
+    <div class="input-wrapper dark lg:col-start-2">
+      <input
+        type="text"
+        name="customer[last_name]"
+        id="RegisterForm-LastName"
+        {% if form.last_name %}
+          value="{{- form.last_name -}}"
+        {% endif %}
+        autocomplete="family-name"
+        placeholder="{{- 'customer.register.last_name' | t -}}"
+        class="input"
+        required
+      >
+      <label
+        for="RegisterForm-LastName"
+        class="input-label"
+      >
+        {{- 'customer.register.last_name' | t -}}
+      </label>
+      {%- render 'warning-message-box', text: last_name_error_message -%}
+    </div>
+
+    <div class="input-wrapper dark lg:col-start-1 lg:col-end-3{% if form.errors contains 'email' %} error{% endif %}">
+      <input
+        type="email"
+        name="customer[email]"
+        id="RegisterForm-email"
+        {% if form.email %}
+          value="{{- form.email -}}"
+        {% endif %}
+        spellcheck="false"
+        autocapitalize="off"
+        autocomplete="email"
+        aria-required="true"
+        {% if form.errors contains 'email' %}
+          aria-invalid="true"
+          aria-describedby="RegisterForm-email-error"
+        {% endif %}
+        placeholder="{{- 'customer.register.email' | t -}}"
+        class="input"
+        required
+        pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+      >
+      <label
+        for="RegisterForm-email"
+        class="input-label"
+      >
+        {{- 'customer.register.email' | t -}}
+      </label>
+      {%- render 'warning-message-box', text: email_error_message -%}
+    </div>
+
+    <div class="input-wrapper dark lg:col-start-1 lg:col-end-3 !lg:mb-32{%- if form.errors contains 'password' -%}error{%- endif -%}">
+      <div class="relative w-full">
+        <button
+          type="button"
+          class="cursor-pointer absolute w-20 h-20 bottom-16 right-0 [&:not(.show)_.opened]:opacity-100 [&.show_.opened]:opacity-0 [&:not(.show)_.closed]:opacity-0 [&.show_.closed]:opacity-100 transition-opacity"
+          data-show-password
+        >
+          {%- render 'icon_v2', icon: 'eye-opened', class: 'opened absolute top-0 left-0 w-full h-full' -%}
+          {%- render 'icon_v2', icon: 'eye-closed', class: 'closed absolute top-0 left-0 w-full h-full' -%}
+        </button>
+
+        <input
+          type="password"
+          name="customer[password]"
+          id="RegisterForm-password"
+          aria-required="true"
+          {% if form.errors contains 'password' %}
+            aria-invalid="true"
+            aria-describedby="RegisterForm-password-error"
+          {% endif %}
+          placeholder="{{- 'customer.register.password' | t -}}"
+          class="input !pr-20"
+          required
+          pattern="^.{8,}$"
+        >
+        <label
+          for="RegisterForm-password"
+          class="input-label text-grey-600"
+        >
+          {{- 'customer.register.password' | t -}}
+        </label>
+      </div>
+
+      {%- render 'warning-message-box', text: password_error_message -%}
+    </div>
+
+    <button
+      type="submit"
+      class="button button--primary !w-full max-w-full mt-16 lg:mt-32 lg:col-start-1 lg:col-end-3"
+    >
+      {{- 'customer.register.submit' | t -}}
+    </button>
+
+    <div class="input-wrapper mt-24 lg:col-start-1 lg:col-end-3">
+      {%- render 'checkbox',
+        is_dark: true,
+        id: 'RegisterForm-accepts-marketing',
+        name: 'customer[accepts_marketing]',
+        label: marketing_label,
+        accepts_marketing: true,
+        required: true
+      -%}
+      {%- render 'warning-message-box', text: marketing_error_message -%}
+    </div>
+  {%- endform -%}
+</form-validation>

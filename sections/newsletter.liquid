@@ -1,0 +1,231 @@
+{%- liquid
+  assign s = section.settings
+  assign marketing_error_message = 'newsletter.marketing_error' | t
+  assign email_error_message = 'newsletter.email_error' | t
+-%}
+
+{%- unless page.metafields.custom.hide_newsletter_section == true
+  or template.name == '404'
+  or template.name == 'product'
+-%}
+  {%- if s.image_desktop != blank and s.image_mobile != blank -%}
+    <style>
+      :root #shopify-section-{{- section.id -}} {
+         --title-color: {{- s.title_color -}};
+         --text-color: {{- s.text_color -}};
+         --text-align: {{- s.text_align -}};
+      }
+    </style>
+
+    <div class="relative overflow-hidden">
+      {%- render 'responsive-image-dynamic_v2',
+        image: s.image_desktop,
+        image_mobile: s.image_mobile,
+        alt_text: s.image_desktop.alt,
+        class: 'w-full h-full'
+      -%}
+      <div class="absolute left-0 top-0 z-10 w-full h-full flex items-center justify-center">
+        <div class="px-16 custom-text-align w-full max-w-[708px]">
+          {%- if s.title != blank -%}
+            <div class="mb-24 custom-title-color">
+              {{- s.title -}}
+            </div>
+          {%- endif -%}
+
+          {%- if s.text != blank -%}
+            <div class="mb-40 lg:mb-48 custom-text-color">
+              {{- s.text -}}
+            </div>
+          {%- endif -%}
+          <form-validation data-form-type="newsletter">
+            {%- form 'customer', class: 'newsletter-form', id: 'newsletter-form' -%}
+              {%- if form.errors -%}
+                <div class="body-3 text-center text-error">
+                  {{- form.errors.translated_fields.email | capitalize -}}
+                  {{- form.errors.messages.email -}}
+                </div>
+              {%- endif -%}
+              {%- if form.posted_successfully? -%}
+                <div class="heading-4 mb-16 custom-title-color custom-text-align">
+                  {{- 'newsletter.success' | t -}}
+                </div>
+              {%- else -%}
+                <input
+                  type="hidden"
+                  name="contact[tags]"
+                  value="newsletter"
+                >
+
+                <div class="flex flex-col lg:flex-row lg:justify-center lg:items-center">
+                  <div class="input-wrapper w-full mb-16 lg:mb-0 lg:mr-16">
+                    <div class="relative w-full">
+                      <input
+                        id="NewsletterForm--{{- section.id -}}"
+                        type="email"
+                        name="contact[email]"
+                        class="input !pr-26"
+                        value="{{- form.email -}}"
+                        aria-required="true"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        autocomplete="email"
+                        {%- if form.errors -%}
+                          autofocus
+                          aria-invalid="true"
+                          aria-describedby="Newsletter-error--{{- section.id -}}"
+                        {%- elsif form.posted_successfully? -%}
+                          aria-describedby="Newsletter-success--{{- section.id -}}"
+                        {%- endif -%}
+                        placeholder="{{- 'newsletter.placeholder' | t -}}"
+                        pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+                        required
+                      >
+                      {%- render 'icon_v2', icon: 'email', class: 'absolute right-0 top-[50%] translate-y-[-25%]' -%}
+                    </div>
+
+                    <label
+                      for="NewsletterForm--{{- section.id -}}"
+                      class="input-label"
+                    >
+                      {{- 'newsletter.placeholder' | t -}}
+                    </label>
+                    {%- render 'warning-message-box', text: email_error_message -%}
+                  </div>
+                  <button
+                    type="submit"
+                    class="button button--{{ s.button_style }} !w-full lg:!w-fit"
+                    name="commit"
+                    id="subscribe-{{- section.id -}}"
+                    aria-label="{{- s.button_text -}}"
+                  >
+                    {%- render 'icon_v2', icon: 'subscribe' -%}
+                    {{- s.button_text -}}
+                  </button>
+                </div>
+
+                <div class="input-wrapper !mb-0 mt-32 lg:mt-48 custom-text-color w-fit mx-auto">
+                  {%- assign checkbox_label = 'newsletter.agree_html' | t -%}
+                  {%- assign id = 'newsletter-accepts-marketing-' | append: section.id -%}
+                  {%- render 'checkbox',
+                    label: checkbox_label,
+                    required: true,
+                    class: 'lg:justify-center',
+                    id: id,
+                    name: 'customer[accepts_marketing]',
+                    accepts_marketing: true
+                  -%}
+                  {%- render 'warning-message-box', text: marketing_error_message -%}
+                </div>
+              {%- endif -%}
+            {%- endform -%}
+          </form-validation>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Title",
+      "default": "<h2>GET 10% OFF<br />ON YOur FIRST ORDER!</h2>"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Just enter your details below and we'll send you the code."
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text align",
+      "default": "center",
+      "options": [
+        {
+          "label": "Left",
+          "value": "left"
+        },
+        {
+          "label": "Center",
+          "value": "center"
+        },
+        {
+          "label": "Right",
+          "value": "right"
+        }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#FFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#C2C1C0"
+    },
+    {
+      "type": "header",
+      "content": "Button settings"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Subscribe"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "default": "primary",
+      "options": [
+        {
+          "label": "Primary",
+          "value": "primary"
+        },
+        {
+          "label": "Secondary",
+          "value": "secondary"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_desktop",
+      "label": "Desktop image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter"
+    }
+  ],
+  "enabled_on": {
+    "groups": ["footer"]
+  }
+}
+{% endschema %}

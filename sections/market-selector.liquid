@@ -1,0 +1,155 @@
+{%- comment -%}
+  Market Selector Widget Component
+  Detects and suggests optimal market/language combinations
+{%- endcomment -%}
+
+{%- liquid
+  assign modal_classes = 'fixed inset-0 bg-black/50 hidden items-end justify-end p-16 flex-col lg:pl-0 lg:pt-0 lg:pb-24 lg:pr-32 z-[9999999999]'
+-%}
+
+{%- capture close_button -%}
+  <button
+    type="button"
+    class="mr-10 lg:mr-[-20px]"
+    aria-label="Close"
+  >
+    {%- render 'icon_v2', icon: 'close' -%}
+  </button>
+{%- endcapture -%}
+
+<market-selector-widget
+  class="market-selector-widget"
+  data-title="{{- section.settings.modal_title -}}"
+  data-shop-now-text="{{- section.settings.shop_now_text -}}"
+  data-change-country-text="{{- section.settings.change_country_text -}}"
+  data-select-country-title="{{- section.settings.select_country_title -}}"
+  data-update-country-text="{{- section.settings.update_country_text -}}"
+  data-suggestion-title="{{- section.settings.suggestion_title_template -}}"
+>
+  {%- comment -%} Market suggestion modal {%- endcomment -%}
+  <div
+    class="{{ modal_classes }} market-suggestion-modal"
+    role="dialog"
+    aria-modal="true"
+  >
+    {{- close_button -}}
+    <div class="bg-white p-16 lg:p-24 rounded-8 max-w-[326px] w-full mx-auto lg:ml-auto lg:mr-0">
+      <div class="text-center mb-6">
+        <div class="body-2 font-bold mb-16 suggestion-title text-black-200"></div>
+      </div>
+      <div class="flex flex-col gap-3">
+        <button
+          type="button"
+          class="button !w-full m-auto bg-black-200 shop-now"
+        >
+          <span class="font-heading text-white"></span>
+        </button>
+        <button
+          type="button"
+          class="w-full body-3 underline text-black-200 change-country"
+        ></button>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Country selector modal {%- endcomment -%}
+  <div
+    class="{{ modal_classes }} country-selector-modal"
+    role="dialog"
+    aria-modal="true"
+  >
+    {{- close_button -}}
+    <div class="bg-white p-16 lg:p-24 rounded-8 max-w-[326px] w-full mx-auto lg:ml-auto lg:mr-0">
+      <div class="body-2 font-bold mb-16 select-country-title text-center text-black-200"></div>
+      <form class="country-select-form space-y-4 flex flex-col gap-3">
+        <select
+          name="country_code"
+          class="w-full appearance-none text-black uppercase font-bold font-heading text-18 leading-18 lg:text-20 lg:leading-20 pb-12 px-0 border-b-2 border-black border-t-0 border-l-0 border-r-0 border-solid"
+          required
+        >
+          <option value="">{{- section.settings.default_select_value | default: 'Select country' -}}</option>
+          {%- for country in localization.available_countries -%}
+            <option
+              value="{{- country.iso_code -}}"
+              {%- if country.iso_code == localization.country.iso_code -%}
+                selected
+              {%- endif -%}
+            >
+              {{- country.name -}}
+              /
+              {{- country.currency.iso_code -}}
+              (
+              {{- country.currency.symbol -}}
+              )
+            </option>
+          {%- endfor -%}
+        </select>
+        <button
+          type="submit"
+          class="button !w-full m-auto bg-black-200"
+        >
+          <span class="font-heading text-white update-country-text"></span>
+        </button>
+      </form>
+    </div>
+  </div>
+</market-selector-widget>
+
+{% schema %}
+{
+  "name": "Market Selector Modal",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Market Selector Configuration",
+      "info": "This component displays a location-aware modal that helps customers shop in their local currency. The modal appears when a customer's detected location differs from their current shopping region. To maintain a smooth browsing experience, the modal will only appear once per browser session, even if dismissed. The modal includes options to either confirm the detected location or manually select a different country."
+    },
+    {
+      "type": "text",
+      "id": "suggestion_title_template",
+      "label": "Suggestion Title Template",
+      "default": "It seems you are in [country],<br> is it correct?",
+      "info": "Use [country] as a placeholder for the detected country name"
+    },
+    {
+      "type": "text",
+      "id": "modal_title",
+      "label": "Modal Title",
+      "default": "Choose Your Market"
+    },
+    {
+      "type": "text",
+      "id": "shop_now_text",
+      "label": "Shop Now Button Text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "text",
+      "id": "change_country_text",
+      "label": "Change Country Link Text",
+      "default": "Change shipping country"
+    },
+    {
+      "type": "text",
+      "id": "default_select_value",
+      "label": "Default select value",
+      "default": "Select a country"
+    },
+    {
+      "type": "text",
+      "id": "select_country_title",
+      "label": "Select Country Modal Title",
+      "default": "Select your shipping country"
+    },
+    {
+      "type": "text",
+      "id": "update_country_text",
+      "label": "Update Country Button Text",
+      "default": "Update country"
+    }
+  ],
+  "enabled_on": {
+    "groups": ["custom.overlay"]
+  }
+}
+{% endschema %}

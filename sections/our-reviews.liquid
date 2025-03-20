@@ -1,0 +1,97 @@
+{%- liquid
+  assign margin_top = section.settings.margin_top
+  assign margin_bottom = section.settings.margin_bottom
+  assign margin_top_mobile = section.settings.margin_top_mobile
+  assign margin_bottom_mobile = section.settings.margin_bottom_mobile
+  assign title = section.settings.title
+-%}
+
+{% if section.blocks.size > 0 %}
+  <style>
+    :root #shopify-section-{{section.id}} {
+      --margin-top: {{- margin_top -}}px;
+      --margin-bottom: {{- margin_bottom -}}px;
+      --margin-top-mobile: {{- margin_top_mobile -}}px;
+      --margin-bottom-mobile: {{- margin_bottom_mobile -}}px;
+    }
+  </style>
+
+  <div class="container">
+    {%- if title != blank -%}
+      <h1 class="mb-40 lg:mb-60 lg:max-w-[730px] lg:mx-auto text-center">{{- title -}}</h1>
+    {%- endif -%}
+
+    {%- for block in section.blocks -%}
+      {%- render block -%}
+    {%- endfor -%}
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Our Reviews",
+  "class": "global-outer-spacing",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "SEE WHY PEOPLE LOVE WICKED CUSHIONS"
+    },
+    {
+      "type": "header",
+      "content": "Outer Spaces"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin bottom",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin top",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin bottom",
+      "default": 120
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Our Reviews"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,353 @@
+{%- liquid
+  assign margin_top = section.settings.margin_top
+  assign margin_bottom = section.settings.margin_bottom
+  assign margin_top_mobile = section.settings.margin_top_mobile
+  assign margin_bottom_mobile = section.settings.margin_bottom_mobile
+  assign padding_top = section.settings.padding_top
+  assign padding_bottom = section.settings.padding_bottom
+  assign padding_top_mobile = section.settings.padding_top_mobile
+  assign padding_bottom_mobile = section.settings.padding_bottom_mobile
+  assign subtitle = section.settings.subtitle
+  assign title = section.settings.title
+  assign photo = section.settings.image
+  assign name = section.settings.name
+  assign position = section.settings.position
+  assign description = section.settings.description
+  assign text = section.settings.text
+  assign small_image_1 = section.settings.small_image_1
+  assign small_image_2 = section.settings.small_image_2
+  assign images_text = section.settings.images_text
+  assign big_image = section.settings.big_image
+  assign contacts_title = section.settings.contacts_title
+  assign contacts_subtitle = section.settings.contacts_subtitle
+  assign instagram = section.settings.instagram
+  assign email = section.settings.email
+-%}
+
+<div class="bg-grey global-inner-spacing">
+  <style>
+    :root #shopify-section-{{section.id}} {
+      --margin-top: {{- margin_top -}}px;
+      --margin-bottom: {{- margin_bottom -}}px;
+      --margin-top-mobile: {{- margin_top_mobile -}}px;
+      --margin-bottom-mobile: {{- margin_bottom_mobile -}}px;
+      --padding-top: {{- padding_top -}}px;
+      --padding-bottom: {{- padding_bottom -}}px;
+      --padding-top-mobile: {{- padding_top_mobile -}}px;
+      --padding-bottom-mobile: {{- padding_bottom_mobile -}}px;
+    }
+  </style>
+
+  <div class="container">
+    <div class="grid gap-16 mb-48 lg:mb-[136px] lg:grid-cols-[1fr_2fr]">
+      {%- if subtitle != blank -%}
+        <div class="subtitle-text text-black-200 font-bold">{{- subtitle -}}</div>
+      {%- endif -%}
+
+      <div>
+        {%- if title != blank -%}
+          <div class="lg:flex">
+            <div class="text-orange-100 h1 !leading-8 mt-24 lg:mt-0 lg:mr-40 text-[72px] lg:!leading-[1] lg:text-[138px]">
+              {{- 'quote' | t -}}
+            </div>
+            <h3 class="text-black-200">{{- title -}}</h3>
+          </div>
+        {%- endif -%}
+
+        {%- if photo != blank and name != blank -%}
+          <div class="flex items-center mt-24 lg:mt-40 lg:ml-[104px]">
+            {%- render 'responsive-image-dynamic_v2',
+              image: photo,
+              sizes: '104px',
+              width: 80,
+              height: 80,
+              class: 'rounded-8'
+            -%}
+            <div class="ml-16">
+              <div class="body-2 font-bold text-black-200">{{- name -}}</div>
+
+              {%- if position != blank -%}
+                <div class="body-3 text-grey-600 mt-4">{{- position -}}</div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if description != blank -%}
+      <h5 class="text-black-200 text-center mb-24 lg:mb-32 max-w-[680px] mx-auto uppercase">{{- description -}}</h5>
+    {%- endif -%}
+
+    {%- if text != blank -%}
+      <div class="body-2 text-grey-600 text-center max-w-[680px] mx-auto mb-40 lg:mb-48">{{- text -}}</div>
+    {%- endif -%}
+
+    <div class="grid lg:grid-cols-2 gap-40 lg:gap-[240px]">
+      <div class="flex flex-col justify-between">
+        <div class="grid gap-16 lg:gap-24 grid-cols-2">
+          {%- if small_image_1 != blank -%}
+            {%- render 'responsive-image-dynamic_v2', image: small_image_1, class: 'w-full' -%}
+          {%- endif -%}
+
+          {%- if small_image_2 != blank -%}
+            {%- render 'responsive-image-dynamic_v2', image: small_image_2, class: 'w-full' -%}
+          {%- endif -%}
+        </div>
+
+        {%- if images_text != blank -%}
+          <div class="text-grey-600 body-2 mt-40 text-center lg:text-left">{{- images_text -}}</div>
+        {%- endif -%}
+      </div>
+
+      {%- if big_image != blank -%}
+        <div class="relative lg:before:content-[''] lg:before:border-l-1 lg:before:border-black-200 lg:before:absolute lg:before:top-0 lg:before:left-[-120px] lg:before:w-1 lg:before:h-full">
+          {%- render 'responsive-image-dynamic_v2', image: big_image, class: 'w-full' -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="mt-48 lg:mt-80 p-32 lg:p-40 lg:grid lg:grid-cols-2 bg-black-100 rounded-16">
+      <div class="lg:max-w-[400px]">
+        {%- if contacts_title != blank -%}
+          <h5 class="uppercase text-white text-center lg:text-left mb-24 lg:mb-0">{{- contacts_title -}}</h5>
+        {%- endif -%}
+      </div>
+      <div>
+        {%- if contacts_subtitle != blank -%}
+          <div class="text-grey-200 body-2 mb-16 lg:mb-24 text-center lg:text-left">{{- contacts_subtitle -}}</div>
+        {%- endif -%}
+
+        <div class="flex flex-col items-center lg:flex-row lg:justify-between">
+          {%- if instagram != blank -%}
+            <div class="flex items-center w-full lg:w-auto">
+              <a
+                href="https://instagram.com/{{- instagram -}}"
+                target="_blank"
+                class="border-1 border-white-0.2 p-10 rounded-8 flex items-center justify-center mr-16"
+              >
+                {%- render 'icon_v2', icon: 'instagram' -%}
+              </a>
+              <div>
+                <div class="label-text text-grey-200">{{- 'socials.instagram' | t -}}</div>
+                <a
+                  href="https://instagram.com/{{- instagram | replace: "@", "" -}}"
+                  target="_blank"
+                  class="text-orange-100 body-2 font-bold underline"
+                >
+                  {{- instagram -}}
+                </a>
+              </div>
+            </div>
+          {%- endif -%}
+          <div class="body-2 text-grey-200 m-8">{{- 'customer.login_page.alternate_provider_separator' | t -}}</div>
+          {%- if email != blank -%}
+            <div class="flex items-center w-full lg:w-auto">
+              <a
+                href="mailto:{{- email -}}"
+                class="border-1 border-white-0.2 p-10 rounded-8 flex items-center justify-center mr-16"
+              >
+                {%- render 'icon_v2', icon: 'email' -%}
+              </a>
+              <div>
+                <div class="label-text text-grey-200">{{- 'socials.email' | t -}}</div>
+                <a
+                  href="mailto:{{- email -}}"
+                  class="text-orange-100 body-2 font-bold underline"
+                >
+                  {{- email -}}
+                </a>
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Our Mission",
+  "class": "global-outer-spacing",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Our Mission"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "MY MISSION AT WICKED CUSHIONS HAS ALWAYS BEEN TO PROVIDE A SOLUTION TO ALL MY CUSTOMERS FOR SOMETHING THAT WE NEEDED OURSELVES."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Photo"
+    },
+    {
+      "type": "text",
+      "id": "name",
+      "label": "Name",
+      "default": "Or Amzaleg"
+    },
+    {
+      "type": "text",
+      "id": "position",
+      "label": "Position",
+      "default": "Founder of Wicked Cushions"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "That's why Wicked Cushions driving force is to always provide the best quality replacements, the coolest options, and the absolute best experience to our customers."
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "I want customers to trust us with their beloved headphones, and we earn that trust through rigorous testing, top-quality materials, easy installation support, and an unbeatable product line."
+    },
+    {
+      "type": "image_picker",
+      "id": "small_image_1",
+      "label": "Small Image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "small_image_2",
+      "label": "Small Image 2"
+    },
+    {
+      "type": "textarea",
+      "id": "images_text",
+      "label": "Images text",
+      "default": "Wicked Cushions offers a 365-day satisfaction guarantee, US-based support (we’re LA-based), and even direct access to me, the founder and Cushion Pro!"
+    },
+    {
+      "type": "image_picker",
+      "id": "big_image",
+      "label": "Big Image"
+    },
+    {
+      "type": "text",
+      "id": "contacts_title",
+      "label": "Contacts Title",
+      "default": "The voice of our customers is our lifeblood, and I love to hear from all of you!"
+    },
+    {
+      "type": "text",
+      "id": "contacts_subtitle",
+      "label": "Contacts Subtitle",
+      "default": "Feel free to contact me directly on"
+    },
+    {
+      "type": "text",
+      "id": "instagram",
+      "label": "Instagram"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email"
+    },
+    {
+      "type": "header",
+      "content": "Outer Spaces"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin bottom",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Inner Spaces"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding top",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding bottom",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding top",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding bottom",
+      "default": 120
+    }
+  ],
+  "presets": [
+    {
+      "name": "Our Mission"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,59 @@
+{%- liquid
+  assign variant_color = selected_variant.option1 | downcase | replace: ' ', '-'
+  assign main_image_name = variant_color | append: '-first'
+  assign hover_image_name = variant_color | append: '-second'
+  
+  assign image_gallery = product.images
+
+  if image_gallery.size > 1
+    for image in image_gallery
+      if image.src contains main_image_name
+        assign main_image = image
+      endif
+      if image.src contains hover_image_name
+        assign hover_image = image
+      endif
+    endfor
+  endif
+
+  if main_image.src contains 'no-image'
+    assign main_image = product.featured_image
+  endif
+
+  if hover_image.src contains 'no-image'
+    assign hover_image = product.featured_image
+  endif
+
+  assign main_image_aria_label = 'accessibility.product_image.main' | t: title: product.title
+  assign hover_image_aria_label = 'accessibility.product_image.hover' | t: title: product.title
+  assign placeholder_aria_label = 'accessibility.product_image.placeholder' | t: title: product.title
+-%}
+
+<div data-product-card-image>
+  <div class="relative overflow-hidden aspect-[275/301]" data-product-card-image-container>
+    <div class="absolute inset-0 transition-opacity duration-300 ease-in-out group-hover:opacity-0">
+      {%- if main_image -%}
+        {%- render 'responsive-image-dynamic_v2', 
+          image: main_image, 
+          class: 'w-full h-full object-contain', 
+          sizes: '275px',
+          aria_label: main_image_aria_label
+        -%}
+      {%- else -%}
+        {{- 'accessibility.product_image.placeholder_key' | t | placeholder_svg_tag: 'w-full h-full object-contain', placeholder_aria_label -}}
+      {%- endif -%} 
+    </div>
+    <div class="absolute inset-0 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100">
+      {%- if hover_image -%}
+        {%- render 'responsive-image-dynamic_v2', 
+          image: hover_image, 
+          class: 'w-full h-full object-contain', 
+          sizes: '275px',
+          aria_label: hover_image_aria_label
+        -%}
+      {%- else -%}
+        {{- 'accessibility.product_image.placeholder_key' | t | placeholder_svg_tag: 'w-full h-full object-contain', placeholder_aria_label -}}
+      {%- endif -%}
+    </div>
+  </div>
+</div>

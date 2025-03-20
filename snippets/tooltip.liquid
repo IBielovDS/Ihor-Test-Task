@@ -1,0 +1,11 @@
+{%- if text != blank -%}
+  <custom-tooltip class="tooltip {{ class }}">
+    {%- if icon != blank -%}
+      {%- render 'icon_v2', icon: icon, class: 'mr-8 ' | append: icon_class -%}
+    {%- endif -%}
+
+    <span>{{- text -}}</span>
+
+    {%- render 'icon_v2', icon: 'close', class: 'ml-16 cursor-pointer js-tooltip-close [&_path]:fill-grey-600' -%}
+  </custom-tooltip>
+{%- endif -%}

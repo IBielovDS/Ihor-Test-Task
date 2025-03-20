@@ -1,0 +1,161 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "favicon": "",
+    "technical_storefront_token": "02f858f7a6669fe67fe505ad3d98f2f9",
+    "technical_storefront_api_version": "2022-10",
+    "search_empty_state_image": "shopify://shop_images/a9c171a52509f653e3f33c57f4ab11e3.png",
+    "search_empty_state_link_text": "Let us know you want it!",
+    "search_empty_state_link_url": "shopify://products/wc-freeze-a40",
+    "waitlist": "wait-list",
+    "continue_link": "",
+    "continue_text": "Start shiopping",
+    "notification_bg": "",
+    "social_facebook_link": "",
+    "social_twitter_link": "",
+    "social_instagram_link": "",
+    "social_youtube_link": "",
+    "sections": {
+      "announcement-bar": {
+        "type": "announcement-bar",
+        "settings": {
+          "show_lang_selector": true,
+          "text": "<p><a href=\"#\" title=\"#\">Free shipping for orders <strong>OVER $40</strong> in The US</a></p>",
+          "links": "announcement-bar-navigation"
+        }
+      },
+      "header": {
+        "type": "header",
+        "settings": {
+          "logo": "shopify://shop_images/logo_be4f6cee-6b81-4f9a-aaf1-5c1090d8e9cd.png",
+          "navigation": "header-navigation"
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "blocks": {
+          "social_item_ejzzaU": {
+            "type": "social_item",
+            "settings": {
+              "icon": "shopify://shop_images/Facebook.png",
+              "url": "#"
+            }
+          },
+          "social_item_ywaVrR": {
+            "type": "social_item",
+            "settings": {
+              "icon": "shopify://shop_images/Instagram.png",
+              "url": "#"
+            }
+          },
+          "social_item_TwECmQ": {
+            "type": "social_item",
+            "settings": {
+              "icon": "shopify://shop_images/tw.png",
+              "url": "#"
+            }
+          },
+          "social_item_et8JTw": {
+            "type": "social_item",
+            "settings": {
+              "icon": "shopify://shop_images/YT.png",
+              "url": "#"
+            }
+          },
+          "advantage_item_ec4Hgf": {
+            "type": "advantage_item",
+            "settings": {
+              "icon": "shopify://shop_images/review.png",
+              "title": "25,000+ Customer  Reviews Online"
+            }
+          },
+          "advantage_item_k8rWja": {
+            "type": "advantage_item",
+            "settings": {
+              "icon": "shopify://shop_images/happy.png",
+              "title": "600,000+ Earpads Replaced and Counting..."
+            }
+          },
+          "advantage_item_BwdWPT": {
+            "type": "advantage_item",
+            "settings": {
+              "icon": "shopify://shop_images/warranty.png",
+              "title": "365 Days to Fall in Love Warranty"
+            }
+          },
+          "advantage_item_774Pdq": {
+            "type": "advantage_item",
+            "settings": {
+              "icon": "shopify://shop_images/timer.png",
+              "title": "Flawless, Step by Step,  5 Minute Installation"
+            }
+          },
+          "payment_item_8HLLRm": {
+            "type": "payment_item",
+            "settings": {
+              "icon": "shopify://shop_images/american-express.png"
+            }
+          },
+          "payment_item_HYAPy7": {
+            "type": "payment_item",
+            "settings": {
+              "icon": "shopify://shop_images/Gpay.png"
+            }
+          },
+          "payment_item_BLJkdN": {
+            "type": "payment_item",
+            "settings": {
+              "icon": "shopify://shop_images/afterpay.png"
+            }
+          },
+          "payment_item_QMqtxc": {
+            "type": "payment_item",
+            "settings": {
+              "icon": "shopify://shop_images/shop.png"
+            }
+          },
+          "payment_item_VVwwaj": {
+            "type": "payment_item",
+            "settings": {
+              "icon": "shopify://shop_images/Visa.png"
+            }
+          }
+        },
+        "block_order": [
+          "social_item_ejzzaU",
+          "social_item_ywaVrR",
+          "social_item_TwECmQ",
+          "social_item_et8JTw",
+          "advantage_item_ec4Hgf",
+          "advantage_item_k8rWja",
+          "advantage_item_BwdWPT",
+          "advantage_item_774Pdq",
+          "payment_item_8HLLRm",
+          "payment_item_HYAPy7",
+          "payment_item_BLJkdN",
+          "payment_item_QMqtxc",
+          "payment_item_VVwwaj"
+        ],
+        "settings": {
+          "logo": "shopify://shop_images/logo_f6fb9f67-3f76-4975-a7d5-8fe3026dd96d.png",
+          "socials_title": "Follow us",
+          "contacts_title": "Contact",
+          "email": "cs@wickedcushions.com",
+          "address": "<p>Amzaleg's LLC</p><p>1812 W Burbank Blvd #7234</p><p>Burbank CA 91505</p>",
+          "navigation": "footer-navigation",
+          "secondary_navigation": "footer-secondary-navigation",
+          "payments_title": "Secured pay"
+        }
+      }
+    },
+    "content_for_index": []
+  }
+}

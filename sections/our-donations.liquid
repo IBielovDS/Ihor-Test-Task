@@ -1,0 +1,134 @@
+{%- liquid
+  assign margin_top = section.settings.margin_top
+  assign margin_bottom = section.settings.margin_bottom
+  assign margin_top_mobile = section.settings.margin_top_mobile
+  assign margin_bottom_mobile = section.settings.margin_bottom_mobile
+  assign subtitle = section.settings.subtitle
+  assign title = section.settings.title
+-%}
+
+{%- if section.blocks.size > 0 -%}
+  <div class="container">
+    <style>
+      :root #shopify-section-{{section.id}} {
+        --margin-top: {{- margin_top -}}px;
+        --margin-bottom: {{- margin_bottom -}}px;
+        --margin-top-mobile: {{- margin_top_mobile -}}px;
+        --margin-bottom-mobile: {{- margin_bottom_mobile -}}px;
+      }
+    </style>
+
+    {%- if subtitle != blank -%}
+      <div class="subtitle-text font-bold text-center text-black-200 mb-16">{{- subtitle -}}</div>
+    {%- endif -%}
+
+    {%- if title != blank -%}
+      <h2 class="text-center text-black-200 mb-48">{{- title -}}</h2>
+    {%- endif -%}
+
+    <div class="grid lg:grid-cols-2">
+      {%- assign blocks_size_minus_1 = section.blocks.size | minus: 1 -%}
+
+      {%- for block in section.blocks -%}
+        {%- if block.settings.image != blank and block.settings.text != blank -%}
+          <div class="border-t-1 last:border-b-1 border-black-200 flex items-start lg:items-center py-16 lg:p-16 lg:odd:border-r-1 {% if forloop.index == blocks_size_minus_1 %}lg:border-b-1{% endif %}">
+            {%- render 'responsive-image-dynamic_v2',
+              image: block.settings.image,
+              class: 'mr-16 w-[140px] lg:w-[200px]'
+            -%}
+
+            <div class="body-2 text-grey-600">{{- block.settings.text -}}</div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Our Donations",
+  "class": "global-outer-spacing",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Giving Back"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "OUR PAST DONATIONS"
+    },
+    {
+      "type": "header",
+      "content": "Outer Spaces"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin top",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin bottom",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin top",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin bottom",
+      "default": 120
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Our Donations"
+    }
+  ]
+}
+{% endschema %}

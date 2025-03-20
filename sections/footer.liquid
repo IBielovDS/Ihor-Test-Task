@@ -1,0 +1,282 @@
+{%- assign s = section.settings -%}
+
+<section-footer>
+  <div class="bg-black-200 pt-64 pb-24">
+    <div class="container">
+      <div class="flex flex-col items-center lg:flex-row lg:justify-between pb-40 mb-40 lg:pb-64 lg:mb-64 lg:border-b-1 lg:border-white">
+        {%- if s.logo != blank -%}
+          <a href="{{- routes.root_url -}}">
+            {%- render 'responsive-image-dynamic_v2', image: s.logo, alt_text: s.logo.alt, sizes: '85px' -%}
+          </a>
+        {%- endif -%}
+
+        <div class="mt-32 flex flex-col items-center lg:flex-row lg:mt-0">
+          {%- if s.socials_title != blank -%}
+            <div class="body-3 font-bold text-center text-white uppercase mb-24 lg:mb-0 lg:mr-24 lg:text-left">
+              {{- s.socials_title -}}
+            </div>
+          {%- endif -%}
+
+          <div class="flex items-center">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'social_item' -%}
+                {%- if block.settings.icon != blank and block.settings.url != blank -%}
+                  <a
+                    href="{{- block.settings.url -}}"
+                    target="_blank"
+                    class="button button--secondary button--social mr-16 last-of-type:mr-0"
+                  >
+                    {%- render 'responsive-image-dynamic_v2',
+                      image: block.settings.icon,
+                      alt_text: block.settings.icon.alt,
+                      sizes: '24px'
+                    -%}
+                  </a>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+
+      <div class="grid gap-24 lg:grid-cols-4">
+        {%- if s.navigation != blank -%}
+          {%- for link in s.navigation.links -%}
+            <div class="group js-footer-nav-item{% if forloop.first %} opened{% endif %}">
+              <div class="js-footer-nav-title flex justify-between items-center pb-16 lg:pb-32 border-b-1 border-b-white-0.2 group-[.opened]:border-white lg:border-none transition-colors">
+                <span class="heading-5 uppercase text-white">
+                  {{- link.title -}}
+                </span>
+                <div class="transition-transform group-[.opened]:rotate-180 lg:hidden">
+                  {%- render 'icon_v2', icon: 'expand' -%}
+                </div>
+              </div>
+              {%- if link.links.size > 0 -%}
+                <div class="hidden group-[.opened]:block pt-24 lg:block lg:pt-0">
+                  {%- for sublink in link.links -%}
+                    <a
+                      href="{{- sublink.url -}}"
+                      class="block w-fit body-2 text-white-0.7 mb-16 last-of-type:mb-0"
+                    >
+                      {{- sublink.title -}}
+                    </a>
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+
+        {%- if s.contacts_title != blank and s.email != blank and s.address != blank -%}
+          <div>
+            <div class="heading-5 uppercase text-white">{{- s.contacts_title -}}</div>
+            <div class="mt-32 body-3 text-white-0.7">{{- 'footer.have_questions' | t -}}</div>
+            <div class="flex mt-8">
+              {%- render 'icon_v2', icon: 'email' -%}
+              <a
+                href="mailto:{{- s.email -}}"
+                class="body-2 text-white ml-8 underline"
+              >
+                {{- s.email -}}
+              </a>
+            </div>
+            <div class="mt-32 body-3 text-white-0.7">{{- 'footer.location' | t -}}</div>
+            <div class="flex mt-8">
+              {%- render 'icon_v2', icon: 'location' -%}
+              <div class="body-2 text-white ml-8">{{- s.address -}}</div>
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="grid grid-cols-2 mt-64 lg:grid-cols-4 w-without-container lg:w-full -ml-16 lg:ml-0">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'advantage_item' -%}
+            {%- if block.settings.icon != blank and block.settings.title != blank -%}
+              <div class="flex items-center flex-col lg:flex-row border-1 border-white-0.2 lg:first-of-type:border-l-0 lg:last-of-type:border-r-0 p-16 lg:px-40 lg:py-46">
+                {%- render 'responsive-image-dynamic_v2',
+                  image: block.settings.icon,
+                  alt_text: block.settings.icon.alt,
+                  sizes: '32px'
+                -%}
+                <span class="body-3 text-white text-center lg:text-left mt-16 lg:mt-0 lg:ml-16">
+                  {{- block.settings.title -}}
+                </span>
+              </div>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <div class="flex flex-col lg:flex-row lg:justify-between mt-64">
+        <div class="flex flex-col items-center lg:flex-row">
+          <div class="mb-24 lg:mb-0 lg:mr-24 text-grey-200">
+            {%- if s.show_lang_selector -%}
+              {%- render 'currency-selector', countries: section.settings.available_countries, position: 'top' -%}
+            {%- endif -%}
+          </div>
+
+          <div class="flex items-center justify-between lg:justify-start mb-16 lg:mb-0">
+            {%- if s.secondary_navigation != blank -%}
+              {%- for link in s.secondary_navigation.links -%}
+                <a
+                  href="{{- link.url -}}"
+                  class="text-white-0.7 body-3 mr-24 last-of-type:mr-0"
+                >
+                  {{- link.title -}}
+                </a>
+              {%- endfor -%}
+            {%- endif -%}
+          </div>
+        </div>
+
+        <div class="flex items-center justify-center lg:justify-start">
+          {%- if s.payments_title != blank -%}
+            <span class="text-white-0.7 body-3 mr-16">{{- s.payments_title -}}</span>
+          {%- endif -%}
+
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'payment_item' -%}
+              {%- if block.settings.icon != blank -%}
+                {%- render 'responsive-image-dynamic_v2',
+                  image: block.settings.icon,
+                  alt_text: block.settings.icon.alt,
+                  sizes: '40px',
+                  class: 'mr-8 last-of-type:mr-0'
+                -%}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section-footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "header",
+      "content": "Social Media"
+    },
+    {
+      "type": "text",
+      "id": "socials_title",
+      "label": "Socials title",
+      "default": "Follow us"
+    },
+    {
+      "type": "header",
+      "content": "Contacts"
+    },
+    {
+      "type": "text",
+      "id": "contacts_title",
+      "label": "Contacts title"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email"
+    },
+    {
+      "type": "richtext",
+      "id": "address",
+      "label": "Address"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "link_list",
+      "id": "navigation",
+      "label": "Footer links"
+    },
+    {
+      "type": "link_list",
+      "id": "secondary_navigation",
+      "label": "Secondary footer links"
+    },
+    {
+      "type": "text",
+      "id": "payments_title",
+      "label": "Payments title"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_lang_selector",
+      "label": "Show Language Selector",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "available_countries",
+      "label": "Available countries",
+      "default": "United States, United Kingdom, Canada, Europe",
+      "info": "Countries via comma. By default will output all. Europe = first matching EU country."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "social_item",
+      "name": "Social Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "URL"
+        }
+      ]
+    },
+    {
+      "type": "advantage_item",
+      "name": "Advantage Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        }
+      ]
+    },
+    {
+      "type": "payment_item",
+      "name": "Payment Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "category": "Footer"
+    }
+  ],
+  "enabled_on": {
+    "groups": ["footer"]
+  }
+}
+{% endschema %}

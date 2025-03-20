@@ -1,0 +1,231 @@
+{%- liquid
+  assign padding_top = section.settings.padding_top
+  assign padding_bottom = section.settings.padding_bottom
+  assign padding_top_mobile = section.settings.padding_top_mobile
+  assign padding_bottom_mobile = section.settings.padding_bottom_mobile
+  assign margin_top = section.settings.margin_top
+  assign margin_bottom = section.settings.margin_bottom
+  assign margin_top_mobile = section.settings.margin_top_mobile
+  assign margin_bottom_mobile = section.settings.margin_bottom_mobile
+  assign title = section.settings.title
+  assign image = section.settings.image
+  assign section_id = section.settings.section_id
+-%}
+
+{%- if section.blocks.size > 0 -%}
+  <style>
+    :root #shopify-section-{{section.id}} {
+      --padding-top: {{- padding_top -}}px;
+      --padding-bottom: {{- padding_bottom -}}px;
+      --padding-top-mobile: {{- padding_top_mobile -}}px;
+      --padding-bottom-mobile: {{- padding_bottom_mobile -}}px;
+      --margin-top: {{- margin_top -}}px;
+      --margin-bottom: {{- margin_bottom -}}px;
+      --margin-top-mobile: {{- margin_top_mobile -}}px;
+      --margin-bottom-mobile: {{- margin_bottom_mobile -}}px;
+    }
+  </style>
+
+  {%- capture section_content -%}
+    {%- if title != blank -%}
+      <h3 class="mb-48 hidden lg:block">{{- title -}}</h3>
+    {%- endif -%}
+
+    <div class="grid gap-40 lg:gap-[130px] lg:grid-cols-2">
+      <div class="order-2">
+        {%- for block in section.blocks -%}
+          <div
+            class="pt-24 lg:pt-0 flex flex-col lg:flex-row border-t-1 border-black-200"
+            {{ block.shopify_attributes }}
+          >
+            <div class="lg:mr-40 lg:w-[30%]">
+              {%- if block.settings.title != blank -%}
+                <div class="lg:mt-24 body-2 font-bold text-black-200">{{- block.settings.title -}}</div>
+              {%- endif -%}
+            </div>
+            <div class="w-full">
+              {%- if block.settings.text != blank -%}
+                {%- if block.settings.text contains '/:/' -%}
+                  {%- assign text_arr = block.settings.text | split: '/:/' -%}
+
+                  <div class="body-2 text-grey-600 [&_p]:border-b-1 [&_p]:border-grey-600 [&_p]:pt-24 [&_p]:pb-16 lg:[&_p]:pb-18 [&_p:last-of-type]:border-none [&_p]:grid [&_p]:grid-cols-2">
+                    {%- for part in text_arr -%}
+                      <span>{{- part -}}</span>
+                    {%- endfor -%}
+                  </div>
+                {%- else -%}
+                  <div class="body-2 text-grey-600 pt-24 [&_p]:mb-10 [&_p:last]:mb-0">
+                    {{- block.settings.text -}}
+                  </div>
+                {%- endif -%}
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+      {%- if image != blank -%}
+        {%- render 'responsive-image-dynamic_v2', image: image, class: 'w-full order-1 lg:order-3' -%}
+      {%- endif -%}
+    </div>
+  {%- endcapture -%}
+
+  <div id="{{- section_id -}}">
+    <div class="lg:hidden">
+      <div class="container">
+        <details class="group">
+          <summary class="py-24 border-b-1 border-black-200 group-open:border-b-0 flex justify-between items-center">
+            <span class="h5 text-black-200  group-open:text-grey-600 uppercase transition-colors">
+              {{- title -}}
+            </span>
+            {%- render 'icon_v2': icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180 transition-all' -%}
+          </summary>
+          <div class="global-inner-spacing">
+            {{- section_content -}}
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="hidden lg:block global-inner-spacing">
+      <div class="container">
+        {{- section_content -}}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product specifications",
+  "class": "global-outer-spacing",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID",
+      "default": "product-specifications"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "PRODUCT SPECIFICATIONS"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Outer Spaces"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Margin bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Margin bottom",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Inner Spaces"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding bottom",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding top",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding bottom",
+      "default": 16
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product specifications"
+    }
+  ]
+}
+{% endschema %}

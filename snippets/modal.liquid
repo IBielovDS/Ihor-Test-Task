@@ -1,0 +1,61 @@
+{%- comment -%}
+  This snippet renders a custom modal component with configurable content, trigger, position, and close trigger.
+
+  Variables:
+  - content: The HTML content to be displayed inside the modal.
+  - trigger: The trigger element that will open the modal.
+  - position: The position of the modal on the screen (default: 'center').
+  - close_trigger: The trigger element that will close the modal.
+  - inner_class: Additional CSS classes for the inner modal content.
+  - modal_class: Additional CSS classes for the modal.
+  - modal_id: The unique identifier for the modal (default: section.id).
+
+  The modal will only be rendered if both 'content' and 'trigger' variables are not blank.
+
+  Attributes:
+  - class: Combines 'modal' class with optional position and additional modal classes.
+  - data-trigger: The trigger element for opening the modal.
+  - data-id: The unique identifier for the modal.
+  - data-close_trigger: The trigger element for closing the modal (if provided).
+
+  The modal includes a close button unless a 'close_trigger' is specified.
+{%- endcomment -%}
+
+{%- liquid
+  assign content = content
+  assign trigger = trigger
+  assign position = position | default: 'center'
+  assign close_trigger = close_trigger
+
+  assign inner_class = inner_class
+  assign modal_class = modal_class
+  assign modal_id = modal_id | default: section.id
+-%}
+
+{%- if content != blank and trigger != blank -%}
+  <custom-modal
+    class="modal{% if position != blank %} modal--{{- position -}}{% endif %} {{ modal_class }} [&.loading_.inner-content]:pointer-events-none [&.loading_.loader-container]:flex [&.loading_.loader-container]:visible"
+    data-trigger="{{- trigger -}}"
+    data-id="{{- modal_id -}}"
+    {%- if close_trigger != blank -%}
+      data-close_trigger="{{- close_trigger -}}"
+    {%- endif -%}
+  >
+    <div class="modal__inner {{ inner_class }} inner-content transition-opacity duration-300 relative">
+      {%- unless close_trigger -%}
+        <div
+          class="modal__close"
+          data-modal-close
+        >
+          {%- render 'icon_v2', icon: 'close' -%}
+        </div>
+      {%- endunless -%}
+
+      <div class="loader-container hidden absolute inset-0 items-center justify-center opacity-50 pointer-events-none transition-opacity duration-300 z-10 bg-white">
+        {%- render 'loader', visible: true -%}
+      </div>
+
+      {{- content -}}
+    </div>
+  </custom-modal>
+{%- endif -%}

@@ -1,0 +1,130 @@
+<div class="filters-navigation {{class}}">
+  <div class="search-drawer-header border-solid border-black-200 py-16 border-b-1 lg:border-none hidden">
+    <div class="label-text font-regular [&_span]:text-black-200 [&_span]:body-3 [&_span]:font-bold text-left">
+      {{- 'search.search_for_html' | t: terms: terms -}}
+    </div>
+  </div>
+
+  <div class="filters-navigation-controls flex justify-between border-solid border-black-200 py-16 border-t-1">
+    <button
+      type="button"
+      class="font-heading text-black-200 text-14 leading-20 flex items-center uppercase [&:not(.active)_.active-text]:hidden [&.active_.active-text]:block [&.active_.inactive-text]:hidden [&.active]:text-orange-100 [&.active_svg_path]:stroke-orange-100 lg:[&:not(.active)]:hover:text-orange-100 lg:[&:not(.active)_svg_path]:hover:stroke-orange-100 [&_svg_path]:transition-colors"
+      data-action="open-popup"
+    >
+      {%- render 'icon_v2', icon: 'show-filters-icon', class: '[&_path]:stroke-black-200' -%}
+      <span
+        aria-label="{{'accessibility.general.button_text' | t}}"
+        class="ml-8 inactive-text transition-colors"
+      >
+        {{- 'collection_filters.show_filters' | t -}}
+      </span>
+      <span
+        aria-label="{{'accessibility.general.button_text' | t}}"
+        class="ml-8 active-text transition-colors"
+      >
+        {{- 'collection_filters.hide_filters' | t -}}
+      </span>
+    </button>
+
+    <div class="search-modal-results-label label-text font-regular [&_span]:text-black-200 [&_span]:body-3 [&_span]:font-bold hidden text-left">
+      {{- 'search.search_for_html' | t: terms: terms -}}
+    </div>
+
+    <div class="flex gap-32">
+      <div
+        class="results-count text-14 leading-22 font-regular hidden md:block relative flex-1-0-auto [&_span>span]:text-orange-100 after:absolute after:top-0 after:right-[-16px] after:w-1 after:h-full after:bg-black-200-50 after:content-[''] after:z-10"
+      >
+        {%- liquid
+          if products_per_page >= products_limit
+            assign count = products_per_page | append: ' / ' | append: products_count
+          else
+            assign count = products_per_page
+          endif
+        -%}
+
+        <span>{{- 'collection_filters.filter_results_html' | t: count: count -}}</span>
+      </div>
+
+      <custom-dropdown class="sort-content w-full block relative [&:not(.open)_.selected-value_svg_path]:stroke-black-200 [&.open_.selected-value_svg_path]:stroke-orange-100 [&:not(.open)_.selected-value]:text-black-200 [&.open_.selected-value]:text-orange-100 [&:not(.open)_.selected-value_svg]:rotate-180 [&:not(.open)_.selected-value_svg]:duration-300 [&.open_.selected-value_svg]:duration-300 [&:not(.open)_ul]:opacity-0 [&:not(.open)_ul]:duration-300 [&.open_ul]:duration-300 [&.open_ul]:z-20">
+        {%- liquid
+          assign sort_by_name = page_sort_by
+
+          for option in sort_options
+            if option.value == sort_by
+              assign sort_by_name = option.name
+            endif
+          endfor
+        -%}
+
+        <select
+          name="sort_by"
+          id="{{form_id | append: '-sort-by'}}"
+          class="visually-hidden"
+          data-sort-filter
+          form="{{form_id}}"
+        >
+          {%- for option in sort_options -%}
+            <option
+              value="{{- option.value -}}"
+              {% if option.value == page_sort_by %}
+                selected
+              {% endif %}
+            >
+              {{- option.name -}}
+            </option>
+          {%- endfor -%}
+        </select>
+
+        <button
+          type="button"
+          class="selected-value font-heading text-14 leading-20 flex items-center uppercase "
+        >
+          <span class="mr-8">{{- sort_by_name -}}</span>
+          {%- render 'icon_v2', icon: 'chevron-top', class: '[&_path]:stroke-orange-100' -%}
+        </button>
+
+        <ul class="flex flex-col overflow-hidden rounded-4 w-full bg-white light-box-shadow min-w-[209px] absolute top-28 left-auto right-0 opacity-1 duration-300 -z-10">
+          {%- for option in sort_options -%}
+            <li class="flex justify-center items-center w-full">
+              <label
+                for="{{form_id |  append: '-sort-' |  append: option.value}}"
+                class="sort-content__item flex row justify-between items-center px-16 py-8 w-full text-14 leading-22 cursor-pointer lg:hover:bg-gray-100 transition-colors {% if option.value == sort_by %}bg-grey-100{% endif %}"
+              >
+                <input
+                  type="radio"
+                  name="sort_by"
+                  value="{{- option.value | escape -}}"
+                  id="{{form_id |  append: '-sort-' |  append: option.value}}"
+                  form="{{form_id}}"
+                  data-action="change-sort"
+                  {% if option.value == sort_by %}
+                    checked
+                  {% endif %}
+                  class="hidden"
+                >
+                <span class="label-value">{{- option.name | escape -}}</span>
+                {%- if option.value == sort_by -%}
+                  {%- render 'icon_v2', icon: 'check-icon', class: '[&_path]:fill-black-200' -%}
+                {%- endif -%}
+              </label>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </custom-dropdown>
+    </div>
+  </div>
+
+  <div class="filters-navigation-information flex justify-between border-solid border-black-200 py-16 border-t-1 md:hidden">
+    <div class="esults-count text-14 leading-22 font-regular [&_span>span]:text-orange-100">
+      {%- liquid
+        if products_per_page >= products_limit
+          assign count = products_per_page | append: ' / ' | append: products_count
+        else
+          assign count = products_per_page
+        endif
+      -%}
+
+      <span>{{- 'collection_filters.filter_results_html' | t: count: count -}}</span>
+    </div>
+  </div>
+</div>

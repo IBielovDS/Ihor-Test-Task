@@ -1,0 +1,36 @@
+{%- liquid
+  assign products = section.settings.product_list
+-%}
+
+{%- if products.count > 0 -%}
+  <div class="container">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+      {%- for product in products -%}
+        {%- for variant in product.variants -%}
+          {%- render 'example-product-card', product: product, selected_variant: variant -%}
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product Grid Example",
+  "class": "section-product-grid-example",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "product_list",
+      "id": "product_list",
+      "label": "Product List",
+      "limit": 10
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Grid Example"
+    }
+  ]
+}
+{% endschema %}

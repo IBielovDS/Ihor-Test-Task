@@ -1,0 +1,165 @@
+{%- liquid
+  assign terms = search.terms
+  assign downcased_terms = terms | downcase
+  assign wait_list = shop.metaobjects.wait_list[settings.waitlist].products.value
+
+  for product in wait_list
+    assign product_title = product.title | downcase
+    if product_title == downcased_terms
+      assign wait_banner_product = product
+      break
+    endif
+  endfor
+
+  assign products_limit = section.settings.products_limit
+
+  assign padding_top = section.settings.padding_top
+  assign padding_bottom = section.settings.padding_bottom
+  assign padding_top_mobile = section.settings.padding_top_mobile
+  assign padding_bottom_mobile = section.settings.padding_bottom_mobile
+
+  assign margin_top = section.settings.margin_top
+  assign margin_bottom = section.settings.margin_bottom
+  assign margin_top_mobile = section.settings.margin_top_mobile
+  assign margin_bottom_mobile = section.settings.margin_bottom_mobile
+-%}
+
+<div
+  data-section="search"
+  class="container"
+>
+  <style>
+    :root #shopify-section-{{- section.id -}} {
+      --padding-top: {{- padding_top -}}px;
+      --padding-bottom: {{- padding_bottom -}}px;
+      --padding-top-mobile: {{- padding_top_mobile -}}px;
+      --padding-bottom-mobile: {{- padding_bottom_mobile -}}px;
+      --margin-top: {{- margin_top -}}px;
+      --margin-bottom: {{- margin_bottom -}}px;
+      --margin-top-mobile: {{- margin_top_mobile -}}px;
+      --margin-bottom-mobile: {{- margin_bottom_mobile -}}px;
+    }
+  </style>
+
+  {%- if search.performed and search.results_count > 0 and wait_banner_product == null -%}
+    {%- render 'facet-filters', products_limit: products_limit -%}
+  {%- else -%}
+    {%- render 'search-empty-state', product: wait_banner_product -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Search page",
+  "class": "search-page global-spacing",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Search grid"
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "label": "Products limit",
+      "min": 8,
+      "max": 32,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Inner Spaces"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding bottom",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Outer Spaces"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin bottom",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin bottom",
+      "default": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "Search page"
+    }
+  ]
+}
+{% endschema %}

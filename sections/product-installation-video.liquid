@@ -1,0 +1,227 @@
+{%- liquid
+  assign padding_top = section.settings.padding_top
+  assign padding_bottom = section.settings.padding_bottom
+  assign padding_top_mobile = section.settings.padding_top_mobile
+  assign padding_bottom_mobile = section.settings.padding_bottom_mobile
+  assign margin_top = section.settings.margin_top
+  assign margin_bottom = section.settings.margin_bottom
+  assign margin_top_mobile = section.settings.margin_top_mobile
+  assign margin_bottom_mobile = section.settings.margin_bottom_mobile
+  assign section_id = section.settings.section_id
+  assign mobile_title = section.settings.mobile_title
+  assign title = section.settings.title
+  assign subtitle = section.settings.subtitle
+  assign text = section.settings.text
+  assign video_preview = section.settings.video_preview
+  assign video = section.settings.video
+-%}
+
+{%- if video != blank and video_preview != blank -%}
+  <style>
+    :root #shopify-section-{{section.id}} {
+      --padding-top: {{- padding_top -}}px;
+      --padding-bottom: {{- padding_bottom -}}px;
+      --padding-top-mobile: {{- padding_top_mobile -}}px;
+      --padding-bottom-mobile: {{- padding_bottom_mobile -}}px;
+      --margin-top: {{- margin_top -}}px;
+      --margin-bottom: {{- margin_bottom -}}px;
+      --margin-top-mobile: {{- margin_top_mobile -}}px;
+      --margin-bottom-mobile: {{- margin_bottom_mobile -}}px;
+    }
+  </style>
+
+  {%- capture section_content -%}
+    <product-installation-video>
+      <div class="container">
+        <div class="grid gap-32 lg:grid-cols-2 lg:items-center">
+          <div>
+            {%- if title != blank -%}
+              <h3 class="text-black-200 mb-24 lg:mb-32">{{- title -}}</h3>
+            {%- endif -%}
+
+            {%- if subtitle != blank -%}
+              <div class="subtitle-text font-bold text-black-200 mb-16 lg:mb-32">{{- subtitle -}}</div>
+            {%- endif -%}
+
+            {%- if text != blank -%}
+              <div class="body-2 text-grey-600">{{- text -}}</div>
+            {%- endif -%}
+          </div>
+          <div>
+            <a
+              data-fancybox="modal"
+              href="{{- video -}}"
+            >
+              {%- render 'responsive-image-dynamic_v2',
+                image: video_preview,
+                class: 'cursor-pointer js-product-installation-video-trigger'
+              -%}
+            </a>
+          </div>
+        </div>
+      </div>
+    </product-installation-video>
+  {%- endcapture -%}
+
+  <div id="{{- section_id -}}">
+    <div class="global-spacing">
+      <div class="lg:hidden">
+        <div class="container">
+          <details class="group">
+            <summary class="py-24 border-b-1 border-black-200 group-open:border-b-0 flex justify-between items-center">
+              <span class="h5 text-black-200  group-open:text-grey-600 uppercase transition-colors">
+                {{- mobile_title -}}
+              </span>
+              {%- render 'icon_v2': icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180 transition-all' -%}
+            </summary>
+            <div class="global-inner-spacing">
+              {{- section_content -}}
+            </div>
+          </details>
+        </div>
+      </div>
+      <div class="hidden lg:block">{{- section_content -}}</div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product Install Video",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID",
+      "default": "product-installation-video"
+    },
+    {
+      "type": "text",
+      "id": "mobile_title",
+      "label": "Mobile accordion title",
+      "default": "Installation Guide"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "5 MINUTE INSTALL"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Total installation time: 5-10 minutes"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Replacing your ear pads has never been easier with our step by step video."
+    },
+    {
+      "type": "image_picker",
+      "id": "video_preview",
+      "label": "Video preview"
+    },
+    {
+      "type": "text",
+      "id": "video",
+      "label": "Video URL"
+    },
+    {
+      "type": "header",
+      "content": "Outer Spaces"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Margin bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Margin bottom",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Inner Spaces"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding bottom",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding top",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding bottom",
+      "default": 16
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Install Video"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,96 @@
+{%- liquid
+  assign product_form_id = product_form_id | default: 'product_form_id-' | append: product.id
+-%}
+
+<div class="product-form__wrapper">
+  {%- unless is_sticky -%}
+    {%- render 'product-variant-picker',
+      product: product,
+      product_form_id: product_form_id,
+      input_type: display_type
+    -%}
+  {%- endunless -%}
+  <product-form class="product-form mb-4">
+    <div
+      class="product-form__error-message-wrapper"
+      role="alert"
+      hidden
+    >
+      <div class="flex items-center gap-1 mb-4">
+        {%- render 'icon_v2', icon: 'error' -%}
+        <span class="product-form__error-message text-red-500"></span>
+      </div>
+    </div>
+
+    {%- form 'product',
+      product,
+      id: product_form_id,
+      class: 'form main__form',
+      novalidate: 'novalidate',
+      data-type: 'add-to-cart-form'
+    -%}
+      <input
+        type="hidden"
+        name="id"
+        value="{{ product.selected_or_first_available_variant.id }}"
+      >
+      <div class="product-form__buttons {% if is_sticky %} product__atc {% else %} product__selector--sticky {% endif %} grid grid-cols-[120px_1fr] gap-8 mb-8 ">
+        {%- if is_sticky -%}
+          <div
+            id="price-{{ section.id }}"
+            class="flex flex-col justify-start items-center gap-8 lg:gap-16 lg:hidden"
+          >
+            <span class="heading-5">
+              {{ product.price | money_without_currency | prepend: cart.currency.symbol }}
+            </span>
+            {%- if product.compare_at_price != blank and product.compare_at_price > product.price -%}
+              <span class="body-3 text-grey-300 line-through">
+                {{ product.compare_at_price | money_without_currency | prepend: cart.currency.symbol }}
+              </span>
+            {%- endif -%}
+          </div>
+
+          <div class="flex">
+            {%- render 'product-variant-picker',
+              product: product,
+              product_form_id: product_form_id,
+              input_type: display_type
+            -%}
+
+            <div class="product-form__quantity w-full h-full">
+              {%- render 'quantity-input', section: section, product_form_id: product_form_id -%}
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- unless is_sticky -%}
+          <div class="product-form__quantity w-full h-full">
+            {%- render 'quantity-input', section: section, product_form_id: product_form_id -%}
+          </div>
+        {%- endunless -%}
+
+        <button
+          type="submit"
+          name="add"
+          class="product-form__submit button button--primary button--w-full flex flex-row rounded-8 gap-8 py-16 justify-center items-center{% if product.selected_or_first_available_variant.available == false %}opacity-50 pointer-events-none{% endif %}"
+          {% if product.selected_or_first_available_variant.available == false %}
+            disabled
+          {% endif %}
+        >
+          <span class="text-white font-heading uppercase">
+            {%- liquid
+              if product.selected_or_first_available_variant.available
+                echo 'products.product.add_to_cart' | t
+              else
+                echo 'products.product.sold_out' | t
+              endif
+            -%}
+          </span>
+        </button>
+      </div>
+      {%- unless is_sticky -%}
+        {{ form | payment_button }}
+      {%- endunless -%}
+    {%- endform -%}
+  </product-form>
+</div>

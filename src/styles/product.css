@@ -1,0 +1,51 @@
+more-payment-options-link {
+  display: none !important;
+}
+main-product-info .loox-rating-content {
+  color: #ff4c01;
+}
+main-product-info .loox-rating-label {
+  color: #555555;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.main-product-modal {
+  max-width: 90vw;
+  padding: 16px;
+  border-radius: 8px;
+  overflow-y: auto;
+}
+@media (min-width: 1023px) {
+  .main-product-modal {
+    max-width: 678px;
+    padding: 24px;
+  }
+}
+
+.main-product-modal h6 {
+  text-transform: uppercase;
+}
+
+/* have to do this for the mobile bullets due to the swiper.js library */
+.mobile-bullets span:last-child {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.mobile-bullets span:last-child.swiper-pagination-bullet-active {
+  width: 10px !important;
+  height: 10px !important;
+  transform: scale(1);
+}
+
+/* disable atc for location with inventory */
+.product__atc-disabled button {
+  pointer-events: none;
+  opacity: 0.7;
+}
+.product__atc-disabled .shopify-payment-button__button {
+  pointer-events: none;
+}
+.product__atc-disabled .shopify-payment-button__button .size--large {
+  opacity: 0.5;
+}

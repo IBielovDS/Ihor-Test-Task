@@ -1,0 +1,191 @@
+{%- liquid
+  assign margin_top = section.settings.margin_top
+  assign margin_bottom = section.settings.margin_bottom
+  assign margin_top_mobile = section.settings.margin_top_mobile
+  assign margin_bottom_mobile = section.settings.margin_bottom_mobile
+  assign padding_top = section.settings.padding_top
+  assign padding_bottom = section.settings.padding_bottom
+  assign padding_top_mobile = section.settings.padding_top_mobile
+  assign padding_bottom_mobile = section.settings.padding_bottom_mobile
+  assign title = section.settings.title
+  assign button_text = section.settings.button_text
+  assign button_link = section.settings.button_link
+  assign button_style = section.settings.button_style
+  assign search_placeholder = 'header.search_placeholder' | t
+-%}
+
+{%- if title != blank -%}
+  <style>
+    :root #shopify-section-{{section.id}} {
+      --margin-top: {{- margin_top -}}px;
+      --margin-bottom: {{- margin_bottom -}}px;
+      --margin-top-mobile: {{- margin_top_mobile -}}px;
+      --margin-bottom-mobile: {{- margin_bottom_mobile -}}px;
+      --padding-top: {{- padding_top -}}px;
+      --padding-bottom: {{- padding_bottom -}}px;
+      --padding-top-mobile: {{- padding_top_mobile -}}px;
+      --padding-bottom-mobile: {{- padding_bottom_mobile -}}px;
+    }
+  </style>
+
+  <div class="container search-banner">
+    <div class="max-w-[680px] mx-auto">
+      <div class="subtitle-text font-bold text-center text-black-200 mb-32 lg:mb-48">{{- title -}}</div>
+      {%- assign search_class = '[&_form]:mb-0 [&_form]:lg:mb-8 [&_search-results]:left-1/2 [&_search-results]:-translate-x-1/2 [&.show-search]:mt-20 lg:mt-0 [&.show-search]:max-h-[1000px] [&.show-search]:opacity-100 [&:not(.show-search)]:max-h-[0px] [&:not(.show-search)]:opacity-0 [&:not(.show-search)]:overflow-hidden transition-all duration-300 show-search z-20' -%}
+      {%- render 'search-input-component',
+        placeholder: search_placeholder,
+        wrapper_class: search_class,
+        class: '!mb-0'
+      -%}
+      <div class="my-24 lg:my-16 label-text text-center text-grey-600 uppercase">
+        {{- 'customer.login_page.alternate_provider_separator' | t -}}
+      </div>
+      {%- if button_text != blank and button_link != blank -%}
+        <a
+          href="{{- button_link -}}"
+          class="button button--{{ button_style }} button--centered"
+        >
+          {{- button_text -}}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{%- schema -%}
+{
+  "name": "Search banner",
+  "class": "global-spacing",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop replacement earpads"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "default": "primary",
+      "options": [
+        {
+          "value": "primary",
+          "label": "Primary"
+        },
+        {
+          "value": "secondary",
+          "label": "Secondary"
+        },
+        {
+          "value": "bordered",
+          "label": "Bordered"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Outer Spaces"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin bottom",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin bottom",
+      "default": 120
+    },
+    {
+      "type": "header",
+      "content": "Inner Spaces"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding bottom",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Search banner"
+    }
+  ]
+}
+{%- endschema -%}

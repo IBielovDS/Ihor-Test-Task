@@ -1,0 +1,177 @@
+{% comment %}
+  Usage:
+  {% render 'product-card',
+  product: product, - required, product object
+  group: group - optional, will add data-group attribute to the swiper slide wrapper
+  index - required, will add fetchpriority attribute to the product card depending on the index
+  is_slider - optional, will add swiper-slide class and wrapper to the product card
+  %}
+{% endcomment %}
+
+{%- liquid
+  assign hide_swatches = false
+  assign color_option = 'products.product.color_option' | t
+  assign current_variant = product.selected_or_first_available_variant
+  assign first_image = current_variant.image | default: product.featured_image
+  assign hide_quick_view = hide_quick_view | default: false
+  assign title_tag = title_tag | default: 'h6'
+  for image in product.images
+    if image.id == first_image.id
+      assign current_image_index = forloop.index | plus: 1
+      assign next_image = product.images[current_image_index]
+      break
+    endif
+  endfor
+
+  assign has_at_least_one_swatch = false
+  for variant in product.variants
+    if variant.featured_image != blank
+      assign has_at_least_one_swatch = true
+      break
+    endif
+  endfor
+-%}
+
+{%- if is_slider -%}
+  <div
+    class="swiper-slide p-8 lg:p-16 border-t border-black [&:not(:last-child)]:border-r !h-auto "
+    {% if group != blank %}
+      data-group="{{ group }}"
+    {% endif %}
+  >
+{%- endif -%}
+<product-card
+  class="relative h-full flex flex-col gap-8 pb-44 {% unless in_search %}lg:pb-0{% endunless %} [&.is-card-loading]:pointer-events-none [&.is-card-loading_.loader-container]:block"
+  data-product="{{ product | json | escape }}"
+>
+  <div class="group flex-1">
+    <div class="product-card__top {% unless in_search %}lg:relative{% endunless %}">
+      {%- render 'product-badges', product: product, classes: 'absolute z-10 left-0 top-0' -%}
+      <div class="absolute z-10 bottom-0 {% unless in_search %}lg:bottom-4{% endunless %} text-center w-full md:opacity-0 group-hover:opacity-100 transition-all">
+        <div class="grid grid-cols-2 gap-8">
+          {%- liquid
+            unless hide_quick_view
+              render 'quick-view-btn', product: product, hide_text: in_search
+            endunless
+
+            if product.available
+              render 'add-to-cart-btn', product: product, hide_text: in_search
+            endif
+          -%}
+        </div>
+      </div>
+      <a
+        class="block w-full h-full relative js-product-card-link pb-[100%]"
+        href="{{ product.url | split: '?' | first }}?variant={{ current_variant.id }}"
+      >
+        {%- liquid
+          if product.images.size > 1
+            assign alt_text = product.title | append: ' - ' | append: page_title
+            assign alt_text_hover = product.title | append: ' - Hover ' | append: page_title
+            assign loading = 'lazy'
+            assign fetchpriority = 'auto'
+            if index != blank and index < 5
+              assign fetchpriority = 'high'
+              assign loading = 'eager'
+            endif
+
+            assign first_image_classes = 'product-card__image transition-all object-contain aspect-square absolute left-0 top-0 max-h-[270px]'
+
+            if settings.show_second_image_on_hover
+              assign first_image_classes = 'product-card__image group-hover:opacity-0 transition-all object-contain aspect-square absolute left-0 top-0 max-h-[270px]'
+            endif
+
+            render 'responsive-image-dynamic_v2', image: first_image, alt_text: alt_text, loading: loading, fetchpriority: fetchpriority, class: first_image_classes
+
+            if settings.show_second_image_on_hover
+              render 'responsive-image-dynamic_v2', image: next_image, alt_text: alt_text_hover, loading: 'lazy', class: 'product-card__image opacity-0 absolute left-0 top-0 group-hover:opacity-100 transition-all object-cover aspect-square'
+            endif
+          elsif product.featured_image != blank
+            assign alt_text = product.title | append: ' - ' | append: page_title
+            assign loading = 'lazy'
+            assign fetchpriority = 'auto'
+            if index != blank and index < 4
+              assign fetchpriority = 'high'
+              assign loading = 'eager'
+            endif
+            render 'responsive-image-dynamic_v2', image: product.featured_image, alt_text: alt_text, loading: loading, fetchpriority: fetchpriority, class: 'product-card__image object-cover aspect-square absolute left-0 top-0'
+          else
+            echo 'product-1' | placeholder_svg_tag
+          endif
+        -%}
+      </a>
+    </div>
+    <a
+      href="{{ product.url | split: '?' | first }}?variant={{ current_variant.id }}"
+      class="product-card__bottom js-product-card-link !no-underline"
+    >
+      {% comment %} Added height for CLS score since the rating is loaded asynchronously {% endcomment %}
+      <div
+        class="loox-rating mb-8 h-26"
+        data-id="{{ product.id }}"
+        data-rating="{{ product.metafields.loox.avg_rating }}"
+        data-raters="{{ product.metafields.loox.num_reviews }}"
+      ></div>
+      <div class="product-card-bottom-meta product-card-meta grid grid-cols-1 md:grid-cols-[4fr_0.66fr] gap-8 lg:gap-24">
+        <{{ title_tag }} class="h6 text-!16 !mb-0">
+          {{ product.title }}
+        </{{ title_tag }}>
+        <div class="product-card__bottom__meta-price flex flex-col">
+          <p class="product-card__bottom__meta-price-main text-16 leading-24 lg:text-18 lg:leading-28 !mb-0">
+            {{ product.price | money_without_currency | prepend: cart.currency.symbol }}
+          </p>
+          <p class="product-card__bottom__meta-price-compare text-14 leading-22 lg:text-16 lg:leading-24  text-grey-300 line-through {% unless product.compare_at_price != blank and product.compare_at_price > product.price %}hidden{% endunless %}">
+            {{ product.compare_at_price | money_without_currency | prepend: cart.currency.symbol }}
+          </p>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  {%- if has_at_least_one_swatch and hide_swatches == false -%}
+    {%- if product.variants.size > 1 and product.options contains color_option -%}
+      {%- assign hidden_variants_size = product.variants.size | minus: 5 -%}
+      <div class="flex items-center flex-wrap gap-4">
+        {%- for variant in product.variants limit: 5 -%}
+          {%- liquid
+            if variant.featured_image != blank
+              assign swatch_image = variant.featured_image.src
+            else
+              assign file_name = variant.title | handleize | append: '.png' | prepend: 'swatch-'
+              assign swatch_image = file_name | file_url
+            endif
+
+            if swatch_image == blank
+              assign hidden_variants_size = hidden_variants_size | minus: 1
+              continue
+            endif
+          -%}
+          <div
+            class="js-swatch-color cursor-pointer p-1 border-1 transition-colors border-transparent [&.active]:border-orange-100{% if forloop.first %} active{% endif %}"
+            data-variant="{{ variant | json | escape }}"
+          >
+            <div class="w-[16px] h-[16px] overflow-hidden">
+              {%- render 'responsive-image-dynamic_v2': image: swatch_image, class: 'object-cover scale-[2]' -%}
+            </div>
+          </div>
+        {%- endfor -%}
+        {%- if product.variants.size > 5 -%}
+          <a
+            href="{{- product.url | split: '?' | first -}}?variant={{- current_variant.id -}}"
+            class="md:ml-8 label-text text-grey-600 js-product-card-link !no-underline"
+          >
+            +
+            {{- hidden_variants_size -}}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+
+  <div class="loader-container hidden absolute inset-0 items-center justify-center opacity-50 pointer-events-none transition-opacity duration-300 z-10 bg-white">
+    {%- render 'loader', visible: true -%}
+  </div>
+</product-card>
+{%- if is_slider -%}
+  </div>
+{%- endif -%}

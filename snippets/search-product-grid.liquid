@@ -1,0 +1,138 @@
+{%- liquid
+  assign products_limit = products_limit | default: 16
+
+  assign products_count = search.results_count
+
+  if products_count < products_limit
+    assign products_limit = products_count
+  endif
+-%}
+
+<product-pagination class="w-full {{class}}">
+  <div class="product-grid w-full">
+    {%- paginate search.results by products_limit -%}
+      <div
+        class="product-grid-wrapper w-full grid relative grid-cols-2 md:grid-cols-3 lg:grid-cols-4 [&_.product-card-meta]:grid-cols-1 [&_.product-card-meta]:md:grid-cols-[4fr_0.66fr] [&_.product-card-price]:gap-4 [&_.product-card-price]:md:gap-0 [&_.product-card-price]:flex-row [&_.product-card-price]:md:flex-col [&_.product-card-price]:items-center  [&_.product-card-price]:md:items-start"
+        data-pages="{{- paginate.pages -}}"
+      >
+        {%- for result in search.results -%}
+          {%- if result.object_type == 'product' -%}
+            {%- liquid
+              assign product_index = forloop.index
+
+              assign mobile_divided_index = product_index | modulo: 2
+              assign tablet_divided_index = product_index | modulo: 3
+              assign desktop_divided_index = product_index | modulo: 4
+            -%}
+
+            <div
+              class="
+                product-card-wrapper col-span-1 max-h-520 relative p-16 border-black-200 border-solid border-t-1
+                {% if mobile_divided_index == 0 %}border-r-0{% else %}border-r-1{% endif %}
+                {% if tablet_divided_index == 0 %}md:border-r-0 {% else %}md:border-r-1{% endif %}
+                {% if desktop_divided_index == 0 %}lg:border-r-0{% else %}lg:border-r-1{% endif %}
+              "
+            >
+              {%- render 'product-card', product: result, index: forloop.index, is_slider: false, in_search: true -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <nav
+        class="
+          pagination-navigation w-full mx-auto mt-40 lg:mt-48 absolute lg:bottom-0 left-0
+          {% if paginate.previous == null and paginate.next == null %}
+            hidden
+          {% endif %}
+        "
+        role="navigation"
+        aria-label="Products pagination navigation"
+      >
+        <ul
+          class="pagination-navigation__list flex items-center w-full max-w-[428px] mx-auto"
+          role="list"
+        >
+          <li class="text-center button-text-1 min-w-44  min-h-44 flex justify-center items-center rounded-8 border-1 border-solid border-grey-200{% if paginate.previous != null %} bg-grey-200 {% else %} pointer-events-none{% endif %} mr-auto">
+            {%- liquid
+              assign previous_arrow_color = 'fill-black-200'
+              if paginate.previous == null
+                assign previous_arrow_color = 'fill-grey-200'
+              endif
+            -%}
+
+            <a
+              href="{{- paginate.previous.url -}}"
+              class="flex justify-center items-center w-full h-full py-10 px-8 "
+              {% if paginate.previous == null %}
+                disabled
+              {% endif %}
+              data-pagination-link
+              aria-label="{{- 'accessibility.previous_page' | t -}}"
+              data-page="{{- paginate.current_page |  minus: 1 -}}"
+            >
+              {%- render 'icon_v2', icon: 'navigation-arrow-left', class: previous_arrow_color -%}
+            </a>
+          </li>
+
+          {%- for part in paginate.parts -%}
+            <li
+              class="text-center button-text-1 min-w-44 min-h-44 border-b-3 border-solid{% if part.title == paginate.current_page %} border-black-200 text-black-200{% else %} text-grey-300 border-transparent{% endif %} button-text-1"
+            >
+              {%- if part.is_link -%}
+                <a
+                  href="{{- part.url -}}"
+                  class="py-10 px-8 w-full h-full flex justify-center items-center"
+                  aria-label="{{- 'accessibility.page_number' | t -}}"
+                  data-page="{{- part.title -}}"
+                  data-pagination-link
+                >
+                  {{- part.title -}}
+                </a>
+              {%- else -%}
+                <span
+                  class="pagination__item py-10 px-8 w-full h-full flex justify-center items-center"
+                  data-page="{{part.title}}"
+                >
+                  {{- part.title -}}
+                </span>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+
+          <li class="button-text-1 min-w-44 min-h-44 text-center flex justify-center items-center rounded-8 border-1 border-solid border-grey-200 {% if paginate.next != null %} bg-grey-200 cursor-pointer {% else %} pointer-events-none	{% endif %} ml-auto">
+            {%- liquid
+              assign next_arrow_color = 'fill-black-200 rotate-180'
+              if paginate.next == null
+                assign next_arrow_color = 'fill-grey-200 rotate-180'
+              endif
+            -%}
+
+            <a
+              href="{{- paginate.next.url -}}"
+              class="flex justify-center items-center w-full h-full py-10 px-8"
+              {% if paginate.next == null %}
+                disabled
+              {% endif %}
+              data-pagination-link
+              aria-label="{{- 'accessibility.next_page' | t -}}"
+              data-page="{{- paginate.current_page | plus: 1 -}}"
+            >
+              {%- render 'icon_v2', icon: 'navigation-arrow-left', class: next_arrow_color -%}
+            </a>
+          </li>
+        </ul>
+      </nav>
+      {%- if paginate.next != null -%}
+        <button
+          class="button button--secondary !hidden mx-auto mt-16 uppercase !py-8 !px-24 !rounded-8 !text-14 !leading-20"
+          aria-label="{{- 'accessibility.load_more' | t -}}"
+          data-pagination-load-more
+          data-page="{{- paginate.next.url -}}"
+        >
+          {{- 'pagination.load_more' | t -}}
+        </button>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</product-pagination>

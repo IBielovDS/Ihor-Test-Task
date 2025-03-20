@@ -1,0 +1,232 @@
+{%- liquid
+  assign padding_top = section.settings.padding_top
+  assign padding_bottom = section.settings.padding_bottom
+  assign padding_top_mobile = section.settings.padding_top_mobile
+  assign padding_bottom_mobile = section.settings.padding_bottom_mobile
+  assign margin_top = section.settings.margin_top
+  assign margin_bottom = section.settings.margin_bottom
+  assign margin_top_mobile = section.settings.margin_top_mobile
+  assign margin_bottom_mobile = section.settings.margin_bottom_mobile
+  assign image_desktop = section.settings.image_desktop
+  assign image_mobile = section.settings.image_mobile | default: image_desktop
+  assign title = section.settings.title
+  assign subtitle = section.settings.subtitle
+  assign text = section.settings.text
+  assign name = section.settings.name
+  assign position = section.settings.position
+-%}
+
+{%- if name != blank -%}
+  <style>
+    :root #shopify-section-{{section.id}} {
+      --padding-top: {{- padding_top -}}px;
+      --padding-bottom: {{- padding_bottom -}}px;
+      --padding-top-mobile: {{- padding_top_mobile -}}px;
+      --padding-bottom-mobile: {{- padding_bottom_mobile -}}px;
+      --margin-top: {{- margin_top -}}px;
+      --margin-bottom: {{- margin_bottom -}}px;
+      --margin-top-mobile: {{- margin_top_mobile -}}px;
+      --margin-bottom-mobile: {{- margin_bottom_mobile -}}px;
+    }
+  </style>
+
+  <div class="bg-grey">
+    <div class="container">
+      <div class="grid gap-24 items-center {% if image_desktop != blank %}lg:grid-cols-2{% endif %} lg:items-end">
+        {%- if image_desktop != blank -%}
+          <div class="order-3 lg:order-1">
+            {%- render 'responsive-image-dynamic_v2',
+              image: image_desktop,
+              image_mobile: image_mobile,
+              class: 'w-[180px] lg:w-full mx-auto'
+            -%}
+          </div>
+        {%- endif -%}
+        <div class="order-2 global-inner-spacing {% unless image_desktop %}w-[50%] mx-auto{% endunless %}">
+          <div class="flex flex-col lg:flex-row mb-40 lg:mb-48">
+            <div class="text-orange-100 h1 !leading-[0] mt-40 mb-8 lg:mb-0 lg:mt-0 lg:mr-40 !text-[72px] lg:!leading-[1] !lg:text-[138px]">
+              {{- 'quote' | t -}}
+            </div>
+            <div>
+              <h1 class="text-black-200 mb-24 lg:mb-40 uppercase">{{- name -}}</h1>
+
+              {%- if position != blank -%}
+                <div class="body-2 font-bold text-black-200">{{- position -}}</div>
+              {%- endif -%}
+            </div>
+          </div>
+          <div class="max-w-[440px] mx-auto">
+            {%- if title != blank -%}
+              <h5 class="text-black-200 text-center mb-16 uppercase">{{- title -}}</h5>
+            {%- endif -%}
+
+            {% if subtitle != blank %}
+              <div class="body-3 text-center text-grey-600 mb-24">{{- subtitle -}}</div>
+            {% endif %}
+
+            <div
+              id="discount-app"
+              class="discount-app"
+              onclick="navigator.clipboard.writeText(this.querySelector('.cc-code').innerText)"
+            >
+              <div class="discount-app__inner">
+                {% comment %} REPLACE WITH APP {% endcomment %}
+                <div class="cc-coupocode"><div class="cc-code">CC-PGCSJ-15-OFF</div></div>
+              </div>
+              <div class="discount-app__copy">
+                {%- render 'icon_v2', icon: 'clipboard', class: 'mr-8' -%}
+                {{- 'click_to_copy' | t -}}
+              </div>
+            </div>
+
+            {%- if text != blank -%}
+              <div class="body-3 text-center font-bold text-black-200 mt-32 lg:mt-40">{{- text -}}</div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Discount page",
+  "class": "global-outer-spacing",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image_desktop",
+      "label": "Desktop image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image"
+    },
+    {
+      "type": "text",
+      "id": "name",
+      "label": "Name",
+      "default": "Stinking Cozy"
+    },
+    {
+      "type": "text",
+      "id": "position",
+      "label": "Position",
+      "default": "The Techne"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Grab Your Coupon Below"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Input Coupon At Checkout"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "IF you do not see the coupon, turn off any Adblockers/Scriptblockers/VPN and refresh the page."
+    },
+    {
+      "type": "header",
+      "content": "Outer Spaces"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin bottom",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Inner Spaces"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding bottom",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding top",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding bottom",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Discount page"
+    }
+  ]
+}
+{% endschema %}

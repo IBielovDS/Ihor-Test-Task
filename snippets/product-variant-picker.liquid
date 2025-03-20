@@ -1,0 +1,169 @@
+{%- if product.has_only_default_variant != true -%}
+  <variant-radios
+    class="mb-16 variant-radios-block flex flex-col"
+    data-section="{{ product.id }}"
+    data-url="{{ product.url }}"
+    data-product-form-id="{{ product_form_id }}"
+  >
+    {%- for option in product.options_with_values -%}
+      {%- liquid
+        assign small_option_name = option.name | handleize
+        assign color_option = 'products.product.color_option' | t | handleize
+        assign is_color = false
+        assign option_name = option.name
+        if small_option_name contains color_option
+          assign is_color = true
+          assign option_name = 'products.product.selected_color_text' | t
+        endif
+        comment
+          Display text swatches if at least one variant doesn't have an image
+        endcomment
+        for variant in product.variants
+          unless variant.featured_image
+            assign is_color = false
+          endunless
+        endfor
+        assign input_type = input_type | default: 'radio'
+      -%}
+      {%- if input_type == 'select' -%}
+        <div class="product-form__input mb-7 w-full">
+          <label class="form__label paragraph-p1--medium mb-2 flex justify-between w-full">
+            <span class="mr-auto">{{ option.name }}</span>
+          </label>
+          <select
+            id="{{ section.id }}-{{ option.position }}"
+            class="select w-full py-12 px-16 rounded-8 border border-grey-300 focus:border-grey-600"
+            name="{{ option.name }}"
+            form="{{ product_form_id }}"
+          >
+            {%- for value in option.values -%}
+              <option
+                value="{{ value | escape }}"
+                {% if option.selected_value == value %}
+                  selected="selected"
+                {% endif %}
+                {% unless value.available %}
+                  disabled
+                {% endunless %}
+              >
+                {{ value }}
+              </option>
+            {%- endfor -%}
+          </select>
+        </div>
+      {%- else -%}
+        <fieldset
+          class="js {% if is_color %}product-form__input-colors{% endif %} product-form__input mb-7 original-scrollbar overflow-x-auto whitespace-nowrap last-of-type:mb-2 {{ option.name | downcase }} product-form__input--select relative"
+        >
+          {%- if is_color -%}
+            <div
+              class="form__label mb-8 flex gap-8 items-center w-full"
+            >
+              <span class="hidden lg:inline body-3 text-grey-600">{{ option_name }}:</span>
+              <span class="form__selected-value label-text lg:text-20 lg:leading-24 lg:uppercase lg:strong lg:font-heading">
+                {{- option.selected_value -}}
+              </span>
+            </div>
+            <div class="form-options-wrapper w-full">
+              <div class="form-options flex  flex-row gap-8 w-full">
+                <div class="flex flex-nowrap lg:flex-wrap gap-8 min-w-min">
+                  {%- for value in option.values -%}
+                    <div
+                      class="form-option relative w-38"
+                      data-name="{{- value -}}"
+                    >
+                      <input
+                        type="radio"
+                        id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+                        name="{{ option.name }}"
+                        value="{{ value | escape }}"
+                        form="{{ product_form_id }}"
+                        {% if option.selected_value == value %}
+                          checked
+                        {% endif %}
+                        class="form-option__input peer hidden absolute w-0 h-0 opacity-0"
+                      >
+
+                      {%- liquid
+                        if value.available
+                          assign option_classes = 'cursor-pointer'
+                        else
+                          assign option_classes = 'form-option__label--unavailable pointer-events-none opacity-50'
+                        endif
+
+                        capture final_classess
+                          echo 'form-option__label px-4 py-2 transition-all variant-input--color text-0 w-38 block h-38 r-6 bg-cover bg-no-repeat bg-center rounded-8 border-transparent peer-checked:border-orange-100 peer-checked:bg-[length:90%] border border-solid '
+                          echo option_classes
+                        endcapture
+
+                        assign image = value.variant.image | default: product.featured_image
+                      -%}
+
+                      {%- render 'color-swatch',
+                        section_id: section.id,
+                        option_position: option.position,
+                        forloop_index: forloop.index0,
+                        value: value,
+                        variant_image: image,
+                        class: final_classess
+                      -%}
+                    </div>
+                  {%- endfor -%}
+                </div>
+              </div>
+            </div>
+
+          {%- else -%}
+            <div
+              class="form__label mb-8 flex gap-8 items-center w-full"
+            >
+              <span class="hidden lg:inline body-3 text-grey-600">{{ option_name }}:</span>
+              <span class="form__selected-value label-text lg:text-20 lg:leading-24 lg:uppercase lg:strong lg:font-heading">
+                {{- option.selected_value -}}
+              </span>
+            </div>
+
+            <div class="form-options z-1 border-t-0 border-x-0 grid-cols-2 overflow-hidden w-full gap-x-3 gap-y-4 relative h-auto flex-col grid bg-transparent cursor-default">
+              {%- for value in option.values -%}
+                <div
+                  class="form-option relative border-1 border-grey rounded-8 has-[input:checked]:border-orange-100"
+                  data-name="{{ value }}"
+                >
+                  <input
+                    type="radio"
+                    id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+                    name="{{ option.name }}"
+                    value="{{ value | escape }}"
+                    form="{{ product_form_id }}"
+                    {% if option.selected_value == value %}
+                      checked
+                    {% endif %}
+                    class="invisible form-option__input flex bg-transparent checked:!bg-transparent focus:!shadow-none cursor-pointer border-none w-0 h-0"
+                  >
+
+                  {%- liquid
+                    if value.available
+                      assign option_classes = 'cursor-pointer'
+                    else
+                      assign option_classes = 'pointer-events-none form-option__label--unavailable line-through opacity-50'
+                    endif
+                  -%}
+
+                  <label
+                    for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+                    class="form-option__label h5 transition-all duration-300 flex items-center justify-center h-full w-full p-6 body-2 text-center {{option_classes}}"
+                  >
+                    {{- value -}}
+                  </label>
+                </div>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </fieldset>
+      {%- endif -%}
+    {%- endfor -%}
+    <script type="application/json">
+      {{ product.variants | json }}
+    </script>
+  </variant-radios>
+{%- endif -%}

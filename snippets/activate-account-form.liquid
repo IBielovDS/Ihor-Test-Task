@@ -1,0 +1,135 @@
+{%- liquid
+  assign default_title = 'customer.activate_account.title' | t
+  assign title = title | default: default_title
+  assign password_error_message = 'customer.error_messages.password_error_message' | t
+-%}
+
+<form-validation
+  class="grid grid-cols-1 lg:max-w-[442px] mx-auto opacity-100"
+  data-form-type="reset"
+>
+  <div class="form-header text-center mb-24 ">
+    <h1 class="mb-24 font-heading text-32 leading-32 tracking-0.5">{{- title -}}</h1>
+    <p>
+      <span class="body-3 text-grey-600">{{- 'customer.activate_account.subtitle' | t -}}</span>
+    </p>
+  </div>
+
+  {%- form 'activate_customer_password' -%}
+    {%- if form.errors -%}
+      <ul class="grid grid-cols-1 lg:col-start-1 lg:col-end-3">
+        {%- for field in form.errors -%}
+          <li class="bg-grey py-8 px-16 label-text flex items-center flex-1-0-auto rounded-4 mb-16 gap-8">
+            <div class="flex justify-center items-center bg-error rounded-[50%] w-32 h-32 flex-grow-0 flex-shrink-0 basis-auto">
+              {%- render 'icon_v2', icon: 'warning-icon', class: '[&_path]:stroke-white' -%}
+            </div>
+
+            <span class="[&_a]:underline">
+              {%- if field == 'form' -%}
+                <span>{{- form.errors.messages[field] -}}</span>
+              {%- else -%}
+                <span>
+                  <span>{{- form.errors.translated_fields[field] | capitalize -}}</span>
+                  <span>{{- form.errors.messages[field] -}}</span>
+                </span>
+              {%- endif -%}
+            </span>
+
+            <button
+              type="button"
+              class="block w-12 h-12 ml-auto flex-grow-0 flex-shrink-0 basis-auto"
+              data-hide-default-error
+            >
+              {%- render 'icon_v2', icon: 'cross' -%}
+            </button>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <div class="input-wrapper dark {% if form.errors contains 'password' %}error {% endif %}">
+      <div class="relative w-full">
+        <button
+          type="button"
+          class="cursor-pointer absolute w-20 h-20 bottom-16 right-0 [&:not(.show)_.opened]:opacity-100 [&.show_.opened]:opacity-0 [&:not(.show)_.closed]:opacity-0 [&.show_.closed]:opacity-100 transition-opacity"
+          data-show-password
+        >
+          {%- render 'icon_v2', icon: 'eye-opened', class: 'opened absolute top-0 left-0 w-full h-full' -%}
+          {%- render 'icon_v2', icon: 'eye-closed', class: 'closed absolute top-0 left-0 w-full h-full' -%}
+        </button>
+
+        <input
+          type="password"
+          name="customer[password]"
+          id="password-{{- section.id -}}"
+          autocomplete="new-password"
+          {% if form.errors contains 'password' %}
+            aria-invalid="true"
+            aria-describedby="password-error"
+          {% endif %}
+          placeholder="{{- 'customer.activate_account.password' | t -}}"
+          class="input"
+          required
+          pattern="^.{8,}$"
+        >
+        <label
+          for="password"
+          class="input-label"
+        >
+          {{- 'customer.activate_account.password' | t -}}
+        </label>
+      </div>
+
+      {%- render 'warning-message-box', text: password_error_message -%}
+    </div>
+
+    <div class="input-wrapper dark {% if form.errors contains 'password_confirmation' %}error {% endif %}">
+      <div class="relative w-full">
+        <button
+          type="button"
+          class="cursor-pointer absolute w-20 h-20 bottom-16 right-0 [&:not(.show)_.opened]:opacity-100 [&.show_.opened]:opacity-0 [&:not(.show)_.closed]:opacity-0 [&.show_.closed]:opacity-100 transition-opacity"
+          data-show-password
+        >
+          {%- render 'icon_v2', icon: 'eye-opened', class: 'opened absolute top-0 left-0 w-full h-full' -%}
+          {%- render 'icon_v2', icon: 'eye-closed', class: 'closed absolute top-0 left-0 w-full h-full' -%}
+        </button>
+
+        <input
+          type="password"
+          name="customer[password_confirmation]"
+          id="password_confirmation-{{- section.id -}}"
+          autocomplete="new-password"
+          {% if form.errors contains 'password_confirmation' %}
+            aria-invalid="true"
+            aria-describedby="password_confirmation-error"
+          {% endif %}
+          placeholder="{{- 'customer.activate_account.password_confirm' | t -}}"
+          class="input"
+          required
+          pattern="^.{8,}$"
+        >
+        <label
+          for="password_confirmation"
+          class="input-label"
+        >
+          {{- 'customer.activate_account.password_confirm' | t -}}
+        </label>
+      </div>
+
+      {%- render 'warning-message-box', text: password_error_message -%}
+    </div>
+
+    <button
+      type="submit"
+      class="button button--primary !w-full max-w-full mt-16 lg:mt-32 col-span-2"
+    >
+      {{- 'customer.activate_account.submit' | t -}}
+    </button>
+    <a
+      href="{{- routes.account_register_url -}}"
+      class="body-3 font-normal font-heading text-black-200 flex gap-8 items-center uppercase mt-32 tracking-0.5 mx-auto w-max"
+    >
+      {{- 'customer.activate_account.create_account' | t -}}
+    </a>
+  {%- endform -%}
+</form-validation>

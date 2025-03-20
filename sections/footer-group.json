@@ -1,0 +1,151 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "newsletter_rQPR3w": {
+      "type": "newsletter",
+      "settings": {
+        "title": "<h2>GET 10% OFF<br/>ON YOUR FIRST ORDER!</h2>",
+        "text": "Just enter your details below and we'll send you the code.",
+        "text_align": "center",
+        "title_color": "#ffffff",
+        "text_color": "#c2c1c0",
+        "button_text": "Subscribe",
+        "button_style": "primary",
+        "image_desktop": "shopify://shop_images/image.png",
+        "image_mobile": "shopify://shop_images/image_1.png"
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "social_item_ejzzaU": {
+          "type": "social_item",
+          "settings": {
+            "icon": "shopify://shop_images/Facebook.png",
+            "url": "https://www.facebook.com/wickedcushions"
+          }
+        },
+        "social_item_ywaVrR": {
+          "type": "social_item",
+          "settings": {
+            "icon": "shopify://shop_images/Instagram.png",
+            "url": "https://www.instagram.com/wickedcushions/"
+          }
+        },
+        "social_item_TwECmQ": {
+          "type": "social_item",
+          "settings": {
+            "icon": "shopify://shop_images/tw.png",
+            "url": "https://twitter.com/wickedcushions"
+          }
+        },
+        "social_item_et8JTw": {
+          "type": "social_item",
+          "settings": {
+            "icon": "shopify://shop_images/YT.png",
+            "url": "https://www.youtube.com/wickedcushions"
+          }
+        },
+        "advantage_item_ec4Hgf": {
+          "type": "advantage_item",
+          "settings": {
+            "icon": "shopify://shop_images/review.png",
+            "title": "25,000+ Customer  Reviews Online"
+          }
+        },
+        "advantage_item_k8rWja": {
+          "type": "advantage_item",
+          "settings": {
+            "icon": "shopify://shop_images/happy.png",
+            "title": "600,000+ Earpads Replaced and Counting..."
+          }
+        },
+        "advantage_item_BwdWPT": {
+          "type": "advantage_item",
+          "settings": {
+            "icon": "shopify://shop_images/warranty.png",
+            "title": "365 Days to Fallin Love Warranty"
+          }
+        },
+        "advantage_item_774Pdq": {
+          "type": "advantage_item",
+          "settings": {
+            "icon": "shopify://shop_images/timer.png",
+            "title": "Flawless, Step by Step,  5 Minute Installation"
+          }
+        },
+        "payment_item_8HLLRm": {
+          "type": "payment_item",
+          "settings": {
+            "icon": "shopify://shop_images/american-express.png"
+          }
+        },
+        "payment_item_HYAPy7": {
+          "type": "payment_item",
+          "settings": {
+            "icon": "shopify://shop_images/Gpay.png"
+          }
+        },
+        "payment_item_BLJkdN": {
+          "type": "payment_item",
+          "settings": {
+            "icon": "shopify://shop_images/afterpay.png"
+          }
+        },
+        "payment_item_QMqtxc": {
+          "type": "payment_item",
+          "settings": {
+            "icon": "shopify://shop_images/shop.png"
+          }
+        },
+        "payment_item_VVwwaj": {
+          "type": "payment_item",
+          "settings": {
+            "icon": "shopify://shop_images/Visa.png"
+          }
+        }
+      },
+      "block_order": [
+        "social_item_ejzzaU",
+        "social_item_ywaVrR",
+        "social_item_TwECmQ",
+        "social_item_et8JTw",
+        "advantage_item_ec4Hgf",
+        "advantage_item_k8rWja",
+        "advantage_item_BwdWPT",
+        "advantage_item_774Pdq",
+        "payment_item_8HLLRm",
+        "payment_item_HYAPy7",
+        "payment_item_BLJkdN",
+        "payment_item_QMqtxc",
+        "payment_item_VVwwaj"
+      ],
+      "settings": {
+        "logo": "shopify://shop_images/logo_f6fb9f67-3f76-4975-a7d5-8fe3026dd96d.png",
+        "socials_title": "Follow us",
+        "contacts_title": "Contact",
+        "email": "cs@wickedcushions.com",
+        "address": "<p>Amzaleg's LLC</p><p>1812 W Burbank Blvd #7234</p><p>Burbank CA 91505</p>",
+        "navigation": "footer-navigation",
+        "secondary_navigation": "footer-secondary-navigation",
+        "payments_title": "Secured pay",
+        "show_lang_selector": true,
+        "available_countries": "United States, United Kingdom, Canada, Europe"
+      }
+    }
+  },
+  "order": [
+    "newsletter_rQPR3w",
+    "footer"
+  ]
+}

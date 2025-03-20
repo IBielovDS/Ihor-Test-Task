@@ -1,0 +1,363 @@
+{%- liquid
+  assign padding_top = section.settings.padding_top
+  assign padding_bottom = section.settings.padding_bottom
+  assign padding_top_mobile = section.settings.padding_top_mobile
+  assign padding_bottom_mobile = section.settings.padding_bottom_mobile
+  assign margin_top = section.settings.margin_top
+  assign margin_bottom = section.settings.margin_bottom
+  assign margin_top_mobile = section.settings.margin_top_mobile
+  assign margin_bottom_mobile = section.settings.margin_bottom_mobile
+  assign title = section.settings.title
+  assign text = section.settings.text
+  assign agree_text = section.settings.agree_text
+  assign address_title = section.settings.address_title
+  assign email_title = section.settings.email_title
+  assign address = section.settings.address
+  assign email = section.settings.email
+  assign show_bottom_items = section.settings.show_bottom_items
+
+  assign name_error_message = 'contact_form.errors.name_error_message' | t
+  assign email_error_message = 'contact_form.errors.email_error_message' | t
+  assign body_error_message = 'contact_form.errors.body_error_message' | t
+  assign marketing_error_message = 'contact_form.errors.marketing_error_message' | t
+-%}
+
+<div class="bg-grey global-inner-spacing">
+  <style>
+    :root #shopify-section-{{section.id}} {
+      --padding-top: {{- padding_top -}}px;
+      --padding-bottom: {{- padding_bottom -}}px;
+      --padding-top-mobile: {{- padding_top_mobile -}}px;
+      --padding-bottom-mobile: {{- padding_bottom_mobile -}}px;
+      --margin-top: {{- margin_top -}}px;
+      --margin-bottom: {{- margin_bottom -}}px;
+      --margin-top-mobile: {{- margin_top_mobile -}}px;
+      --margin-bottom-mobile: {{- margin_bottom_mobile -}}px;
+    }
+  </style>
+
+  <div class="container">
+    <div class="grid gap-40 lg:grid-cols-2">
+      <div>
+        {%- if title != blank -%}
+          <h1 class="text-black-200 mb-24 lg:mb-32 text-center lg:text-left uppercase">{{- title -}}</h1>
+        {%- endif -%}
+
+        {%- if text != blank -%}
+          <div class="text-black-200 body-2 text-center lg:text-left">{{- text -}}</div>
+        {%- endif -%}
+      </div>
+      <div class="bg-white rounded-8 p-32 lg:p-40">
+        <form-validation data-form-type="contact">
+          {%- form 'contact', id: 'contact-page' -%}
+            {%- if form.posted_successfully? -%}
+              <div class="min-h-[390px] lg:min-h-[400px] flex flex-col justify-center items-center">
+                <h5 class="mb-24 text-orange-100 text-center uppercase">{{- 'contact_form.sent' | t -}}</h5>
+                <div class="body-2 text-grey-600 text-center">{{- 'contact_form.sent_text__html' | t -}}</div>
+              </div>
+            {%- elsif form.errors? -%}
+              <div class="min-h-[390px] lg:min-h-[400px] flex flex-col justify-center items-center">
+                {%- for error in form.errors -%}
+                  <div class="body-2 text-grey-600 text-center">
+                    {% if error == 'form' %}
+                      {{ form.errors.messages[error] }}
+                    {% else %}
+                      {{ form.errors.translated_fields[error] }} - {{ form.errors.messages[error] }}
+                    {% endif %}
+                  </div>
+                {%- endfor -%}
+              </div>
+            {%- else -%}
+              <div class="input-wrapper dark lg:col-start-1 ">
+                <input
+                  type="text"
+                  id="contact-name-{{- section.id -}}"
+                  name="contact[name]"
+                  {% if form.name %}
+                    value="{{- form.name -}}"
+                  {% endif %}
+                  placeholder="{{- 'contact_form.name' | t -}}"
+                  aria-label="{{- 'contact_form.name' | t -}}"
+                  class="input"
+                  required
+                >
+                <label
+                  for="contact-name-{{- section.id -}}"
+                  class="input-label"
+                >
+                  {{- 'contact_form.name' | t -}}
+                </label>
+                {%- render 'warning-message-box', text: name_error_message -%}
+              </div>
+
+              <div
+                class="input-wrapper dark mb-16"
+              >
+                <input
+                  type="email"
+                  id="contact-email-{{- section.id -}}"
+                  name="contact[email]"
+                  {% if form.email %}
+                    value="{{- form.email -}}"
+                  {% endif %}
+                  spellcheck="false"
+                  autocapitalize="off"
+                  autocomplete="email"
+                  aria-required="true"
+                  {% if form.errors contains 'email' %}
+                    aria-invalid="true"
+                    aria-describedby="contact-email-{{- section.id -}}-error"
+                  {% endif %}
+                  required
+                  class="input"
+                  placeholder="{{- 'contact_form.email' | t -}}"
+                  aria-label="{{- 'contact_form.email' | t -}}"
+                  pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+                >
+                <label
+                  class="input-label"
+                  for="contact-email-{{- section.id -}}"
+                >
+                  {{- 'contact_form.email' | t -}}
+                </label>
+                {%- render 'warning-message-box', text: email_error_message -%}
+              </div>
+
+              <div
+                class="input-wrapper dark mb-24 lg:mb-40"
+              >
+                <textarea
+                  name="contact[body]"
+                  id="contact-body-{{- section.id -}}"
+                  required
+                  class="input !resize-none"
+                  placeholder="{{- 'contact_form.text' | t -}}"
+                  aria-label="{{- 'contact_form.text' | t -}}"
+                  spellcheck="false"
+                  autocapitalize="off"
+                  autocomplete="off"
+                  aria-required="true"
+                  rows="3"
+                ></textarea>
+                <label
+                  for="contact-body-{{- section.id -}}"
+                  class="input-label"
+                >
+                  {{- 'contact_form.text' | t -}}
+                </label>
+                {%- render 'warning-message-box', text: body_error_message -%}
+              </div>
+
+              {% if agree_text != blank %}
+                <div class="input-wrapper !mb-0 mt-8">
+                  {%- assign id = 'contact-page-accepts-marketing-' | append: section.id -%}
+                  {%- render 'checkbox',
+                    label: agree_text,
+                    required: true,
+                    is_dark: true,
+                    id: id,
+                    accepts_marketing: true,
+                    name: 'customer[accepts_marketing]'
+                  -%}
+                  {%- render 'warning-message-box', text: marketing_error_message -%}
+                </div>
+              {% endif %}
+
+              <button
+                type="submit"
+                class="button button--primary button--w-full mt-24 lg:mt-40"
+              >
+                {%- render 'icon_v2', icon: 'subscribe' -%}
+                {{- 'contact_form.submit' | t -}}
+              </button>
+            {%- endif -%}
+          {%- endform -%}
+        </form-validation>
+      </div>
+    </div>
+  </div>
+  {%- if show_bottom_items -%}
+    <div class="container--mobile-full mt-40 lg:mt-80">
+      <div class="grid lg:grid-cols-2">
+        <div class="p-16 lg:p-40 border-t-1 lg:border-b-1 lg:border-r-1 border-black-200">
+          {%- if address_title != blank -%}
+            <h6 class="mb-16 uppercase">{{- address_title -}}</h6>
+          {%- endif -%}
+
+          {%- if address != blank -%}
+            <div class="flex">
+              {%- render 'icon_v2', icon: 'address', class: 'mr-8' -%}
+              <div class="body-2 text-grey-600">{{- address -}}</div>
+            </div>
+          {%- endif -%}
+        </div>
+        <div class="p-16 lg:p-40 border-t-1 border-b-1 border-black-200">
+          {%- if email_title != blank -%}
+            <h6 class="mb-16 uppercase">{{- email_title -}}</h6>
+          {%- endif -%}
+
+          {%- if email != blank -%}
+            <div class="flex">
+              {%- render 'icon_v2', icon: 'email', class: 'mr-8 [&_path]:stroke-black-200' -%}
+              <a
+                href="mailto:{{- email | strip | handleize -}}"
+                class="body-2 font-bold underline text-orange-100"
+              >
+                {{- email -}}
+              </a>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Contact page",
+  "class": "global-outer-spacing",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Tell us more about your needs"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Feel free to drop us a line via this contact form. <br/>We do our best to help all requests within 24 hours.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "agree_text",
+      "label": "Form agree text",
+      "default": "<p>I agree to the <a href='#'>Privacy Policy</a> and <a href='#'>Terms of Use</a>, and want to receive news.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bottom_items",
+      "label": "Show bottom items",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "address_title",
+      "label": "Address title",
+      "default": "Location"
+    },
+    {
+      "type": "richtext",
+      "id": "address",
+      "label": "Address",
+      "default": "<p>Amzaleg's LLC 1812 W Burbank Blvd #7234<br/>Burbank CA 91505</p>"
+    },
+    {
+      "type": "text",
+      "id": "email_title",
+      "label": "Email title",
+      "default": "Have a question? Let us know:"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email"
+    },
+    {
+      "type": "header",
+      "content": "Outer Spaces"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Margin bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Margin bottom",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Inner Spaces"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding bottom",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding top",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding bottom",
+      "default": 104
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact page"
+    }
+  ]
+}
+{% endschema %}

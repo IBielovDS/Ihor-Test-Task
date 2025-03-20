@@ -1,0 +1,975 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Custom Theme",
+    "theme_version": "1.0.0",
+    "theme_author": "Ihor",
+    "theme_documentation_url": "",
+    "theme_support_url": ""
+  },
+  {
+    "name": "Quick view",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_quick_view",
+        "label": "Enable quick view?",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "All of your collections are listed by default. To customize your list, choose 'Selected' and add collections. [Learn more](https://help.shopify.com/manual/customers/manage-customers)"
+      },
+      {
+        "type": "header",
+        "content": "Backgrounds",
+        "info": "Subscribers added automatically to your “accepted marketing” customer list."
+      },
+      {
+        "type": "color",
+        "id": "primary_background_color",
+        "label": "Primary background",
+        "default": "#F5F7F9"
+      },
+      {
+        "type": "color",
+        "id": "secondary_background_color",
+        "label": "Secondary background",
+        "default": "#F5F7F9"
+      },
+      {
+        "type": "color",
+        "id": "card_background_color",
+        "label": "Card background",
+        "default": "#F5F7F9"
+      },
+      {
+        "type": "color",
+        "id": "image_background_color",
+        "label": "Image background",
+        "default": "#F5F7F9"
+      },
+      {
+        "type": "header",
+        "content": "Text",
+        "info": "Subscribers added automatically to your “accepted marketing” customer list. [Learn more](https://help.shopify.com/manual/customers/manage-customers)"
+      },
+      {
+        "type": "color",
+        "id": "heading_color",
+        "label": "Titles",
+        "default": "#003D69"
+      },
+      {
+        "type": "color",
+        "id": "paragraph_color",
+        "label": "Paragraphs",
+        "default": "#003D69"
+      },
+      {
+        "type": "color",
+        "id": "link_color",
+        "label": "Links",
+        "default": "#003D69"
+      },
+      {
+        "type": "color",
+        "id": "inactive_color",
+        "label": "Inactive",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "secondary_text_color",
+        "label": "Secondary text color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "header",
+        "content": "Icons",
+        "info": "Subscribers added automatically to your “accepted marketing” customer list. [Learn more](https://help.shopify.com/manual/customers/manage-customers)"
+      },
+      {
+        "type": "color",
+        "id": "icon_color",
+        "label": "Icon",
+        "default": "#000000"
+      },
+      {
+        "type": "header",
+        "content": "Badges",
+        "info": "Testing"
+      },
+      {
+        "type": "color",
+        "id": "new_arrival_text_color",
+        "label": "New arrival text",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "new_arrival_color",
+        "label": "New arrival background",
+        "default": "#0066AF"
+      },
+      {
+        "type": "color",
+        "id": "discount_text_color",
+        "label": "Sale text",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "discount_color",
+        "label": "Sale background",
+        "default": "#FFB133"
+      },
+      {
+        "type": "color",
+        "id": "limited_edition_text_color",
+        "label": "Limited edition text",
+        "default": "#0066AF"
+      },
+      {
+        "type": "color",
+        "id": "limited_edition_color",
+        "label": "Limited edition background",
+        "default": "#D9EFFF"
+      },
+      {
+        "type": "color",
+        "id": "bestsellers_text_color",
+        "label": "Bestsellers text",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "bestsellers_color",
+        "label": "Bestsellers background",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "low_stock_text_color",
+        "label": "Low stock text",
+        "default": "#fff"
+      },
+      {
+        "type": "color",
+        "id": "low_stock_color",
+        "label": "Low stock background",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "sold_out_text_color",
+        "label": "Sold out text",
+        "default": "#fff"
+      },
+      {
+        "type": "color",
+        "id": "sold_out_color",
+        "label": "Sold out background",
+        "default": "#343434"
+      },
+      {
+        "type": "color",
+        "id": "additional_badge_text_color",
+        "label": "Additional text",
+        "default": "#fff"
+      },
+      {
+        "type": "color",
+        "id": "additional_badge_color",
+        "label": "Additional background",
+        "default": "#343434"
+      },
+      {
+        "type": "header",
+        "content": "Buttons",
+        "info": "Test"
+      },
+      {
+        "type": "color",
+        "id": "primary_button_text_color",
+        "label": "Primary text Color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "primary_button_background_color",
+        "label": "Primary background",
+        "default": "#005898"
+      },
+      {
+        "type": "color",
+        "id": "primary_button_border_color",
+        "label": "Primary border"
+      },
+      {
+        "type": "color",
+        "id": "secondary_button_text_color",
+        "label": "Secondary text",
+        "default": "#005898"
+      },
+      {
+        "type": "color",
+        "id": "secondary_button_background_color",
+        "label": "Secondary background"
+      },
+      {
+        "type": "color",
+        "id": "secondary_button_border_color",
+        "label": "Secondary border",
+        "default": "#005898"
+      },
+      {
+        "type": "header",
+        "content": "Options",
+        "info": "Subscribers added automatically to your “accepted marketing” customer list. [Learn more](https://help.shopify.com/manual/customers/manage-customers)"
+      },
+      {
+        "type": "color",
+        "id": "inactive_option_background_color",
+        "label": "Background",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "inactive_option_text_color",
+        "label": "Text",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "inactive_option_border_color",
+        "label": "Border",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "active_option_background_color",
+        "label": "Active background",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "active_option_text_color",
+        "label": "Active text",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "active_option_border_color",
+        "label": "Active border",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "header",
+        "content": "Forms",
+        "info": "Subscribers added automatically to your “accepted marketing” customer list. [Learn more](https://help.shopify.com/manual/customers/manage-customers)"
+      },
+      {
+        "type": "color",
+        "id": "input_label_color",
+        "label": "Input label",
+        "default": "#003D69"
+      },
+      {
+        "type": "color",
+        "id": "input_background_color",
+        "label": "Input background",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "input_text_color",
+        "label": "Input text",
+        "default": "#003D69"
+      },
+      {
+        "type": "color",
+        "id": "input_placeholder_color",
+        "label": "Input placeholder",
+        "default": "#77808E"
+      },
+      {
+        "type": "color",
+        "id": "input_border_color",
+        "label": "Input border",
+        "default": "#D9E2E8"
+      },
+      {
+        "type": "color",
+        "id": "input_active_highlight_color",
+        "label": "Input active hightlight",
+        "default": "#005898"
+      },
+      {
+        "type": "color",
+        "id": "success_message_color",
+        "label": "Success message",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "error_message_color",
+        "label": "Error message",
+        "default": "#000000"
+      },
+      {
+        "type": "header",
+        "content": "Loader",
+        "info": "Subscribers added automatically to your “accepted marketing” customer list."
+      },
+      {
+        "type": "color",
+        "id": "loader_primary_color",
+        "label": "Primary color",
+        "default": "#0066AF"
+      },
+      {
+        "type": "color",
+        "id": "loader_secondary_color",
+        "label": "Secondary color",
+        "default": "#D9E2E8"
+      }
+    ]
+  },
+  {
+    "name": "Buttons",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "All of your collections are listed by default. To customize your list, choose 'Selected' and add collections."
+      },
+      {
+        "type": "header",
+        "content": "Primary button",
+        "info": "Test"
+      },
+      {
+        "type": "range",
+        "id": "primary_button_border_width",
+        "min": 0,
+        "max": 4,
+        "step": 1,
+        "unit": "px",
+        "label": "Border Thickness",
+        "default": 0
+      },
+      {
+        "type": "select",
+        "id": "primary_button_animation",
+        "label": "Hover Animation",
+        "options": [
+          {
+            "value": "grow",
+            "label": "Grow"
+          },
+          {
+            "value": "shrink",
+            "label": "Shrink"
+          },
+          {
+            "value": "lighten",
+            "label": "Lighten"
+          },
+          {
+            "value": "darken",
+            "label": "Darken"
+          }
+        ],
+        "default": "shrink"
+      },
+      {
+        "type": "header",
+        "content": "Secondary button",
+        "info": "Test"
+      },
+      {
+        "type": "range",
+        "id": "secondary_button_border_width",
+        "min": 0,
+        "max": 4,
+        "step": 1,
+        "unit": "px",
+        "label": "Border Thickness",
+        "default": 1
+      },
+      {
+        "type": "select",
+        "id": "secondary_button_animation",
+        "label": "Hover Animation",
+        "options": [
+          {
+            "value": "grow",
+            "label": "Grow"
+          },
+          {
+            "value": "shrink",
+            "label": "Shrink"
+          },
+          {
+            "value": "lighten",
+            "label": "Lighten"
+          },
+          {
+            "value": "darken",
+            "label": "Darken"
+          }
+        ],
+        "default": "shrink"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "All of your collections are listed by default. To customize your list, choose 'Selected' and add collections."
+      },
+      {
+        "type": "header",
+        "content": "Headings"
+      },
+      {
+        "type": "font_picker",
+        "id": "heading_font",
+        "label": "Font",
+        "default": "poppins_n6"
+      },
+      {
+        "type": "range",
+        "id": "heading_font_size_scale",
+        "min": 75,
+        "max": 125,
+        "step": 1,
+        "unit": "%",
+        "label": "Font size scale",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "heading_line_spacing_scale",
+        "min": 100,
+        "max": 150,
+        "step": 1,
+        "unit": "%",
+        "label": "Line spacing scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Paragraphs"
+      },
+      {
+        "type": "font_picker",
+        "id": "paragraph_font",
+        "label": "Font",
+        "default": "poppins_n4"
+      },
+      {
+        "type": "range",
+        "id": "paragraph_font_size_scale",
+        "min": 75,
+        "max": 125,
+        "step": 1,
+        "unit": "%",
+        "label": "Font size scale",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "paragraph_line_spacing_scale",
+        "min": 100,
+        "max": 200,
+        "step": 1,
+        "unit": "%",
+        "label": "Line spacing scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Buttons Font"
+      },
+      {
+        "type": "font_picker",
+        "id": "buttons_font",
+        "label": "Font",
+        "default": "poppins_n4"
+      },
+      {
+        "type": "color",
+        "id": "buttons_color",
+        "label": "Text Color",
+        "default": "#003D69"
+      },
+      {
+        "type": "range",
+        "id": "buttons_font_size_scale",
+        "min": 100,
+        "max": 200,
+        "step": 1,
+        "unit": "%",
+        "label": "Font size scale",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "buttons_font_line_spacing_scale",
+        "min": 100,
+        "max": 200,
+        "step": 1,
+        "unit": "%",
+        "label": "Line spacing scale",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "All of your collections are listed by default. To customize your list, choose 'Selected' and add collections."
+      },
+      {
+        "type": "range",
+        "id": "page_width",
+        "min": 1000,
+        "max": 1500,
+        "step": 10,
+        "unit": "px",
+        "label": "Page width",
+        "default": 1200
+      },
+      {
+        "type": "range",
+        "id": "space_between_sections",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Space between sections",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Grid",
+        "info": "Test info"
+      },
+      {
+        "type": "range",
+        "id": "grid_horizontal_space",
+        "min": 4,
+        "max": 80,
+        "step": 1,
+        "unit": "px",
+        "label": "Horizontal Space",
+        "default": 30
+      },
+      {
+        "type": "range",
+        "id": "grid_vertical_space",
+        "min": 4,
+        "max": 80,
+        "step": 1,
+        "unit": "px",
+        "label": "Vertical Space",
+        "default": 30
+      }
+    ]
+  },
+  {
+    "name": "Pagination",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "All of your collections are listed by default. To customize your list, choose 'Selected' and add collections. [Learn more](https://help.shopify.com/manual/customers/manage-customers)"
+      },
+      {
+        "type": "select",
+        "id": "pagination_type",
+        "label": "Type",
+        "options": [
+          {
+            "value": "pages",
+            "label": "Pages"
+          },
+          {
+            "value": "load_more",
+            "label": "Load more"
+          },
+          {
+            "value": "auto_load",
+            "label": "Auto load"
+          }
+        ],
+        "default": "pages"
+      },
+      {
+        "type": "select",
+        "id": "pagination_button_type",
+        "label": "Load more button type",
+        "options": [
+          {
+            "value": "primary",
+            "label": "Primary"
+          },
+          {
+            "value": "secondary",
+            "label": "Secondary"
+          }
+        ],
+        "default": "secondary"
+      },
+      {
+        "type": "select",
+        "id": "loading_animation",
+        "label": "Loading animation",
+        "options": [
+          {
+            "value": "spinner",
+            "label": "Spinner"
+          },
+          {
+            "value": "paw",
+            "label": "Paw"
+          }
+        ],
+        "default": "spinner"
+      }
+    ]
+  },
+  {
+    "name": "Prices",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "All of your collections are listed by default. To customize your list, choose 'Selected' and add collections. [Learn more](https://help.shopify.com/manual/customers/manage-customers)"
+      },
+      {
+        "type": "checkbox",
+        "id": "currency_code_enable",
+        "label": "Show currency codes",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "currency_format",
+        "label": "Currency format",
+        "options": [
+          {
+            "value": "amount",
+            "label": "1,134.65"
+          },
+          {
+            "value": "amount_with_comma_separator",
+            "label": "1.134,65"
+          },
+          {
+            "value": "amount_with_apostrophe_separator",
+            "label": "1'134.65"
+          },
+          {
+            "value": "amount_with_space_separator",
+            "label": "1 134,65"
+          },
+          {
+            "value": "amount_with_period_and_space_separator",
+            "label": "1 134.65"
+          }
+        ],
+        "default": "amount_with_comma_separator"
+      },
+      {
+        "type": "select",
+        "id": "range_type",
+        "label": "Range display",
+        "options": [
+          {
+            "value": "display_range",
+            "label": "10.99 - 20.99"
+          },
+          {
+            "value": "display_min",
+            "label": "From 10.99"
+          }
+        ],
+        "default": "display_min"
+      }
+    ]
+  },
+  {
+    "name": "Socials",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Add all of your social media links to your store. They’ll automatically display as the relevant icon. [See Tutorial](https://help.shopify.com/manual/customers/manage-customers)"
+      },
+      {
+        "type": "header",
+        "content": "Links",
+        "info": "Add all of your social links below. The social icon will only appear if its link is populated."
+      },
+      {
+        "type": "url",
+        "id": "facebook",
+        "label": "Facebook"
+      },
+      {
+        "type": "url",
+        "id": "linkedin",
+        "label": "Linkedin"
+      },
+      {
+        "type": "url",
+        "id": "youtube",
+        "label": "Youtube"
+      },
+      {
+        "type": "url",
+        "id": "instagram",
+        "label": "Instagram"
+      },
+      {
+        "type": "url",
+        "id": "twitter",
+        "label": "Twitter"
+      },
+      {
+        "type": "url",
+        "id": "pinterest",
+        "label": "Pinterest"
+      },
+      {
+        "type": "url",
+        "id": "twitch",
+        "label": "Twitch"
+      },
+      {
+        "type": "url",
+        "id": "snapchat",
+        "label": "Snapchat"
+      },
+      {
+        "type": "url",
+        "id": "tiktok",
+        "label": "TikTok"
+      }
+    ]
+  },
+  {
+    "name": "General",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_bar",
+        "label": "Show announcement bar",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Technical",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Storefront API"
+      },
+      {
+        "type": "text",
+        "id": "technical_storefront_token",
+        "label": "Token"
+      },
+      {
+        "type": "text",
+        "id": "technical_storefront_api_version",
+        "label": "Version"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_test_mode",
+        "label": "Enable test mode",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "Predictive search",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Search settings"
+      },
+      {
+        "type": "text",
+        "id": "not_found_text_first",
+        "label": "Not found text before requested word"
+      },
+      {
+        "type": "text",
+        "id": "not_found_text_second",
+        "label": "Not found text after requested word"
+      },
+      {
+        "type": "image_picker",
+        "id": "first_image",
+        "label": "First image"
+      },
+      {
+        "type": "text",
+        "id": "first_image_text",
+        "label": "First image text"
+      },
+      {
+        "type": "url",
+        "id": "first_image_link",
+        "label": "First image link"
+      },
+      {
+        "type": "image_picker",
+        "id": "second_image",
+        "label": "Second image"
+      },
+      {
+        "type": "text",
+        "id": "second_image_text",
+        "label": "Second image text"
+      },
+      {
+        "type": "url",
+        "id": "second_image_link",
+        "label": "Second image link"
+      },
+      {
+        "type": "image_picker",
+        "id": "third_image",
+        "label": "Third image"
+      },
+      {
+        "type": "text",
+        "id": "third_image_text",
+        "label": "Third image text"
+      },
+      {
+        "type": "url",
+        "id": "third_image_link",
+        "label": "Third image link"
+      }
+    ]
+  },
+  {
+    "name": "Search",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "search_empty_state_image",
+        "label": "Search empty state image"
+      },
+      {
+        "type": "text",
+        "id": "search_empty_state_link_text",
+        "label": "Search empty state link text"
+      },
+      {
+        "type": "url",
+        "id": "search_empty_state_link_url",
+        "label": "Search empty state link url"
+      }
+    ]
+  },
+  {
+    "name": "Waitlist",
+    "settings": [
+      {
+        "type": "metaobject",
+        "id": "waitlist",
+        "label": "Waitlist",
+        "metaobject_type": "wait_list"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Continue shopping button"
+      },
+      {
+        "type": "url",
+        "id": "continue_link",
+        "label": "Empty cart button link"
+      },
+      {
+        "type": "text",
+        "id": "continue_text",
+        "label": "Empty cart button text"
+      },
+      {
+        "type": "image_picker",
+        "id": "notification_bg",
+        "label": "Added to cart notification background"
+      }
+    ]
+  },
+  {
+    "name": "Socials",
+    "settings": [
+      {
+        "type": "image",
+        "id": "share_image",
+        "label": "Share Image",
+        "info": "The image shown when shared to social channels"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook_link",
+        "label": "Facebook",
+        "info": "Enter your Facebook URL."
+      },
+      {
+        "type": "text",
+        "id": "social_twitter_link",
+        "label": "Twitter",
+        "info": "Enter your Twitter URL."
+      },
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "Instagram",
+        "info": "Enter your Instagram URL."
+      },
+      {
+        "type": "text",
+        "id": "social_youtube_link",
+        "label": "YouTube",
+        "info": "Enter your YouTube URL."
+      }
+    ]
+  },
+  {
+    "name": "Product Card",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_second_image_on_hover",
+        "label": "Show second image on hover",
+        "default": true
+      }
+    ]
+  }
+]

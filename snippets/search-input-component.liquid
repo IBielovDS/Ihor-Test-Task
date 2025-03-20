@@ -1,0 +1,95 @@
+{% comment %}
+  Usage:
+  {% render 'search-input-component',
+    placeholder: section.settings.input_placeholder,
+    trending_label: section.settings.trending_searches_label,
+    trending_searches: section.settings.trending_searches
+  %}
+{% endcomment %}
+<search-input-component
+  class="
+    block top-0 left-0 max-w-[908px] mx-auto w-full relative
+    transition-all duration-700
+    z-10
+    transform
+    [&.active_.search-button]:hidden
+    [&.active_.clear-search-button]:block
+    [&.loading_.search-button]:hidden
+    [&.loading_.clear-search-button]:hidden
+    [&.loading_.loading-search-button]:!block
+    [&.loading]:pointer-events-none
+    [&.loading_search-results]:pointer-events-none
+    {{ wrapper_class }}
+  "
+>
+  <form
+    action="{{- routes.search_url -}}"
+    role="search"
+    method="get"
+    class="{{ class }} flex flex-col items-center h-48 rounded-8 bg-white border border-solid border-orange-100 mb-32 lg:mb-40 relative justify-center max-w-[676px] w-[90%] lg:w-full mx-auto"
+  >
+    <input
+      type="hidden"
+      name="type"
+      value="product"
+    >
+    <input
+      type="search"
+      name="q"
+      role="combobox"
+      autocorrect="off"
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+      {%- if template == 'search' -%}
+        value="{{- search.terms -}}"
+      {%- endif -%}
+      class="block appearance-none outline-none border-transparent focus:border-transparent focus:ring-0 w-full h-22 body-3 text-black-200 placeholder-black-200 "
+      {%- if placeholder != blank -%}
+        placeholder="{{- placeholder -}}"
+      {%- endif -%}
+    >
+    <button
+      class="absolute right-0 top-0 search-button"
+      type="button"
+    >
+      {%- render 'icon_v2', icon: 'search' -%}
+    </button>
+    <button
+      class="absolute right-0 top-0 clear-search-button hidden p-16"
+      type="button"
+      data-clear-search
+    >
+      {%- render 'icon_v2', icon: 'clear-input-icon' -%}
+    </button>
+    <button
+      class="btn !absolute right-0 top-0 loading-search-button hidden !p-[23px] is-loading"
+      type="button"
+    >
+      <span class="btn__loader">
+        {%- render 'icon_v2', icon: 'spinner-arrow', class: '[&_path]:stroke-grey-200' -%}
+      </span>
+    </button>
+  </form>
+
+  {% render 'search-results' %}
+
+  {%- if trending_searches != blank -%}
+    {%- assign trending_search_array = trending_searches | split: ',' -%}
+    <div class="trending-searches w-fit mx-auto flex items-center justify-center flex-col gap-16 lg:flex-row">
+      {%- if trending_label != blank -%}
+        <span class="body-3 text-grey-200">{{- trending_label -}}</span>
+      {%- endif -%}
+      <ul class="flex items-center justify-center flex-wrap gap-8 max-w-[90%]">
+        {%- for trending_search in trending_search_array -%}
+          <li
+            class="body-3 border border-[#FFFFFF26] font-medium px-8 py-4 rounded-8 bg-[#0A03004D] text-white cursor-pointer"
+            data-suggestion="{{- trending_search -}}"
+          >
+            <span>{{- trending_search -}}</span>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+</search-input-component>

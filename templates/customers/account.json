@@ -1,0 +1,25 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+ {
+  "sections": {
+    "account_info_EwMGrd": {
+      "type": "account-info",
+      "settings": {
+        "margin_top": 80,
+        "margin_bottom": 80,
+        "margin_top_mobile": 72,
+        "margin_bottom_mobile": 72
+      }
+    }
+  },
+  "order": [
+    "account_info_EwMGrd"
+  ]
+}

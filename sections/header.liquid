@@ -1,0 +1,275 @@
+{% liquid
+  assign template = template
+  if template == 'product'
+    assign additional_class = 'py-8 shadow-[0_1px_0_0_rgba(0,0,0,0.1)]'
+  else
+    assign additional_class = 'py-16'
+  endif
+%}
+
+<section-header class="block {{ additional_class }}">
+  <header>
+    <div class="container">
+      <div class="flex flex-wrap items-center justify-between lg:flex-nowrap lg:grid lg:grid-cols-[1fr_2.5fr_1fr] lg:gap-70">
+        <div class="order-1">
+          {%- if section.settings.logo != blank -%}
+            <a
+              href="{{- routes.root_url -}}"
+              class="block w-fit"
+            >
+              {%- render 'responsive-image-dynamic_v2',
+                image: section.settings.logo,
+                alt_text: section.settings.logo.alt,
+                fetchpriority: 'high',
+                sizes: '80px',
+                class: 'w-52 lg:w-64'
+              -%}
+            </a>
+          {%- endif -%}
+        </div>
+        <div class="w-full order-4 lg:order-2">
+          {%- liquid
+            assign template = template
+
+            assign search_placeholder = 'header.search_placeholder' | t
+            assign header_search_class = '[&_form]:mb-0 [&_form]:lg:mb-8 [&_search-results]:left-1/2 [&_search-results]:-translate-x-1/2 [&.show-search]:mt-20 lg:mt-0 [&.show-search]:max-h-[1000px] [&.show-search]:opacity-100 [&:not(.show-search)]:max-h-[0px] [&:not(.show-search)]:opacity-0 [&:not(.show-search)]:overflow-hidden transition-all duration-300'
+
+            if template != 'index'
+              assign header_search_class = header_search_class | append: ' show-search'
+            endif
+
+            render 'search-input-component', wrapper_class: header_search_class, placeholder: search_placeholder
+          -%}
+
+          {%- if section.settings.navigation != blank -%}
+            <nav class="hidden my-auto lg:flex items-center justify-center">
+              {%- for link in section.settings.navigation.links -%}
+                {%- liquid
+                  assign handle_link = link.title | handleize
+                  assign is_mega_menu = false
+                  for block in section.blocks
+                    assign handle_block_title = block.settings.trigger_link_title | handleize
+                    assign top_title = block.settings.top_title
+                    assign brands_title = block.settings.brands_title
+                    assign models_title = block.settings.models_title
+                    assign mega_links = block.settings.links
+                    if handle_block_title == handle_link and brands_title != blank and models_title != blank and mega_links != blank and top_title != blank
+                      assign is_mega_menu = true
+                    endif
+                  endfor
+                -%}
+                {%- if is_mega_menu -%}
+                  <button
+                    type="button"
+                    onclick="
+                      document.dispatchEvent(new CustomEvent('openMegaMenu', {
+                        detail: { parent: '{{ handle_link }}' }
+                      }))
+                    "
+                    class="flex items-center text-14 leading-20 font-semibold text-grey-300 uppercase mx-16"
+                  >
+                    {%- render 'icon_v2', icon: 'menu' -%}
+                    <span class="ml-8">{{- link.title -}}</span>
+                  </button>
+                {%- else -%}
+                  {% if link.links.size > 0 %}
+                    <div class="relative group flex">
+                      <a
+                        href="{{- link.url -}}"
+                        class="text-14 leading-20 font-semibold text-grey-300 uppercase mx-16 transition-colors border-b-3 border-transparent group-hover:border-orange-100"
+                      >
+                        {{- link.title -}}
+                      </a>
+                      <div class="absolute top-[100%] left-0 z-10 py-16 px-32 bg-white light-box-shadow rounded-8 transition-opacity opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto">
+                        {%- for sublink in link.links -%}
+                          <a
+                            href="{{- sublink.url -}}"
+                            class="block body-3 font-medium py-12 border-b-1 last:border-b-0 text-nowrap"
+                          >
+                            {{- sublink.title -}}
+                          </a>
+                        {%- endfor -%}
+                      </div>
+                    </div>
+                  {% else %}
+                    <a
+                      href="{{- link.url -}}"
+                      class="text-14 leading-20 font-semibold text-grey-300 uppercase mx-16 transition-colors border-b-3 border-transparent hover:border-orange-100"
+                    >
+                      {{- link.title -}}
+                    </a>
+                  {% endif %}
+                {%- endif -%}
+              {%- endfor -%}
+            </nav>
+          {%- endif -%}
+        </div>
+        <div class="order-3 flex items-center justify-end">
+          {%- if customer != blank -%}
+            <a
+              href="{{- routes.account_url -}}"
+              class="mx-12 lg:mx-16"
+            >
+              {%- render 'icon_v2', icon: 'customer' -%}
+            </a>
+          {%- else -%}
+            <a
+              href="{{- routes.account_login_url -}}"
+              class="flex items-center mx-12 lg:mx-16"
+            >
+              {%- render 'icon_v2', icon: 'customer' -%}
+              <span class="body-3 text-grey-300 ml-8 hidden lg:block">{{- 'header.login' | t -}}</span>
+            </a>
+          {%- endif -%}
+          <a
+            href="{{- routes.cart_url -}}"
+            class="js-header-cart flex items-center mx-12 lg:ml-16 lg:mr-0 {% if template == 'cart' %}pointer-events-none{% endif %}"
+            {% if template != 'cart' %}
+              data-show-cart
+            {% endif %}
+            data-ajax-cart-section
+          >
+            {%- render 'icon_v2', icon: 'cart' -%}
+            <span
+              class="body-3 text-grey-300 ml-8 header__cart-quantity"
+              data-ajax-cart-bind="item_count"
+            >
+              {{- cart.item_count -}}
+            </span>
+          </a>
+          <div class="lg:hidden rounded-4 w-40 h-40 relative transition-colors has-[.js-mobile-menu-close:not(.opacity-0)]:bg-grey">
+            {%- render 'icon_v2',
+              icon: 'menu',
+              class: 'js-mobile-menu-trigger absolute left-8 top-8 z-10 transition-opacity'
+            -%}
+            {%- render 'icon_v2',
+              icon: 'menu_close',
+              class: 'js-mobile-menu-close absolute left-8 top-8 opacity-0 transition-opacity'
+            -%}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {%- liquid
+      assign mega_menu_blocks = section.blocks | where: 'type', 'mega-menu'
+
+      if section.settings.navigation != blank
+        render 'mobile-menu', menu: section.settings.navigation, additional_menu: section.settings.additional_navigation, mega_menu_blocks: mega_menu_blocks, available_countries: section.settings.available_countries
+      endif
+    -%}
+  </header>
+
+  {%- if section.blocks.size > 0 -%}
+    {%- for link in section.settings.navigation.links -%}
+      {%- liquid
+        assign handle_link = link.title | handleize
+        assign is_mega_menu = false
+        for block in section.blocks
+          assign handle_block_title = block.settings.trigger_link_title | handleize
+          assign top_title = block.settings.top_title
+          assign brands_title = block.settings.brands_title
+          assign models_title = block.settings.models_title
+          assign mega_links = block.settings.links
+          if handle_block_title == handle_link and brands_title != blank and models_title != blank and mega_links != blank and top_title != blank
+            assign is_mega_menu = true
+          endif
+        endfor
+      -%}
+      {%- if is_mega_menu -%}
+        {%- render 'drawer-mega-menu',
+          menu: mega_links,
+          top_title: top_title,
+          brands_title: brands_title,
+          models_title: models_title,
+          parent_title: handle_block_title
+        -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+</section-header>
+
+{% schema %}
+{
+  "name": "Header",
+  "tag": "section",
+  "class": "shopify-section-group-header-group js-header-section bg-white sticky top-0 left-0 w-full z-50",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "available_countries",
+      "label": "Available countries",
+      "default": "United States, United Kingdom, Canada, Europe",
+      "info": "Countries via comma. By default will output all. Europe = first matching EU country."
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "link_list",
+      "id": "navigation",
+      "label": "Navigation"
+    },
+    {
+      "type": "link_list",
+      "id": "additional_navigation",
+      "label": "Additional Navigation (Mobile Menu)"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "mega-menu",
+      "name": "Mega menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "trigger_link_title",
+          "label": "Trigger link title",
+          "default": "Shop",
+          "info": "Case non-sensitive"
+        },
+        {
+          "type": "link_list",
+          "id": "links",
+          "label": "Links"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_images_on_level_2",
+          "label": "Show images on level 2",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "top_title",
+          "label": "Top title",
+          "default": "Our products"
+        },
+        {
+          "type": "text",
+          "id": "brands_title",
+          "label": "Brands title",
+          "default": "Brands"
+        },
+        {
+          "type": "text",
+          "id": "models_title",
+          "label": "Models title",
+          "default": "Models"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header",
+      "category": "Header"
+    }
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  }
+}
+{% endschema %}

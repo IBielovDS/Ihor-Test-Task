@@ -1,0 +1,272 @@
+{%- liquid
+  assign padding_top = section.settings.padding_top
+  assign padding_bottom = section.settings.padding_bottom
+  assign padding_top_mobile = section.settings.padding_top_mobile
+  assign padding_bottom_mobile = section.settings.padding_bottom_mobile
+
+  assign margin_top = section.settings.margin_top
+  assign margin_bottom = section.settings.margin_bottom
+  assign margin_top_mobile = section.settings.margin_top_mobile
+  assign margin_bottom_mobile = section.settings.margin_bottom_mobile
+
+  assign show_section = false
+  if section.blocks.size > 0
+    for block in section.blocks
+      if block.settings.products.size > 0 or block.settings.collection != null
+        assign show_section = true
+        break
+      endif
+    endfor
+  elsif section.blocks.size == 1 and section.blocks[0].settings.products.size > 0
+    assign show_section = true
+  endif
+-%}
+{%- if show_section -%}
+  <style>
+    :root #shopify-section-{{section.id}} {
+      --padding-top: {{padding_top}}px;
+      --padding-bottom: {{padding_bottom}}px;
+      --padding-top-mobile: {{padding_top_mobile}}px;
+      --padding-bottom-mobile: {{padding_bottom_mobile}}px;
+      --margin-top: {{margin_top}}px;
+      --margin-bottom: {{margin_bottom}}px;
+      --margin-top-mobile: {{margin_top_mobile}}px;
+      --margin-bottom-mobile: {{margin_bottom_mobile}}px;
+    }
+  </style>
+
+  <products-slider class="flex flex-col">
+    <div class="products-slider__top flex flex-col justify-between md:items-end md:flex-row gap-40 mb-40 md:mb-48">
+      {%- if section.settings.title != blank -%}
+        <h2 class="text-center md:text-left uppercase">
+          {{ section.settings.title }}
+        </h2>
+      {%- endif -%}
+      {% if section.blocks.size > 1 %}
+        <div class="products-slider__top-categories-wrapper">
+          <div class="products-slider__top-categories flex overflow-auto whitespace-nowrap original-scrollbar pb-10 flex-row gap-8">
+            <button
+              class="tab-item tab-item--reverse grey-bg active"
+              data-group="all"
+            >
+              {{ section.settings.all_group_title | default: 'All' }}
+            </button>
+            {% for block in section.blocks %}
+              {% liquid
+                assign skip_block = false
+                if block.settings.products == blank and block.settings.collection != blank
+                  if block.settings.collection.products.size == 0
+                    assign skip_block = true
+                  endif
+                endif
+                if block.settings.group_title == blank or skip_block == true
+                  continue
+                endif
+              %}
+              <button
+                class="tab-item tab-item--reverse grey-bg"
+                data-group="{{ block.settings.group_title }}"
+              >
+                {{ block.settings.group_title }}
+              </button>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+    <div class="section-product-slider__slider">
+      <div class="swiper !overflow-visible [&:not(.swiper-initialized)_.swiper-slide]:flex-[0_1_25%] [&:not(.swiper-initialized)_.swiper-wrapper]:flex">
+        <div class="swiper-wrapper">
+          {%- liquid
+            assign total_products = 0
+            for block in section.blocks
+              assign skip_block = false
+              if block.settings.products == blank and block.settings.collection != blank
+                if block.settings.collection.products.size == 0
+                  assign skip_block = true
+                endif
+              endif
+              if block.settings.group_title == blank or skip_block == true
+                continue
+              endif
+              assign product_index = 0
+              if block.settings.products != blank
+                for product in block.settings.products
+                  render 'product-card', product: product, group: block.settings.group_title, is_slider: true, title_tag: 'h3', index: product_index
+                  assign product_index = product_index | plus: 1
+                  assign total_products = total_products | plus: 1
+                endfor
+              endif
+              if block.settings.collection != null
+                for product in block.settings.collection.products
+                  render 'product-card', product: product, group: block.settings.group_title, is_slider: true, title_tag: 'h3', index: product_index
+                  assign product_index = product_index | plus: 1
+                  assign total_products = total_products | plus: 1
+                endfor
+              endif
+            endfor
+          -%}
+        </div>
+      </div>
+      <div
+        class="section-product-slider__slider__slider-nav flex flex-col justify-center items-center mt-40 lg:mt-48 lg:gap-[72px] lg:justify-between lg:flex-row"
+      >
+        <div class="product-slider__mobile-thumbs mt-24 !translate-x-0 lg:hidden"></div>
+        <div
+          class="product-slider__desktop-progress w-full hidden items-center lg:flex "
+        ></div>
+        <div class="product-slider__desktop-nav hidden gap-16 lg:flex">
+          <button class="product-slider__desktop-nav__prev button-arrow">
+            {% render 'icon_v2', icon: 'arrow-left' %}
+          </button>
+          <button class="product-slider__desktop-nav__next rotate-180 button-arrow">
+            {% render 'icon_v2', icon: 'arrow-left' %}
+          </button>
+        </div>
+      </div>
+    </div>
+  </products-slider>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Products slider",
+  "class": "section-product-slider container global-spacing overflow-x-hidden",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "Bestsellers"
+    },
+    {
+      "type": "text",
+      "id": "all_group_title",
+      "label": "All group title",
+      "default": "All"
+    },
+    {
+      "type": "header",
+      "content": "Inner Spaces"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Padding bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Padding bottom",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Outer Spaces"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Margin top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Margin bottom",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Margin top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Margin bottom",
+      "default": 20
+    }
+  ],
+  "blocks": [
+    {
+      "type": "products_group",
+      "name": "Product slider group",
+      "settings": [
+        {
+          "type": "product_list",
+          "id": "products",
+          "label": "List of products"
+        },
+        {
+          "type": "header",
+          "content": "OR / AND"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "group_title",
+          "label": "Group title",
+          "default": "Replacement Earpads"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product slider",
+      "category": "Products"
+    }
+  ]
+}
+{% endschema %}

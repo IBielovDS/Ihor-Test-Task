@@ -1,0 +1,107 @@
+{%- comment -%}
+  This snippet renders the content of the cart, including the cart header, items, upsells, discount input, and cart footer.
+
+  Variables:
+  - show_upsells: Boolean indicating whether to show upsell products.
+  - upsells: Collection of upsell products.
+  - show_discount_input: Boolean indicating whether to show the discount input field.
+  - cart: The cart object containing items, total price, total discount, etc.
+  - shop: The shop object containing enabled payment types.
+
+  Sections:
+  1. Cart Header: Displays the cart title and item count.
+  2. Cart Items: Displays the list of items in the cart. If the cart is empty, shows an empty cart message.
+  3. Upsells: Renders the upsell products if show_upsells is true.
+  4. Discount Input: Renders the discount input field if show_discount_input is true.
+  5. Cart Footer: Displays the total discount, subtotal, shipping message, and checkout button. Also shows enabled payment types if available.
+{%- endcomment -%}
+
+<div class="cart header px-16 md:px-32 box-border">
+  <h5 class="text-black-200 uppercase">
+    {{- 'cart.general.cart' | t -}}
+    <span class="text-orange-100"
+      >(
+      {{- cart.item_count -}}
+      )</span
+    >
+  </h5>
+</div>
+
+<div
+  class="my-cart__items overflow-y-auto pb-32 mt-24 flex-1 {% if cart.empty? %}pt-32 mx-16 md:mx-32 border-t-1 border-black-200 border-solid{% else %}pt-24{% endif %}"
+>
+  {%- if cart.empty? -%}
+    <span>{{- 'cart.general.empty' | t -}}</span>
+  {%- else -%}
+    <div class="side-cart-items--wrapper mx-16 md:mx-32">
+      {%- for line_item in cart.items -%}
+        {%- assign line_item_index = forloop.index -%}
+        {%- render 'side-cart-item', line_item: line_item, line_item_index: line_item_index -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if show_upsells -%}
+      {%- render 'side-cart-upsells', upsells: upsells -%}
+    {%- endif -%}
+
+    {%- if show_discount_input -%}
+      {%- render 'discount-input', cart: cart -%}
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+{%- unless cart.empty? -%}
+  <div class="cart-footer p-16 md:p-32 bg-grey-700 flex flex-col">
+    {%- if cart.total_discount > 0 -%}
+      <div
+        role="status"
+        class="flex justify-between items-center mb-8"
+      >
+        <span class="label-text  text-grey-600">{{- 'cart.general.discount' | t -}}</span>
+        <p
+          class="label-text  text-grey-600"
+          data-ajax-cart-bind="total_discount | money_with_currency"
+        >
+          {{- cart.total_discount | money_with_currency -}}
+        </p>
+      </div>
+    {%- endif -%}
+
+    <div
+      role="status"
+      class="flex justify-between items-center mb-8"
+    >
+      <span class="body-1 uppercase font-heading font-normal tracking-0.5">{{- 'cart.general.subtotal' | t -}}</span>
+      <p
+        class="body-1 uppercase font-heading font-normal header__cart-total tracking-0.5"
+      >
+        {{- cart.total_price | money_without_currency | prepend: cart.currency.symbol -}}
+      </p>
+    </div>
+
+    <span class="text-grey-600 text-center label-text mb-8">{{- 'cart.general.shipping_message' | t -}}</span>
+
+    {%- form 'cart', cart, id: 'my-ajax-cart-form' -%}
+      <button
+        type="submit"
+        name="checkout"
+        class="button button--primary !w-full !max-w-full"
+      >
+        {{- 'cart.general.checkout' | t -}}
+      </button>
+
+      {%- unless shop.enabled_payment_types == empty -%}
+        <div class="flex items-center">
+          <ul class="flex flex-wrap items-center gap-8 justify-center mt-16">
+            <span class="mr-8 label-text text-grey-600">{{- 'cart.general.secured_pay' | t -}}</span>
+            {%- for type in shop.enabled_payment_types -%}
+              <li>
+                {{- type | payment_type_svg_tag: class: 'icon icon--full-color' -}}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endunless -%}
+    {%- endform -%}
+  </div>
+{%- endunless -%}

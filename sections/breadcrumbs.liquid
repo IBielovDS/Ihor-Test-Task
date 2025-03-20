@@ -1,0 +1,152 @@
+{%- unless template == 'index' or template == 'cart' or template == 'list-collections' or template == '404' -%}
+  {%- liquid
+    assign a_classes = "label-text text-black-200 underline underline-offset-4 [&[aria-current='page']]:text-[#555555] [&[aria-current='page']]:no-underline [&[aria-current='page']]:pointer-events-none"
+    assign li_classes = "[&:not(:first-child)]:before:block [&:not(:first-child)]:before:w-16 [&:not(:first-child)]:before:h-16 [&:not(:first-child)]:before:bg-no-repeat [&:not(:first-child)]:before:bg-cover [&:not(:first-child)]:before:bg-center [&:not(:first-child)]:before:content-[''] flex gap-8 no-scrollbar whitespace-nowrap items-center"
+    assign t = template | split: '.' | first
+  -%}
+  <div class="breadcrumbs-wrapper mt-1 {% unless template contains 'product' or template contains 'contact' %} mb-12 {% endunless %} pl-16 border-t border-b border-solid border-[#0A0300] py-8 lg:pl-32 {% if request.path contains '/products/' -%}hidden lg:block{% endif %}">
+    <div class="container">
+      <nav
+        class="breadcrumbs"
+        role="navigation"
+        aria-label="breadcrumbs"
+      >
+        <ol class="flex flex-row gap-8 no-scrollbar overflow-x-auto items-center justify-start">
+          <li class="{{ li_classes }}">
+            <a
+              class="{{ a_classes }}"
+              href="/"
+              title="{{- 'breadcrumbs.home' | t -}}"
+            >
+              {{- 'breadcrumbs.home' | t -}}
+            </a>
+          </li>
+          {% case t %}
+            {%- when 'page' -%}
+              <li class="{{ li_classes }}">
+                <a
+                  class="{{ a_classes }}"
+                  href="{{- page.url -}}"
+                  aria-current="page"
+                >
+                  {{- page.title -}}
+                </a>
+              </li>
+            {%- when 'product' -%}
+              {%- if collection.url -%}
+                <li class="{{ li_classes }}">
+                  <a
+                    class="{{ a_classes }}"
+                    href="{{- collection.url -}}"
+                  >
+                    {{- collection.title -}}
+                  </a>
+                </li>
+              {%- endif -%}
+              <li class="{{ li_classes }}">
+                <a
+                  class="{{ a_classes }}"
+                  href="{{- product.url -}}"
+                  aria-current="page"
+                >
+                  {{- product.title -}}
+                </a>
+              </li>
+            {%- when 'collection' and collection.handle -%}
+              {%- if current_tags -%}
+                <li class="{{ li_classes }}">
+                  {{ collection.title | link_to: collection.url, class: a_classes }}
+                </li>
+                <li class="{{ li_classes }}">
+                  {%- capture tag_url -%}{{- collection.url -}}/{{- current_tags | join: "+" -}}{%- endcapture -%}
+                  <a
+                    class="{{ a_classes }}"
+                    href="{{- tag_url -}}"
+                    aria-current="page"
+                  >
+                    {{- current_tags | join: ' + ' -}}
+                  </a>
+                </li>
+              {%- else -%}
+                <li class="{{ li_classes }}">
+                  <a
+                    class="{{ a_classes }}"
+                    href="{{- collection.url -}}"
+                    aria-current="page"
+                  >
+                    {{- collection.title -}}
+                  </a>
+                </li>
+              {%- endif -%}
+            {%- when 'blog' -%}
+              {%- if current_tags -%}
+                <li class="{{ li_classes }}">
+                  {{ blog.title | link_to: blog.url, class: a_classes }}
+                </li>
+                <li class="{{ li_classes }}">
+                  {%- capture tag_url -%}{{- blog.url -}}/tagged/{{- current_tags | join: "+" -}}{%- endcapture -%}
+                  <a
+                    class="{{ a_classes }}"
+                    href="{{- tag_url -}}"
+                    aria-current="page"
+                  >
+                    {{- current_tags | join: ' + ' -}}
+                  </a>
+                </li>
+              {%- else -%}
+                <li class="{{ li_classes }}">
+                  <a
+                    class="{{ a_classes }}"
+                    href="{{- blog.url -}}"
+                  >
+                    {{- blog.title -}}
+                  </a>
+                </li>
+              {%- endif -%}
+            {%- when 'article' -%}
+              <li class="{{ li_classes }}">
+                {{ blog.title | link_to: blog.url, class: a_classes }}
+              </li>
+              <li class="{{ li_classes }}">
+                <a
+                  class="{{ a_classes }}"
+                  href="{{- article.url -}}"
+                  aria-current="page"
+                >
+                  {{- article.title -}}
+                </a>
+              </li>
+            {%- else -%}
+              <li
+                aria-current="page"
+                class="{{ li_classes }}"
+              >
+                <a
+                  class="{{ a_classes }}"
+                  href="{{- request.path -}}"
+                  aria-current="page"
+                >
+                  {{- page_title -}}
+                </a>
+              </li>
+          {%- endcase -%}
+        </ol>
+      </nav>
+    </div>
+  </div>
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Breadcrumbs",
+  "class": "breadcrumbs-container",
+  "presets": [
+    {
+      "name": "Breadcrumbs"
+    }
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  }
+}
+{% endschema %}

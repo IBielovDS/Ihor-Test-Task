@@ -1,0 +1,40 @@
+{%- liquid
+  assign product = product
+  assign link = product.link.value.url | default: settings.search_empty_state_link_url
+  assign link_text = product.link.value.text | default: settings.search_empty_state_link_text
+  assign image = product.image | default: settings.search_empty_state_image
+-%}
+
+{%- if link != blank and image != blank and link_text != blank -%}
+  <div
+    class="empty-state-banner "
+    data-redirect-url="{{- link -}}"
+    {% if product %}
+      data-search-product="{{- product.title | handleize -}}"
+    {% endif %}
+  >
+    <div class="empty-state-banner-content flex flex-col lg:flex-row gap-16 lg:gap-24 bg-white p-8 justify-center items-center [&.is-loading]:pointer-events-none [&.is-loading_>.loader-container]:block relative">
+      <div class="text-content flex flex-col gap-8 items-center lg:items-start">
+        <span class="text-grey-600 body-3">{{- 'search.helpful_link' | t -}}</span>
+        <a
+          href="{{- link -}}"
+          class="text-black-200 underline body-2"
+          data-empty-state-link
+        >
+          {{- link_text -}}
+        </a>
+      </div>
+
+      <div class="image-content relative w-[162px] h-[162px] lg:w-[182px] lg:h-[182px]">
+        {%- render 'responsive-image-dynamic_v2',
+          image: image,
+          sizes: '182px',
+          class: 'absolute top-0 left-0 w-full h-full object-contain'
+        -%}
+      </div>
+      <div class="loader-container hidden absolute inset-0 items-center justify-center opacity-50 pointer-events-none transition-opacity duration-300 z-10 bg-white">
+        {%- render 'loader', visible: true -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}

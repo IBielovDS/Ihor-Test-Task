@@ -1,0 +1,121 @@
+{%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
+
+{%- liquid
+  assign products_count = 0
+
+  if template == 'collection'
+    assign products = collection.products
+    assign page_sort_by = collection.sort_by | default: collection.default_sort_by
+    assign products_count = collection.products_count
+    assign sort_options = collection.sort_options
+    assign clear_url = collection.url | append: '?sort_by=' | append: page_sort_by
+    assign pageUrlWithHost = contentForQuerystring | split: '"pageurl":"' | last | split: '"' | first | replace: '\/', '/' | replace: '%20', ' ' | replace: '\u0026', '&' | prepend: 'https://'
+  elsif template == 'search'
+    assign page_sort_by = search.sort_by | default: search.default_sort_by
+    assign products = search.results
+    assign terms = search.terms | escape
+    assign sort_options = search.sort_options
+    assign products_count = search.results_count
+    assign clear_url = request.origin | append: request.path | append: '?type=product' | append: '&q=' | append: search.terms | append: '&sort_by=' | append: page_sort_by
+    assign pageUrlWithHost = contentForQuerystring | split: '"pageurl":"' | last | split: '"' | first | replace: '\/', '/' | replace: '%20', ' ' | replace: '\u0026', '&' | prepend: 'https://'
+  endif
+
+  assign form_id = 'filters-form' | append: '-' | append: section.id
+
+  assign page_number = current_page
+
+  assign products_per_page = products_limit | times: page_number
+
+  if products_per_page > products_count or products_count < products_limit
+    assign products_per_page = products_count
+  endif
+-%}
+
+<filters-container
+  class="collection-container block bg-white [&.is-loading]:pointer-events-none [&.is-loading_>.loader-container]:block relative"
+  data-url="{{- pageUrlWithHost -}}"
+>
+  {% unless template == 'search' %}
+    {%- render 'filters-header-navigation',
+      form_id: form_id,
+      template: template,
+      page_sort_by: page_sort_by,
+      products_count: products_count,
+      products_per_page: products_per_page,
+      products_limit: products_limit,
+      sort_options: sort_options,
+      class: 'default-page-navigation',
+      terms: terms
+    -%}
+  {% endunless %}
+
+  <div
+    class="collection-content grid grid-cols-collection-mobile grid-rows-[auto_minmax(0,1fr)]  lg:grid-cols-collection-desktop lg:[&.active]:grid-cols-collection-desktop-active duration-150 relative [&:has(product-pagination)]:pb-[105px]"
+    data-collection-content
+  >
+    {%- render 'filters', form_id: form_id, page_url: pageUrlWithHost, clear_url: clear_url -%}
+
+    {%- if template == 'collection' -%}
+      {%- render 'collection-product-grid', products_limit: products_limit, products: products -%}
+    {%- else -%}
+      {%- render 'filters-header-navigation',
+        form_id: form_id,
+        template: template,
+        page_sort_by: page_sort_by,
+        products_per_page: products_per_page,
+        products_limit: products_limit,
+        products_count: products_count,
+        sort_options: sort_options,
+        class: 'search-drawer-navigation col-start-1 col-end-3',
+        terms: terms
+      -%}
+      {%- render 'search-product-grid', products_limit: products_limit, products: products, class: 'col-start-2' -%}
+    {%- endif -%}
+  </div>
+
+  <div class="loader-container hidden absolute inset-0 items-center justify-center opacity-50 pointer-events-none transition-opacity duration-300 z-10 bg-white">
+    {%- render 'loader', visible: true -%}
+  </div>
+</filters-container>
+
+<script
+  type="application/json"
+  data-section-data
+>
+  {
+    "collection": {
+      "id": {% if template == 'collection' %}{{ collection.id | prepend: 'gid://shopify/Collection/' | json }}{% else %}{{ 'search' | prepend: 'gid://shopify/Collection/' | json }}{% endif %},
+      "products": [
+        {% for product in products %}
+          {
+            "id": {{ product.id | prepend: 'gid://shopify/Product/' | json }},
+            "handle": {{ product.handle | json }},
+            "title": {{ product.title | json }},
+            "priceRange": {
+              "minVariantPrice": {
+                "amount": {{ product.price | divided_by: 100.00 | json }},
+                "currencyCode": {{ localization.country.currency.iso_code | json }}
+              }
+            },
+            "compareAtPriceRange": {
+              "minVariantPrice": {
+                "amount": {{ product.compare_at_price | divided_by: 100.00 | json }},
+                "currencyCode": {{ localization.country.currency.iso_code | json }}
+              }
+            },
+            "images": [
+              {% for image in product.images %}
+                {
+                  "src": {{ image.src | json }},
+                  "alt": {{ image.alt | json }},
+                  "height": {{ image.height | json }},
+                  "width": {{ image.width | json }}
+                }{% unless forloop.last %},{% endunless %}
+              {% endfor %}
+            ]
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }
+  }
+</script>

@@ -1,0 +1,15 @@
+.video-reviews-carousel__mobile-thumbs .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  background: #C2C1C0;
+  opacity: 1;
+  border-radius: 0;
+  cursor: pointer;
+  transition: .2s all;
+}
+
+.video-reviews-carousel__mobile-thumbs .swiper-pagination-bullet-active {
+  background: #2B2B2B;
+  width: 10px;
+  height: 10px;
+}

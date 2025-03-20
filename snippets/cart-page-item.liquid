@@ -1,0 +1,163 @@
+<div class="grid grid-cols-cart-item lg:grid-cols-cart-page-item-desktop auto-rows-auto gap-x-8 gap-y-4 mb-16 pb-16 border-b-1 border-solid border-grey-100 items-center">
+  <a
+    href="{{- line_item.url -}}"
+    class="col-start-1 row-span-2 relative w-64 h-64"
+  >
+    {%- render 'responsive-image-dynamic_v2',
+      image: line_item.image,
+      width: 80,
+      height: 80,
+      sizes: '80px',
+      class: 'object-cover w-full h-full absolute top-0 left-0'
+    -%}
+  </a>
+
+  <a
+    href="{{- line_item.url -}}"
+    class="row-start-1 col-start-2 font-bold body-3 text-black-200 pr-8"
+  >
+    {{- line_item.title | escape -}}
+  </a>
+
+  <span class="col-start-3 row-start-1 lg:col-start-3 lg:row-span-full text-black-200 body-3 lg:body-1 lg:text-18 lg:leading-28">
+    <span class="text-black-200 body-3 lg:text-18 lg:leading-28 mr-4">
+      {{- line_item.line_price | money_without_currency | prepend: cart.currency.symbol -}}
+    </span>
+    {%- if line_item.original_line_price != blank and line_item.original_line_price > line_item.line_price -%}
+      <span class="body-3 text-grey-300 line-through lg:body-1 lg:text-18 lg:leading-28">
+        {{- line_item.original_line_price | money_without_currency | prepend: cart.currency.symbol -}}
+      </span>
+    {%- endif -%}
+  </span>
+
+  {%- if line_item.line_level_discount_allocations.size > 0 -%}
+    <ul
+      class="row-start-3 col-start-3"
+      role="list"
+      aria-label="{{ 'customer.order.discount' | t }}"
+    >
+      {%- for discount in line_item.line_level_discount_allocations -%}
+        <li class="discounts__discount">
+          {{- 'icon-discount.svg' | inline_asset_content -}}
+          {{- discount.discount_application.title -}}
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  {%- if line_item.product.has_only_default_variant == false
+    or line_item.properties.size != 0
+    or line_item.selling_plan_allocation != null
+  -%}
+    <div class="col-start-2 row-start-2">
+      {%- if line_item.product.has_only_default_variant == false -%}
+        {%- for option in line_item.options_with_values -%}
+          <div class="product-option pb-4 ">
+            <span class="text-grey-600 body-3">
+              {{- option.name -}}
+              :</span
+            >
+            <span class="text-grey-600 body-3">
+              {{- option.value -}}
+            </span>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+
+      {%- for property in line_item.properties -%}
+        {%- assign property_first_char = property.first | slice: 0 -%}
+        {%- if property.last != blank and property_first_char != '_' -%}
+          <div class="product-option pb-4 text-grey-600 body-3">
+            <span class="text-grey-600 body-3">
+              {{- property.first -}}
+              :</span
+            >
+            <span class="text-grey-600 body-3">
+              {%- if property.last contains '/uploads/' -%}
+                <a
+                  href="{{ property.last }}"
+                  class="text-grey-600 body-3"
+                  target="_blank"
+                  aria-describedby="a11y-new-window-message"
+                >
+                  {{- property.last | split: '/' | last -}}
+                </a>
+              {%- else -%}
+                {{- property.last -}}
+              {%- endif -%}
+            </span>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if line_item.selling_plan_allocation.selling_plan -%}
+        <p class="product-option">
+          <span class="text-grey-600 body-3">
+            {{- line_item.selling_plan_allocation.selling_plan.name -}}
+          </span>
+        </p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- unless hide_quantity -%}
+    <div class="col-start-2 row-start-4 lg:col-start-4 lg:row-span-full">
+      <span class="visually-hidden">{{- 'products.product.quantity.label' | t -}}</span>
+      <ajax-cart-quantity class="max-w-[120px] relative rounded-8 border-1 border-grey-700 overflow-hidden flex items-center px-8 lg:py-9">
+        <a
+          data-ajax-cart-quantity-minus
+          href="{{- routes.cart_change_url -}}?line={{- line_item_index -}}&quantity={{- line_item.quantity | minus: 1 -}}"
+          aria-label="{{- 'products.product.quantity.decrease' | t: product: line_item.title -}}"
+          class="{% if line_item.quantity > 1 %}[&_svg_path]:stroke-black-200{% endif %} py-10"
+        >
+          <span class="visually-hidden">
+            {{- 'products.product.quantity.decrease' | t: product: line_item.title -}}
+          </span>
+          {%- render 'icon_v2', icon: 'minus-icon' -%}
+        </a>
+
+        <input
+          data-ajax-cart-quantity-input="{{- line_item_index -}}"
+          name="updates[]"
+          value="{{- line_item.quantity -}}"
+          type="number"
+          form="my-ajax-cart-form"
+          min="0"
+          aria-label="{{- 'cart.general.quantity' | t -}}"
+          class="w-full h-full text-black-200 text-center font-medium body-2 flex-1 border-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        >
+
+        <a
+          data-ajax-cart-quantity-plus
+          href="{{- routes.cart_change_url -}}?line={{- line_item_index -}}&quantity={{- line_item.quantity | plus: 1 -}}"
+          aria-label="{{- 'products.product.quantity.increase' | t: product: line_item.title -}}"
+          class="py-10"
+        >
+          <span class="visually-hidden">
+            {{- 'products.product.quantity.increase' | t: product: line_item.title -}}
+          </span>
+          {%- render 'icon_v2', icon: 'plus-icon' -%}
+        </a>
+      </ajax-cart-quantity>
+    </div>
+  {%- endunless -%}
+
+  {%- unless hide_remove_button -%}
+    <a
+      class="col-start-3 row-start-4 lg:col-start-5 lg:row-span-full justify-self-end uppercase flex gap-8 items-center label-text text-grey-600"
+      data-ajax-cart-request-button
+      href="{{- line_item.url_to_remove -}}"
+      aria-label="{{- 'products.product.quantity.increase' | t: product: line_item.title -}}"
+    >
+      {%- render 'icon_v2', icon: 'delete-icon' -%}
+      <span>{{- 'cart.general.remove' | t -}}</span>
+    </a>
+  {%- endunless -%}
+
+  {%- unless hide_error_messages -%}
+    <div
+      data-ajax-cart-errors="{{- line_item.key -}}"
+      class="col-start-2 col-end-4 row-start-5 empty:hidden"
+    ></div>
+  {%- endunless -%}
+</div>

@@ -1,0 +1,58 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "Header",
+  "type": "header",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "settings": {
+        "available_countries": "United States, United Kingdom, Canada, Europe",
+        "show_lang_selector": true,
+        "text": "<p><a href=\"#\" title=\"#\">Free shipping for orders <strong>OVER $40</strong> in The US</a></p>",
+        "links": "announcement-bar-navigation"
+      }
+    },
+    "header": {
+      "type": "header",
+      "blocks": {
+        "mega_menu_BYrfkK": {
+          "type": "mega-menu",
+          "settings": {
+            "trigger_link_title": "Shop",
+            "links": "dev-new-theme-test-navigation",
+            "show_images_on_level_2": false,
+            "top_title": "Our products",
+            "brands_title": "Brands",
+            "models_title": "Models"
+          }
+        }
+      },
+      "block_order": [
+        "mega_menu_BYrfkK"
+      ],
+      "settings": {
+        "available_countries": "United States, United Kingdom, Canada, Europe",
+        "logo": "shopify://shop_images/logo_be4f6cee-6b81-4f9a-aaf1-5c1090d8e9cd.png",
+        "navigation": "header-navigation",
+        "additional_navigation": "announcement-bar-navigation"
+      }
+    },
+    "breadcrumbs_BtPT4J": {
+      "type": "breadcrumbs",
+      "settings": {}
+    }
+  },
+  "order": [
+    "announcement-bar",
+    "header",
+    "breadcrumbs_BtPT4J"
+  ]
+}

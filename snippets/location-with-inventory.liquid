@@ -1,0 +1,137 @@
+{%- comment -%} Moving that code from old theme, didn't have lot of time to refactor it so since that it might look a bit messy. {%- endcomment -%}
+<script>
+  const countries = {
+    "AU": ["Australia"],
+    "UK": ["United Kingdom"],
+    "CA": ["Canada"],
+    "EU": [
+      "Austria", "Belgium", "Croatia", "Czechia", "Denmark", "Finland", "France", "Germany", "Greece", 
+      "Hungary", "Ireland", "Italy", "Netherlands", "Poland", "Romania", "Spain", "Bulgaria", "Estonia", 
+      "Latvia", "Lithuania", "Luxembourg", "Malta", "Portugal", "Slovakia", "Slovenia"
+    ]
+  };
+
+  let productsAll = '{{ shop.metafields.custom.product_handles }}';
+  productsAll = JSON.parse(productsAll);
+
+  async function getCountryCode() {
+    try {
+      const req = await fetch('/browsing_context_suggestions.json');
+      const res = await req.json();
+      const countryName = await res.detected_values.country_name;
+      let countryCode = "Shipbob";
+      
+      for (const [key, names] of Object.entries(countries)) {
+        if (names.includes(countryName)) {
+          countryCode = key;
+        }
+      }
+
+      return countryCode;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function getInventory(variantData, countryCode) {
+    if (!variantData.metadata) {
+      return variantData.available ? 1 : 0;
+    }
+
+    if (Array.isArray(variantData.metadata)) {
+      const inventoryEntry = variantData.metadata.find(entry => {
+        if (countryCode === "Shipbob" && entry.startsWith("Shipbob/")) {
+          return true;
+        }
+        return entry.startsWith(`${countryCode}/`);
+      });
+
+      if (!inventoryEntry) {
+        return 0;
+      }
+
+      const quantity = parseInt(inventoryEntry.split('/')[1], 10);
+      return quantity > 0 ? 1 : 0;
+    }
+    
+    return variantData.metadata ? 1 : 0;
+  }
+
+  function changeBtnState(inventory, continueSelling, productAtc, productAtcSticky) {
+    if (inventory <= 0 && !continueSelling) {
+        productAtc.disabled = true;
+        productAtcSticky.disabled = true;
+        productAtc.closest(".product__atc").classList.add("product__atc-disabled");
+        productAtc.innerHTML = '{{ 'products.product.sold_out' | t }}';
+        productAtcSticky.innerHTML = '{{ 'products.product.sold_out' | t }}';
+    } else {
+        productAtc.disabled = false;
+        productAtcSticky.disabled = false;
+        productAtc.closest(".product__atc").classList.remove("product__atc-disabled");
+        productAtc.innerHTML = '{{ 'products.product.add_to_cart' | t }}';
+        productAtcSticky.innerHTML = '{{ 'products.product.add_to_cart' | t }}';
+    }
+  }
+
+  function initVariant(data, countryCode, productAtc, productAtcSticky) {
+    const variantTitle = "Black";
+    
+    if (!data || !data[variantTitle]) {
+      console.warn('Invalid data or variant title in initVariant');
+      return;
+    }
+    
+    const variantData = data[variantTitle];
+    const inventory = getInventory(variantData, countryCode);
+    let continueSelling = variantData.continueSelling == "true" ? 1 : 0;
+    changeBtnState(inventory, continueSelling, productAtc, productAtcSticky);
+  }
+
+  function initVariantAll(data, countryCode, productAtc, productAtcSticky) {
+    document.addEventListener('variant:changed', (evt) => {
+      
+      if (!evt.detail.color || !data[evt.detail.color]) {
+        console.error('Invalid variant data:', evt.detail);
+        return;
+      }
+
+      const variantData = data[evt.detail.color];
+
+      let continueSelling = variantData.continueSelling;
+      continueSelling = continueSelling === "true" ? 1 : 0;
+
+      const inventory = getInventory(variantData, countryCode);
+      
+      changeBtnState(inventory, continueSelling, productAtc, productAtcSticky);
+    });
+  }
+
+  async function init() {
+    const countryCode = await getCountryCode();
+
+    {% if template.name == "product" %}
+      const productAtc = document.querySelector(".product__atc button[type=submit]");
+      const productAtcSticky = document.querySelector(".product__selector--sticky button[type=submit]");
+      const productId = "{{ product.id }}";
+
+      let noscriptContent = document.querySelector(`noscript[id="${productId}"]`);
+
+      if (typeof(noscriptContent) != 'undefined' && noscriptContent != null) {
+        noscriptContent = noscriptContent.innerText;
+      } else {
+        noscriptContent = document.querySelector(`noscript[id="single-${productId}"]`).innerText;
+      }
+
+      const data = JSON.parse(noscriptContent);
+
+      initVariant(data, countryCode, productAtc, productAtcSticky);
+      initVariantAll(data, countryCode, productAtc, productAtcSticky);
+    {% endif %}
+  }
+
+  init();
+
+  window.SLIDECART_LOADED = async function(cart) {
+    window.countryCode = await getCountryCode();
+  }
+</script>

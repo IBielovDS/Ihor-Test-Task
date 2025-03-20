@@ -1,0 +1,59 @@
+{%- liquid
+  assign class = class
+  assign input_class = input_class
+  assign icon_class = icon_class
+  assign label_class = label_class
+  assign name = name
+  assign id = id
+  assign value = value
+  assign is_dark = is_dark | default: false
+  assign required = required | default: false
+  assign disabled = disabled | default: false
+  assign checked = checked | default: false
+
+  assign label_for = label_for | default: id
+  assign label = label | default: 'Checkbox'
+  assign accepts_marketing = accepts_marketing | default: false
+-%}
+
+<label
+  {% if label_for != blank %}
+    for="{{label_for}}"
+  {% endif %}
+  class="checkbox-wrapper{% if is_dark %} dark{% endif %} {{ class }}"
+>
+  {%- if accepts_marketing -%}
+    <input
+      type="hidden"
+      name="customer[accepts_marketing]"
+      value="false"
+    >
+  {%- endif -%}
+
+  <input
+    type="checkbox"
+    class="checkbox cursor-pointer"
+    name="{{ name }}"
+    {% if value != null or value != blank %}
+      value="{{ value }}"
+    {% endif %}
+    id="{{ id }}"
+    class="checkbox {{input_class}}"
+    {% if checked %}
+      checked
+      aria-checked="true"
+    {% else %}
+      aria-checked="false"
+    {% endif %}
+    {% if required %}
+      required
+    {% endif %}
+    {% if disabled == true %}
+      disabled
+    {% endif %}
+  >
+  <div class="checkbox-icon {{icon_class}}">
+    {%- render 'icon_v2', icon: 'checkbox' -%}
+  </div>
+  <span class="checkbox-label {{label_class}} [&_a]:underline">{{- label -}}</span>
+</label>

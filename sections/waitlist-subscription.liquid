@@ -1,0 +1,326 @@
+{% liquid
+  assign waitlist_handle = settings.waitlist
+  assign search_product = cart.attributes.search_product
+  assign waitlist = shop.metaobjects.wait_list[waitlist_handle].products.value
+  assign product = null
+
+  for product in waitlist
+    assign product_handle = product.title | handleize
+    if product_handle == search_product
+      assign product = product
+    endif
+  endfor
+  assign product_title = product.title | default: 'Product'
+  assign top_text = 'waitlist_form.top_text' | t
+  assign title = 'waitlist_form.title' | t: product: product_title
+  assign subtitle = 'waitlist_form.subtitle' | t
+  assign image = product.image
+
+  assign padding_top = section.settings.padding_top
+  assign padding_bottom = section.settings.padding_bottom
+  assign padding_top_mobile = section.settings.padding_top_mobile
+  assign padding_bottom_mobile = section.settings.padding_bottom_mobile
+
+  assign margin_top = section.settings.margin_top
+  assign margin_bottom = section.settings.margin_bottom
+  assign margin_top_mobile = section.settings.margin_top_mobile
+  assign margin_bottom_mobile = section.settings.margin_bottom_mobile
+
+  if section.index == 1
+    assign fetchpriority = 'high'
+  endif
+
+  assign email_error_message = 'search.empty_form.errors.email_error_message' | t
+  assign first_name_error = 'search.empty_form.errors.first_name_error_message' | t
+  assign marketing_label = 'search.empty_form.marketing_label_html' | t
+  assign marketing_error_message = 'search.empty_form.errors.marketing_error_message' | t
+%}
+
+<style>
+  :root #shopify-section-{{- section.id -}} {
+    --padding-top: {{- padding_top -}}px;
+    --padding-bottom: {{- padding_bottom -}}px;
+    --padding-top-mobile: {{- padding_top_mobile -}}px;
+    --padding-bottom-mobile: {{- padding_bottom_mobile -}}px;
+    --margin-top: {{- margin_top -}}px;
+    --margin-bottom: {{- margin_bottom -}}px;
+    --margin-top-mobile: {{- margin_top_mobile -}}px;
+    --margin-bottom-mobile: {{- margin_bottom_mobile -}}px;
+  }
+</style>
+
+<div class="grid grid-col-1 lg:grid-cols-2 gap-24 container">
+  <div class="form">
+    {%- if title != blank or subtitle != blank -%}
+      <div class="text-center lg:text-left">
+        {%- if top_text != blank -%}
+          <span class="text-orange-100 body-3 mb-8 block">{{- top_text -}}</span>
+        {%- endif -%}
+
+        {%- if title != blank -%}
+          <h1
+            class="text-black-200"
+            aria-label="{{- 'accessibility.general.page_title' | t -}}"
+          >
+            {{- title -}}
+          </h1>
+        {%- endif -%}
+
+        {%- if subtitle != blank -%}
+          <span
+            class="text-grey-600 body-2 mt-24 block"
+            aria-label="{{- 'accessibility.general.subtitle' | t -}}"
+          >
+            {{- subtitle -}}
+          </span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="bg-white rounded-8 p-32 mt-40">
+      <form-validation>
+        {% form 'contact',
+          class: 'grid grid-col-1 lg:grid-col-2 lg:gap-x-16 [&.loading]:pointer-events-none opacity-100 transition-opacity [&.loading]:opacity-50'
+        %}
+          {%- if form.errors -%}
+            <ul class="grid grid-cols-1 lg:col-start-1 lg:col-end-3">
+              {%- for field in form.errors -%}
+                <li class="bg-grey py-8 px-16 label-text flex items-center flex-1-0-auto rounded-4 mb-16 gap-8">
+                  <div class="flex justify-center items-center bg-error rounded-[50%] w-32 h-32 flex-grow-0 flex-shrink-0 basis-auto">
+                    {%- render 'icon_v2', icon: 'warning-icon', class: '[&_path]:stroke-white' -%}
+                  </div>
+
+                  <span class="[&_a]:underline">
+                    {%- if field == 'form' -%}
+                      {{- form.errors.messages[field] -}}
+                    {%- else -%}
+                      <a
+                        href="#RegisterForm-{{- field -}}"
+                        class="underline"
+                      >
+                        {{- form.errors.translated_fields[field] | capitalize -}}
+                        {{- form.errors.messages[field] -}}
+                      </a>
+                    {%- endif -%}
+                  </span>
+
+                  <button
+                    type="button"
+                    class="block w-12 h-12 ml-auto flex-grow-0 flex-shrink-0 basis-auto"
+                    data-hide-default-error
+                  >
+                    {%- render 'icon_v2', icon: 'cross' -%}
+                  </button>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+
+          <input
+            type="hidden"
+            name="contact[product]"
+            value="{{- product.title -}}"
+          >
+
+          <input
+            type="hidden"
+            name="contact[page]"
+            value="waitlist-subscription"
+          >
+
+          <div class="input-wrapper dark lg:col-start-1">
+            <input
+              type="text"
+              name="contact[first_name]"
+              {% if form.first_name %}
+                value="{{- form.first_name -}}"
+              {% endif %}
+              autocomplete="given-name"
+              placeholder="{{- 'waitlist_form.name' | t -}}"
+              class="input"
+              required
+              id="first-name-{{- section.id -}}"
+            >
+            <label
+              for="first-name-{{- section.id -}}"
+              class="input-label"
+            >
+              {{- 'waitlist_form.name' | t -}}
+            </label>
+            {%- render 'warning-message-box', text: first_name_error -%}
+          </div>
+
+          <div class="input-wrapper dark lg:col-start-2">
+            <input
+              type="email"
+              name="contact[email]"
+              id="contac-email-{{- section.id -}}"
+              {% if form.email %}
+                value="{{- form.email -}}"
+              {% endif %}
+              spellcheck="false"
+              autocapitalize="off"
+              autocomplete="email"
+              aria-required="true"
+              {% if form.errors contains 'email' %}
+                aria-invalid="true"
+                aria-describedby="contact-email-error-{{- section.id -}}"
+              {% endif %}
+              placeholder="{{- 'waitlist_form.email' | t -}}"
+              class="input"
+              required
+              pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+            >
+            <label
+              for="contac-email-{{- section.id -}}"
+              class="input-label"
+            >
+              {{- 'waitlist_form.email' | t -}}
+            </label>
+            {%- render 'warning-message-box', text: email_error_message -%}
+          </div>
+
+          <div class="input-wrapper !mb-0 mt-8 lg:col-start-1 lg:col-end-3">
+            {%- assign id = 'waitlist-subscription-accepts-marketing-' | append: section.id -%}
+            {%- render 'checkbox',
+              is_dark: true,
+              id: id,
+              name: 'customer[accepts_marketing]',
+              label: marketing_label,
+              accepts_marketing: true,
+              required: true
+            -%}
+            {%- render 'warning-message-box', text: marketing_error_message -%}
+          </div>
+
+          <button
+            type="submit"
+            class="button button--primary !w-full max-w-full mt-16 lg:mt-32 lg:col-start-1 lg:col-end-3"
+          >
+            {%- render 'icon_v2', icon: 'submit-icon', class: 'mr-8' -%}
+            <span>{{- 'waitlist_form.submit' | t -}}</span>
+          </button>
+        {% endform %}
+      </form-validation>
+    </div>
+  </div>
+
+  <div class="image-wrapper flex-col justify-center items-center flex -order-1 lg:order-1 w-1/2 lg:w-full justify-self-center">
+    <div class="image relative pb-[100%] w-full">
+      {%- if image != blank -%}
+        {% render 'responsive-image-dynamic_v2',
+          image: image,
+          aria-label: 'waitlist-subscription-image',
+          sizes: '(min-width: 1024px) 55vw, (max-width: 1024px) 75vw',
+          fetchpriority: fetchpriority,
+          class: 'absolute top-0 left-0 w-full h-full object-contain'
+        %}
+      {%- else -%}
+        {{ 'image' | placeholder_svg_tag: 'absolute top-0 left-0 w-full h-full object-contain' }}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Waitlist Subscription",
+  "class": "waitlist-subscription global-spacing bg-grey",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Inner Spaces"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding bottom",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Outer Spaces"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin bottom",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin bottom",
+      "default": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "Waitlist Subscription"
+    }
+  ]
+}
+{% endschema %}

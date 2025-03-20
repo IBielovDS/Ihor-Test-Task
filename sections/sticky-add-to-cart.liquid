@@ -1,0 +1,51 @@
+{%- if product != blank -%}
+  <sticky-add-to-cart class="fixed bottom-0 left-0 z-50 w-full opacity-0 transition-all duration-300 pointer-events-none transform translate-y-full">
+    <div class="bg-grey-100 py-16 lg:py-8">
+      <div class="container">
+        <div class="flex items-center flex-wrap lg:flex-nowrap lg:justify-between">
+          <div class="flex items-end">
+            <div
+              id="price-{{ section.id }}"
+              class="hidden lg:flex flex-col justify-start items-center gap-8 lg:gap-16 price_block"
+            >
+              <span class="heading-5">
+                {{ product.selected_or_first_available_variant.price | money_without_currency | prepend: cart.currency.symbol }}
+              </span>
+              {%- if product.compare_at_price != blank and product.compare_at_price > product.price -%}
+                <span class="body-3 text-grey-300 line-through">
+                  {{ product.compare_at_price | money_without_currency | prepend: cart.currency.symbol }}
+                </span>
+              {%- endif -%}
+            </div>
+          </div>
+          <div class="hidden lg:block">
+            {%- if section.blocks.size -%}
+              {%- for block in section.blocks -%}
+                {{- block -}}
+              {%- endfor -%}
+            {%- endif -%}
+          </div>
+          <div class="sticky-add-to-cart-form">
+            {%- render 'product-form', product: product, section: section, is_sticky: true, display_type: 'select' -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </sticky-add-to-cart>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Sticky Add to Cart",
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky Add to Cart"
+    }
+  ]
+}
+{% endschema %}

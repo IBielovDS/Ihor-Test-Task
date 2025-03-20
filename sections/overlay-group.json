@@ -1,0 +1,43 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "custom.overlay",
+  "name": "Overlays",
+  "sections": {
+    "market-selector": {
+      "type": "market-selector",
+      "settings": {
+        "suggestion_title_template": "It seems you are in [country], is it correct?",
+        "modal_title": "Choose Your Market",
+        "shop_now_text": "SHOP NOW",
+        "change_country_text": "Change shipping country",
+        "default_select_value": "Select a country",
+        "select_country_title": "Select your shipping country",
+        "update_country_text": "Update country"
+      }
+    },
+    "side-cart": {
+      "type": "side-cart",
+      "settings": {
+        "show_upsells": true,
+        "upsells": [
+          "airpods-max-silicone-headband-cover",
+          "airpods-max-sweat-covers",
+          "wc-freeze-arcits-nova"
+        ],
+        "show_discount_input": true
+      }
+    }
+  },
+  "order": [
+    "market-selector",
+    "side-cart"
+  ]
+}

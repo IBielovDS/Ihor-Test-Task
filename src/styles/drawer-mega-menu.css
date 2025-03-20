@@ -1,0 +1,33 @@
+.submenu-scroll {
+  max-height: 99vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #0A0300 #0A03001A;
+  width: 100%;
+  max-width: 100%;
+}
+
+.submenu-scroll::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+  display: block;
+}
+
+.submenu-scroll::-webkit-scrollbar-track {
+  background: #0A03001A;
+  display: block;
+}
+
+.submenu-scroll::-webkit-scrollbar-thumb {
+  background: #0A0300;
+  display: block;
+}
+
+.submenu-scroll::-webkit-scrollbar-thumb:hover {
+  background: #0A0300;
+}
+
+.menu-item--dropdown:hover svg path, .menu-item--dropdown.active svg path {
+  stroke: #0A0300;
+  transition: all 0.3s ease-in-out;
+}

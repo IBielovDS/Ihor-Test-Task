@@ -1,0 +1,261 @@
+{%- liquid
+  assign layout_content = layout_content
+-%}
+
+{{ 'shopify_common.js' | shopify_asset_url | script_tag }}
+
+<script>
+  window.shopUrl = '{{ request.origin }}';
+  window.routes = {
+    cart_add_url: '{{ routes.cart_add_url }}',
+    cart_change_url: '{{ routes.cart_change_url }}',
+    cart_update_url: '{{ routes.cart_update_url }}',
+    cart_url: '{{ routes.cart_url }}',
+    predictive_search_url: '{{ routes.predictive_search_url }}',
+  };
+  window.variantStrings = {
+    addToCart: `{{ 'product.form.add_to_cart' | t }}`,
+    soldOut: `{{ 'product.form.sold_out' | t }}`,
+    unavailable: `{{ 'product.form.unavailable' | t }}`,
+    unavailable_with_option: `{{ 'product.form.value_unavailable' | t: option_value: '[value]' }}`,
+  };
+</script>
+
+{% comment %} Cart-related code {% endcomment %}
+<script
+  type="application/json"
+  data-ajax-cart-initial-state
+>
+  {{ cart | json }}
+</script>
+
+<script type="module">
+  import '{{ "liquid-ajax-cart-v2.1.1.js" | asset_url }}';
+</script>
+
+{% comment %} Swiper connection {% endcomment %}
+{%- if layout_content contains 'swiper'
+  or layout_content contains 'product-recommendations'
+  or layout_content contains 'quick-view-modal'
+-%}
+  {{- 'swiper-bundle.min.js' | asset_url | script_tag -}}
+{%- endif -%}
+
+{% comment %} Fancybox library {% endcomment %}
+{%- if layout_content contains 'fancybox' -%}
+  {{ 'fancybox.umd.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} product-media-gallery.liquid {% endcomment %}
+{%- if layout_content contains 'product-media-gallery' -%}
+  <script
+    src="{{'product-media-gallery.min.js' | asset_url}}"
+    async
+  ></script>
+{%- endif -%}
+
+{% comment %} footer.liquid {% endcomment %}
+{%- if layout_content contains 'section-footer' -%}
+  {{- 'footer.min.js' | asset_url | script_tag -}}
+{%- endif -%}
+
+{% comment %} header.liquid {% endcomment %}
+{%- if layout_content contains 'section-header' -%}
+  {{- 'header.min.js' | asset_url | script_tag -}}
+{%- endif -%}
+
+{% comment %} search-input-component.liquid {% endcomment %}
+{%- if layout_content contains 'search-input-component' -%}
+  {{ 'search-input-component.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} benefits.liquid {% endcomment %}
+{%- if layout_content contains 'benefits-section' -%}
+  {{ 'benefits.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} our-products.liquid {% endcomment %}
+{%- if layout_content contains 'our-products-section' -%}
+  {{ 'our-products-section.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} video-reviews-carousel.liquid {% endcomment %}
+{%- if layout_content contains 'video-reviews-carousel' -%}
+  {{ 'video-reviews-carousel.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} quick-view-btn.liquid {% endcomment %}
+{%- if layout_content contains 'quick-view-btn' or layout_content contains 'quick-view-modal' -%}
+  {{- 'quick-view-modal.min.js' | asset_url | script_tag -}}
+  {{- 'quick-view-btn.min.js' | asset_url | script_tag -}}
+  {{ 'variant-radios.min.js' | asset_url | script_tag }}
+  {{ 'product-form.min.js' | asset_url | script_tag }}
+  {{ 'quantity-input.min.js' | asset_url | script_tag }}
+  {{ 'product-media-gallery.min.js' | asset_url | script_tag }}
+  {{ 'fancybox.umd.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} section-products-slider.liquid {% endcomment %}
+{%- if layout_content contains 'products-slider' -%}
+  {{- 'products-slider.min.js' | asset_url | script_tag -}}
+{%- endif -%}
+
+{% comment %} drawer-mega-menu.liquid {% endcomment %}
+{%- if layout_content contains 'mega-menu' -%}
+  {{- 'drawer-mega-menu.min.js' | asset_url | script_tag -}}
+{%- endif -%}
+
+{% comment %} currency-selector.liquid {% endcomment %}
+{%- if layout_content contains 'localization-form' -%}
+  {{ 'localization-form.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} market-selector.liquid {% endcomment %}
+{%- if layout_content contains 'market-selector-widget' -%}
+  {{ 'market-selector.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} sticky-add-to-cart.liquid {% endcomment %}
+{%- if layout_content contains 'sticky-add-to-cart' -%}
+  {{ 'sticky-add-to-cart.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} related-products.liquid {% endcomment %}
+{%- if layout_content contains 'product-recommendations' -%}
+  {{ 'related-products.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} facet-filters.liquid {% endcomment %}
+{%- if layout_content contains 'facet-filters' or layout_content contains 'search-results' -%}
+  {{ 'facet-filters.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} filters-tabs.liquid {% endcomment %}
+{%- if layout_content contains 'filters-tabs' -%}
+  {{ 'filters-tabs.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} custom-dropdown.liquid {% endcomment %}
+{%- if layout_content contains 'custom-dropdown' or layout_content contains 'search-results' -%}
+  {{ 'custom-dropdown.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} custom-accordion.liquid {% endcomment %}
+{%- if layout_content contains 'custom-accordion' or layout_content contains 'search-results' -%}
+  {{ 'custom-accordion.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} complementary-products.liquid {% endcomment %}
+{%- if layout_content contains 'complementary-products' -%}
+  {{ 'location-define.min.js' | asset_url | script_tag }}
+  {{ 'complementary-products.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{%- if layout_content contains 'brands-page' -%}
+  {{ 'brands-page.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{%- if template contains 'product' -%}
+  {{ 'variant-radios.min.js' | asset_url | script_tag }}
+  {{ 'product-form.min.js' | asset_url | script_tag }}
+  {{ 'quantity-input.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{%- if layout_content contains 'main-product-info' -%}
+  {{ 'main-product-info.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} product-compatibility-list.liquid {% endcomment %}
+{%- if layout_content contains 'product-compatibility-list' -%}
+  {{ 'product-compatibility-list.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} product-installation-video.liquid {% endcomment %}
+{%- if layout_content contains 'product-installation-video' -%}
+  {{ 'product-installation-video.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} product-benefits.liquid {% endcomment %}
+{%- if layout_content contains 'product-benefits' -%}
+  {{ 'product-benefits.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} product-tabs.liquid {% endcomment %}
+{%- if layout_content contains 'product-tabs' -%}
+  {{ 'product-tabs.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} form-validation {% endcomment %}
+{%- if layout_content contains 'form-validation' -%}
+  {{ 'form-validation.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} faq-page.liquid {% endcomment %}
+{%- if layout_content contains 'faq-page' -%}
+  {{ 'faq-page.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{%- if layout_content contains 'side-cart' -%}
+  {% comment %} Side Cart {% endcomment %}
+  {{ 'side-cart.min.js' | asset_url | script_tag }}
+  {{ 'side-cart-upsells.min.js' | asset_url | script_tag }}
+{%- endif -%}
+{% comment %} modal.liquid {% endcomment %}
+{%- if layout_content contains 'custom-modal' -%}
+  {{ 'custom-modal.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} Discount input {% endcomment %}
+{%- if layout_content contains 'discount-input' -%}
+  {{ 'discount-input.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} ATC Handler {% endcomment %}
+{%- if layout_content contains 'atc-handler' -%}
+  {{ 'atc-handler.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} account-info.liquid {% endcomment %}
+{%- if layout_content contains 'account-info' -%}
+  {{ 'account-info.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} tooltip.liquid {% endcomment %}
+{%- if layout_content contains 'custom-tooltip' -%}
+  {{ 'tooltip.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} reorder-button.liquid {% endcomment %}
+{%- if layout_content contains 'reorder-button' -%}
+  {{ 'reorder-button.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} search-results.liquid {% endcomment %}
+{%- if layout_content contains 'search-results' -%}
+  {{ 'search-results.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} what-we-do.liquid {% endcomment %}
+{%- if layout_content contains 'what-we-do' -%}
+  {{ 'what-we-do.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} product-card.liquid {% endcomment %}
+{%- if layout_content contains 'product-card' -%}
+  {{ 'product-card.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} video-tutorials.liquid {% endcomment %}
+{%- if layout_content contains 'video-tutorials' -%}
+  {{ 'video-tutorials.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} example-product-card-swatches.liquid {% endcomment %}
+{%- if layout_content contains 'example-product-card-swatches' -%}
+  {{ 'example-product-card-swatches.min.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% comment %} example-product-card.liquid {% endcomment %}
+{%- if layout_content contains 'example-product-card' -%}
+  {{ 'example-product-card.min.js' | asset_url | script_tag }}
+{%- endif -%}

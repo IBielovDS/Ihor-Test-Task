@@ -1,0 +1,278 @@
+{%- if menu != blank -%}
+  <div class="js-mobile-menu absolute left-0 top-[100%] z-50 w-full h-0 overflow-hidden bg-white transition-all lg:hidden">
+    <div class="flex flex-col justify-between h-full px-16 pt-24 pb-16 overflow-auto">
+      <div>
+        {%- for link in menu.links -%}
+          {%- liquid
+            assign is_mega_menu = false
+
+            for block in mega_menu_blocks
+              if link.title == block.settings.trigger_link_title
+                assign is_mega_menu = true
+                assign mega_menu = block.settings.links
+                break
+              endif
+            endfor
+          -%}
+
+          {%- if is_mega_menu and mega_menu != blank -%}
+            <div class="js-menu-item-has-child-wrap mb-24 border-b-1 border-grey-100 last:mb-0">
+              <div class="js-menu-item-has-child flex justify-between pb-16">
+                <span class="h5 uppercase">{{- link.title -}}</span>
+                {%- render 'icon_v2', icon: 'nav_expand' -%}
+              </div>
+
+              <div class="js-menu-item-child absolute z-10 left-0 top-0 w-full h-full bg-white px-16 py-24 transition-transform translate-x-[-100%] overflow-y-auto">
+                <div class="js-menu-item-back flex items-center mb-32">
+                  {%- render 'icon_v2', icon: 'nav_back', class: 'mr-8' -%}
+                  <span class="font-medium body-3 text-grey-300 uppercase">{{- link.title -}}</span>
+                </div>
+
+                {%- for level_1_item in mega_menu.links -%}
+                  {%- if level_1_item.links.size > 0 -%}
+                    <div class="js-menu-item-has-child-wrap mb-16 border-b-1 border-grey-100 last:mb-0">
+                      <div class="js-menu-item-has-child flex items-center pb-16">
+                        {%- liquid
+                          assign link_image = level_1_item.object.metafields.custom.menu_image.value | default: level_1_item.object.image | default: level_1_item.object.featured_image
+                        -%}
+
+                        {%- if link_image != blank -%}
+                          {%- render 'responsive-image-dynamic_v2',
+                            image: link_image,
+                            class: 'aspect-square h-[56px] mr-16 w-fit object-cover'
+                          -%}
+                        {%- endif -%}
+
+                        <span class="font-medium body-2 text-black-200">{{- level_1_item.title -}}</span>
+
+                        {%- render 'icon_v2', icon: 'nav_expand', class: 'ml-auto' -%}
+                      </div>
+
+                      <div class="js-menu-item-child absolute z-10 left-0 top-0 w-full h-full bg-white px-16 py-24 transition-transform translate-x-[-100%] overflow-y-auto">
+                        <div class="js-menu-item-back flex items-center mb-32">
+                          {%- render 'icon_v2', icon: 'nav_back', class: 'mr-8' -%}
+                          <span class="font-medium body-3 text-grey-300 uppercase">{{- level_1_item.title -}}</span>
+                        </div>
+
+                        {%- for level_2_item in level_1_item.links -%}
+                          {%- if level_2_item.links.size > 0 -%}
+                            <div class="js-menu-item-has-child-wrap mb-16 border-b-1 border-grey-100 last:mb-0">
+                              <div class="js-menu-item-has-child flex items-center pb-16">
+                                {%- liquid
+                                  assign link_image = level_2_item.object.metafields.custom.menu_image.value | default: level_2_item.object.image | default: level_2_item.object.featured_image
+                                -%}
+
+                                {%- if link_image != blank and block.settings.show_images_on_level_2 -%}
+                                  {%- render 'responsive-image-dynamic_v2',
+                                    image: link_image,
+                                    class: 'aspect-square h-[56px] mr-16 w-fit object-cover'
+                                  -%}
+                                {%- endif -%}
+
+                                <span class="font-medium body-2 text-black-200">{{- level_2_item.title -}}</span>
+
+                                {%- render 'icon_v2', icon: 'nav_expand', class: 'ml-auto' -%}
+                              </div>
+
+                              <div class="js-menu-item-child absolute z-10 left-0 top-0 w-full h-full bg-white px-16 py-24 transition-transform translate-x-[-100%] overflow-y-auto">
+                                <div class="js-menu-item-back flex items-center mb-32">
+                                  {%- render 'icon_v2', icon: 'nav_back', class: 'mr-8' -%}
+                                  <span class="font-medium body-3 text-grey-300 uppercase">
+                                    {{- level_2_item.title -}}
+                                  </span>
+                                </div>
+
+                                {%- for level_3_item in level_2_item.links -%}
+                                  <a
+                                    href="{{- level_3_item.url -}}"
+                                    class="flex items-center font-medium body-2 text-black-200 pb-16 mb-16 border-b-1 border-grey-100 last:mb-0"
+                                  >
+                                    {%- liquid
+                                      assign link_image = level_3_item.object.metafields.custom.menu_image.value | default: level_3_item.object.image | default: level_3_item.object.featured_image
+                                    -%}
+
+                                    {%- if link_image != blank -%}
+                                      {%- render 'responsive-image-dynamic_v2',
+                                        image: link_image,
+                                        class: 'aspect-square h-[56px] mr-16 w-fit object-cover'
+                                      -%}
+                                    {%- endif -%}
+
+                                    {{- level_3_item.title -}}
+                                  </a>
+                                {%- endfor -%}
+
+                                <a
+                                  href="{{- level_2_item.url -}}"
+                                  class="w-fit flex items-center uppercase mt-32 font-heading text-16 leading-24 text-black-200"
+                                >
+                                  {{- 'header.mega-menu.view_all' | t: title: level_2_item.title -}}
+                                  {%- render 'icon_v2',
+                                    icon: 'nav_back',
+                                    class: 'ml-8 [&_path]:stroke-black-200 rotate-180'
+                                  -%}
+                                </a>
+                              </div>
+                            </div>
+                          {%- else -%}
+                            <a
+                              href="{{- level_2_item.url -}}"
+                              class="flex items-center font-medium body-2 text-black-200 pb-16 mb-16 border-b-1 border-grey-100 last:mb-0"
+                            >
+                              {%- liquid
+                                assign link_image = level_2_item.object.metafields.custom.menu_image.value | default: level_2_item.object.image | default: level_2_item.object.featured_image
+                              -%}
+
+                              {%- if link_image != blank and block.settings.show_images_on_level_2 -%}
+                                {%- render 'responsive-image-dynamic_v2',
+                                  image: link_image,
+                                  class: 'aspect-square h-[56px] mr-16 w-fit object-cover'
+                                -%}
+                              {%- endif -%}
+
+                              {{- level_2_item.title -}}
+                            </a>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      </div>
+                    </div>
+                  {%- else -%}
+                    <a
+                      href="{{- level_1_item.url -}}"
+                      class="flex items-center font-medium body-2 text-black-200 pb-16 mb-24 border-b-1 border-grey-100 last:mb-0"
+                    >
+                      {%- liquid
+                        assign link_image = level_1_item.object.metafields.custom.menu_image.value | default: level_1_item.object.image | default: level_1_item.object.featured_image
+                      -%}
+
+                      {%- if link_image != blank -%}
+                        {%- render 'responsive-image-dynamic_v2',
+                          image: link_image,
+                          class: 'aspect-square h-[56px] mr-16 w-fit object-cover'
+                        -%}
+                      {%- endif -%}
+
+                      {{- level_1_item.title -}}
+                    </a>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- elsif link.links.size > 0 -%}
+            <div class="js-menu-item-has-child-wrap mb-24 border-b-1 border-grey-100 last:mb-0">
+              <div class="js-menu-item-has-child flex justify-between pb-16">
+                <span class="h5 uppercase">{{- link.title -}}</span>
+                {%- render 'icon_v2', icon: 'nav_expand' -%}
+              </div>
+
+              <div class="js-menu-item-child absolute z-10 left-0 top-0 w-full h-full bg-white px-16 py-24 transition-transform translate-x-[-100%] overflow-y-auto">
+                <div class="js-menu-item-back flex items-center mb-32">
+                  {%- render 'icon_v2', icon: 'nav_back', class: 'mr-8' -%}
+                  <span class="font-medium body-3 text-grey-300 uppercase">{{- link.title -}}</span>
+                </div>
+
+                {%- for level_2_item in link.links -%}
+                  {%- if level_2_item.links.size > 0 -%}
+                    <div class="js-menu-item-has-child-wrap mb-16 border-b-1 border-grey-100 last:mb-0">
+                      <div class="js-menu-item-has-child flex items-center pb-16">
+                        {%- liquid
+                          assign link_image = level_2_item.object.metafields.custom.menu_image.value | default: level_2_item.object.image | default: level_2_item.object.featured_image
+                        -%}
+
+                        {%- if link_image != blank -%}
+                          {%- render 'responsive-image-dynamic_v2',
+                            image: link_image,
+                            class: 'aspect-square h-[56px] mr-16 w-fit object-cover'
+                          -%}
+                        {%- endif -%}
+
+                        <span class="font-medium body-2 text-black-200">{{- level_2_item.title -}}</span>
+
+                        {%- render 'icon_v2', icon: 'nav_expand', class: 'ml-auto' -%}
+                      </div>
+
+                      <div class="js-menu-item-child absolute z-10 left-0 top-0 w-full h-full bg-white px-16 py-24 transition-transform translate-x-[-100%] overflow-y-auto">
+                        <div class="js-menu-item-back flex items-center mb-32">
+                          {%- render 'icon_v2', icon: 'nav_back', class: 'mr-8' -%}
+                          <span class="font-medium body-3 text-grey-300 uppercase">{{- level_2_item.title -}}</span>
+                        </div>
+
+                        {%- for level_3_item in level_2_item.links -%}
+                          <a
+                            href="{{- level_3_item.url -}}"
+                            class="flex items-center font-medium body-2 text-black-200 pb-16 mb-16 border-b-1 border-grey-100 last:mb-0"
+                          >
+                            {%- liquid
+                              assign link_image = level_3_item.object.metafields.custom.menu_image.value | default: level_3_item.object.image | default: level_3_item.object.featured_image
+                            -%}
+
+                            {%- if link_image != blank -%}
+                              {%- render 'responsive-image-dynamic_v2',
+                                image: link_image,
+                                class: 'aspect-square h-[56px] mr-16 w-fit object-cover'
+                              -%}
+                            {%- endif -%}
+
+                            {{- level_3_item.title -}}
+                          </a>
+                        {%- endfor -%}
+
+                        <a
+                          href="{{- level_2_item.url -}}"
+                          class="w-fit flex items-center uppercase mt-32 font-heading text-16 leading-24 text-black-200"
+                        >
+                          {{- 'header.mega-menu.view_all' | t: title: level_2_item.title -}}
+                          {%- render 'icon_v2', icon: 'nav_back', class: 'ml-8 [&_path]:stroke-black-200 rotate-180' -%}
+                        </a>
+                      </div>
+                    </div>
+
+                  {%- else -%}
+                    <a
+                      href="{{- level_2_item.url -}}"
+                      class="flex items-center font-medium body-2 text-black-200 pb-16 mb-24 border-b-1 border-grey-100 last:mb-0"
+                    >
+                      {%- liquid
+                        assign link_image = level_2_item.object.metafields.custom.menu_image.value | default: level_2_item.object.image | default: level_2_item.object.featured_image
+                      -%}
+
+                      {%- if link_image != blank -%}
+                        {%- render 'responsive-image-dynamic_v2',
+                          image: link_image,
+                          class: 'aspect-square h-[56px] mr-16 w-fit object-cover'
+                        -%}
+                      {%- endif -%}
+
+                      {{- level_2_item.title -}}
+                    </a>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- else -%}
+            <a
+              href="{{- link.url -}}"
+              class="block h5 uppercase pb-16 mb-24 border-b-1 border-grey-100 last:mb-0"
+            >
+              {{- link.title -}}
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <div class="flex items-start text-center justify-start flex-col">
+        {%- render 'currency-selector', countries: available_countries, position: 'top', drawer: true -%}
+        {%- if additional_menu != blank -%}
+          {%- for link in additional_menu.links -%}
+            <a
+              href="{{- link.url -}}"
+              class="body-3 text-grey-600 mr-32 last:mr-0"
+            >
+              {{- link.title -}}
+            </a>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}

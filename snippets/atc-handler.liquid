@@ -1,0 +1,55 @@
+{%- comment -%}
+  This snippet is responsible for handling the "Add to Cart" (ATC) functionality in the cart drawer.
+  It assigns the last added item in the cart to the variable `last_added_item` and renders the
+  'side-cart-item' snippet with specific parameters to display the last added item without quantity,
+  remove button, or error messages. Additionally, it includes two buttons: one to show the cart
+  and another to continue shopping.
+
+  Variables:
+    - last_added_item: The most recently added item in the cart.
+
+  Rendered Snippets:
+    - 'side-cart-item': Displays the last added item with specific parameters.
+
+  Buttons:
+    - Show Cart Button: A button to display the cart.
+    - Continue Shopping Button: A button to continue shopping.
+
+  Translations:
+    - 'cart.drawer.handler_title': The title text for the handler.
+    - 'cart.drawer.handler_cart_button': The text for the show cart button.
+    - 'cart.drawer.handler_continue_button': The text for the continue shopping button.
+{%- endcomment -%}
+
+{%- liquid
+  assign last_added_item = cart.items | first
+-%}
+
+<atc-handler>
+  <div class="text-20 leading-24 font-heading tracking-0.5 uppercase mb-16">
+    {{- 'cart.drawer.handler_title' | t -}}
+  </div>
+  {%- render 'side-cart-item',
+    line_item: last_added_item,
+    line_item_index: 0,
+    hide_quantity: true,
+    hide_remove_button: true,
+    hide_error_messages: true
+  -%}
+
+  <button
+    type="button"
+    class="button button--secondary !w-full !max-w-full mt-16"
+    data-show-cart
+  >
+    {{- 'cart.drawer.handler_cart_button' | t -}}
+  </button>
+
+  <button
+    type="button"
+    class="text-black-200 mt-8 body-3 w-full text-center underline"
+    data-continue-shopping
+  >
+    {{- 'cart.drawer.handler_continue_button' | t -}}
+  </button>
+</atc-handler>

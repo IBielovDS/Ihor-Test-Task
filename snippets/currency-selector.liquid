@@ -1,0 +1,121 @@
+{%- comment -%}
+  Usage
+  {%- render 'currency-selector', countries: countries -%}
+   Where countries - optional, comma separated list of countries.
+{%- endcomment -%}
+
+{%- liquid
+  assign skip_country = false
+
+  assign downcase_countries = countries | downcase
+  assign europe_shown = false
+  assign europe_selected_now = false
+
+  if localization.country.currency.iso_code == 'EUR'
+    assign europe_selected_now = true
+  endif
+
+  if drawer == true
+    assign globe_classess = '[&_path]:stroke-grey-600'
+    assign button_color = 'text-grey-600'
+  endif
+-%}
+<div class="announcement-bar__lang flex items-center mb-4 lg:mb-0 relative z-9">
+  {%- if localization.available_countries.size > 1 -%}
+    <localization-form>
+      {%- form 'localization' -%}
+        <div class="disclosure relative">
+          <button
+            type="button"
+            class="disclosure__button gap-8 {{ button_color }} flex items-center justify-center text-{{ color }}"
+            aria-expanded="false"
+            aria-controls="CountryList-{{ section.id }}"
+          >
+            {%- render 'icon_v2', icon: 'globe', class: globe_classess -%}
+            {%- if europe_selected_now -%}
+              {{- 'header.selector.eu_short_name' | t -}}
+            {%- else -%}
+              {{- localization.country.iso_code -}}
+            {%- endif -%}
+            {{ 'header.selector.slash_symbol' | t }}
+            {{- localization.country.currency.symbol -}}
+            {%- render 'icon_v2', icon: 'caret-down' -%}
+          </button>
+
+          <ul
+            id="CountryList-{{ section.id }}"
+            role="list"
+            class="disclosure__list hidden w-[209px] z-[99] flex-col absolute shadow-dropdown {% if position == "bottom" %}top-full mt-8{% endif %}{% if position == "top" %}bottom-full mb-8{% endif %} {% unless drawer %} left-[-14vw] {% else %} left-0 {% endunless %} md:left-0 bg-white max-h-[300px] overflow-y-auto text-grey-200 rounded-8"
+          >
+            {%- for country in localization.available_countries -%}
+              {%- liquid
+                assign is_selected = false
+                assign downcase_country_name = country.name | downcase
+                assign downcase_currency_name = country.currency.iso_code | downcase
+                assign is_europe = false
+                assign is_canada = false
+                if country.iso_code == localization.country.iso_code
+                  assign is_selected = true
+                endif
+
+                if countries != blank
+                  if downcase_countries contains downcase_country_name
+                    assign skip_country = false
+                  elsif downcase_countries contains 'europe' and downcase_currency_name contains 'eur' and europe_shown == false
+                    assign skip_country = false
+                    assign europe_shown = true
+                    assign is_europe = true
+                  else
+                    assign skip_country = true
+                  endif
+                endif
+
+                if downcase_country_name == 'canada'
+                  assign is_canada = true
+                endif
+
+                if skip_country
+                  continue
+                endif
+              -%}
+              <li
+                class="first:rounded-[15px_15px_0_0] flex gap-8 px-16 py-8 justify-start items-center last:rounded-[0_0_15px_15px] disclosure__item text-left transition-all text-black-200 body-3 hover:bg-grey-100 cursor-pointer {% if is_selected %}pointer-events-none bg-grey-100{% endif %}"
+                tabindex="-1"
+                data-value="{{- country.iso_code -}}"
+                {% if is_selected %}
+                  aria-current="true"
+                {% endif %}
+              >
+                <span
+                  {% if is_europe %}
+                    style="background-image: url('{{- 'europe.svg' | asset_url -}}')"
+                  {% endif %}
+                  class="fi rounded-full !bg-cover {% if is_europe %}!w-18 !h-18{% else %}!w-16 !h-16{% endif %} !bg-[46%] !aspect-square !shrink-0  {% if is_europe == false %}fi-{{- country.iso_code | downcase -}}{% endif %}"
+                ></span>
+                {%- if is_europe -%}
+                  {{- 'header.selector.europe_name' | t -}}
+                {%- else -%}
+                  {{- country.name -}}
+                {%- endif -%}
+                {% comment %} Prettier Formatter ugglies the code here so that's why it looks like this {% endcomment %}
+                (
+                {%- if is_canada -%}{{- 'header.selector.canada_c_symbol' | t -}}{%- endif -%}
+                {{- country.currency.symbol -}}
+                )
+                {%- if is_selected -%}
+                  {%- render 'icon_v2', icon: 'tick', class: 'ml-auto' -%}
+                {%- endif -%}
+              </li>
+            {% endfor %}
+          </ul>
+
+          <input
+            type="hidden"
+            name="country_code"
+            value="{{- localization.country.iso_code -}}"
+          >
+        </div>
+      {% endform %}
+    </localization-form>
+  {% endif %}
+</div>

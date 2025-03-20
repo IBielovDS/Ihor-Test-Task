@@ -1,0 +1,1142 @@
+{%- liquid
+  assign margin_top = section.settings.margin_top
+  assign margin_bottom = section.settings.margin_bottom
+  assign margin_top_mobile = section.settings.margin_top_mobile
+  assign margin_bottom_mobile = section.settings.margin_bottom_mobile
+
+  assign first_name_error_message = 'customer.general.form.first_name_error_message' | t
+  assign last_name_error_message = 'customer.general.form.last_name_error_message' | t
+  assign company_error_message = 'customer.general.form.company_error_message' | t
+  assign email_error_message = 'customer.general.form.email_error_message' | t
+  assign address1_error_message = 'customer.general.form.address1_error_message' | t
+  assign address2_error_message = 'customer.general.form.address2_error_message' | t
+  assign city_error_message = 'customer.general.form.city_error_message' | t
+  assign province_error_message = 'customer.general.form.province_error_message' | t
+  assign zip_error_message = 'customer.general.form.zip_error_message' | t
+  assign phone_error_message = 'customer.general.form.phone_error_message' | t
+  assign country_error_message = 'customer.general.form.country_error_message' | t
+-%}
+
+{% if customer != blank %}
+  <style>
+    :root #shopify-section-{{section.id}} {
+      --margin-top: {{- margin_top -}}px;
+      --margin-bottom: {{- margin_bottom -}}px;
+      --margin-top-mobile: {{- margin_top_mobile -}}px;
+      --margin-bottom-mobile: {{- margin_bottom_mobile -}}px;
+    }
+  </style>
+
+  <div class="container">
+    <h1 class="uppercase text-center mb-40 lg:mb-48 lg:text-left">{{- 'customer.account.page_title' | t -}}</h1>
+
+    {%- capture personal_info_desktop -%}
+      <div>
+        <div class="flex justify-between items-center mt-40 mb-24 lg:mt-0 lg:mb-40">
+          <h4 class="hidden lg:block uppercase">
+            {{- 'customer.account.personal_info' | t -}}
+          </h4>
+          <button class="js-account-info-add-address--desktop button button--bordered button--small !body-2 !font-regular !font-medium !normal-case [&_path]:stroke-black-200 ">
+            {%- render 'icon_v2', icon: 'plus' -%}
+            {{- 'customer.account.add_new_address' | t -}}
+          </button>
+        </div>
+
+        {%- capture add_form_fields -%}
+          <input type="hidden" name="return_to" value="{{- routes.account_url -}}" />
+
+          <div class="grid grid-cols-2 gap-16">
+            <div class="input-wrapper dark">
+              <input
+                type="text"
+                id="desktop_add_address[first_name]"
+                name="address[first_name]"
+                class="input"
+                aria-label="{{- 'customer.account.form.first_name' | t -}}"
+                placeholder="{{- 'customer.account.form.first_name' | t -}}"
+                value="{{- form.first_name -}}"
+                autocomplete="given-name"
+                required
+              />
+              <label class="input-label" for="desktop_add_address[first_name]">{{- 'customer.account.form.first_name' | t -}}</label>
+              {%- render 'warning-message-box', text: first_name_error_message -%}
+            </div>
+            <div class="input-wrapper dark">
+              <input
+                type="text"
+                id="desktop_add_address[last_name]"
+                name="address[last_name]"
+                class="input"
+                aria-label="{{- 'customer.account.form.last_name' | t -}}"
+                placeholder="{{- 'customer.account.form.last_name' | t -}}"
+                value="{{- form.last_name -}}"
+                autocomplete="family-name"
+                required
+              />
+              <label class="input-label" for="desktop_add_address[last_name]">{{- 'customer.account.form.last_name' | t -}}</label>
+              {%- render 'warning-message-box', text: last_name_error_message -%}
+            </div>
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <input
+              type="text"
+              id="desktop_add_address[company]"
+              name="address[company]"
+              class="input"
+              aria-label="{{- 'customer.account.form.company' | t -}}"
+              placeholder="{{- 'customer.account.form.company' | t -}}"
+              value="{{- form.company -}}"
+              autocomplete="organization"
+            />
+            <label class="input-label" for="desktop_add_address[company]">{{- 'customer.account.form.company' | t -}}</label>
+            {%- render 'warning-message-box', text: company_error_message -%}
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <input
+              disabled
+              type="email"
+              id="desktop_add_address[email]"
+              name="address[email]"
+              class="input"
+              aria-label="{{- 'customer.account.form.email' | t -}}"
+              placeholder="{{- 'customer.account.form.email' | t -}}"
+              value="{{- customer.email -}}"
+              autocomplete="email"
+              required
+              pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+            />
+            <label class="input-label" for="desktop_add_address[email]">{{- 'customer.account.form.email' | t -}}</label>
+            {%- render 'warning-message-box', text: email_error_message -%}
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <input
+              type="text"
+              id="desktop_add_address[address1]"
+              name="address[address1]"
+              class="input"
+              aria-label="{{- 'customer.account.form.address1' | t -}}"
+              placeholder="{{- 'customer.account.form.address1' | t -}}"
+              value="{{- form.address1 -}}"
+              autocomplete="address-line1"
+              required
+            />
+            <label class="input-label" for="desktop_add_address[address1]">{{- 'customer.account.form.address1' | t -}}</label>
+            {%- render 'warning-message-box', text: address1_error_message -%}
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <input
+              type="text"
+              id="desktop_add_address[address2]"
+              name="address[address2]"
+              class="input"
+              aria-label="{{- 'customer.account.form.address2' | t -}}"
+              placeholder="{{- 'customer.account.form.address2' | t -}}"
+              value="{{- form.address2 -}}"
+              autocomplete="address-line2"
+            />
+            <label class="input-label" for="desktop_add_address[address2]">{{- 'customer.account.form.address2' | t -}}</label>
+            {%- render 'warning-message-box', text: address2_error_message -%}
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <input
+              type="text"
+              id="desktop_add_address[city]"
+              name="address[city]"
+              class="input"
+              aria-label="{{- 'customer.account.form.city' | t -}}"
+              placeholder="{{- 'customer.account.form.city' | t -}}"
+              value="{{- form.city -}}"
+              autocomplete="address-level2"
+              required
+            />
+            <label class="input-label" for="desktop_add_address[city]">{{- 'customer.account.form.city' | t -}}</label>
+            {%- render 'warning-message-box', text: city_error_message -%}
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <select
+              id="desktop_add_address[country]"
+              name="address[country]"
+              data-default="{{ form.country }}"
+              autocomplete="country"
+              class="select-input w-full"
+              required
+            >{{- all_country_option_tags -}}</select>
+            <label class="input-label" for="desktop_add_address[country]">{{- 'customer.account.form.country' | t -}}</label>
+            {%- render 'warning-message-box', text: country_error_message -%}
+          </div>
+          <div id="desktop_add_address[province]New" class="input-wrapper dark mb-16">
+            <select 
+              id="desktop_add_address[province]"
+              name="address[province]"
+              data-default="{{ form.province }}"
+              autocomplete="address-level1"
+              class="select-input w-full"
+              required
+            ></select>
+            <label class="input-label" for="desktop_add_address[province]">{{- 'customer.account.form.province' | t -}}</label>
+            {%- render 'warning-message-box', text: province_error_message -%}
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <input
+              type="text"
+              id="desktop_add_address[zip]"
+              name="address[zip]"
+              class="input"
+              aria-label="{{- 'customer.account.form.zip' | t -}}"
+              placeholder="{{- 'customer.account.form.zip' | t -}}"
+              value="{{- form.zip -}}"
+              autocapitalize="characters"
+              autocomplete="postal-code"
+              required
+            />
+            <label class="input-label" for="desktop_add_address[zip]">{{- 'customer.account.form.zip' | t -}}</label>
+            {%- render 'warning-message-box', text: zip_error_message -%}
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <input
+              type="tel"
+              id="desktop_add_address[phone]"
+              name="address[phone]"
+              class="input"
+              aria-label="{{- 'customer.account.form.phone' | t -}}"
+              placeholder="{{- 'customer.account.form.phone' | t -}}"
+              value="{{- form.phone -}}"
+              autocomplete="tel"
+              required
+            />
+            <label class="input-label" for="desktop_add_address[phone]">{{- 'customer.account.form.phone' | t -}}</label>
+            {%- render 'warning-message-box', text: phone_error_message -%}
+          </div>
+
+          {%- liquid
+            assign checkbox_label = "customer.account.form.default" | t
+            render 'checkbox', is_dark: true, label: checkbox_label, name: "address[default]", class: "my-24"
+          -%}
+
+          <button type="submit" class="button button--primary button--w-full">{{- 'customer.account.form.save' | t -}}</button>
+        {%- endcapture -%}
+
+        {%- capture add_address_modal -%}
+          <div class="w-[330px] lg:w-[420px]">
+            <div class="flex justify-between mb-24">
+              <h5 class="uppercase">
+                {{- 'customer.account.add_address' | t -}}
+              </h5>
+              <button class="js-account-info-add-address-close--desktop [&_path]:fill-grey-300">
+                {%- render 'icon_v2', icon: 'close' -%}
+              </button>
+            </div>
+            <form-validation>
+              {%- form 'customer_address', customer.new_address -%}
+                {{- add_form_fields -}}
+              {%- endform -%}
+            </form-validation>
+          </div>
+        {%- endcapture -%}
+
+        {%- render 'modal', trigger: ".js-account-info-add-address--desktop", close_trigger: ".js-account-info-add-address-close--desktop", content: add_address_modal, position: "right" -%}
+
+        <div class="grid lg:grid-cols-3">
+          {%- for address in customer.addresses -%}
+            <div class="p-24 border-t-1 lg:border-l-1 border-black-200{% if forloop.first %} lg:!border-l-0{% endif %}">
+              <div class="flex justify-between items-center mb-16">
+                <h6 class="uppercase text-black-200">{{- address.address1 -}}</h6>
+
+                {%- if customer.default_address.id == address.id -%}
+                  <div class="ml-10 uppercase text-nowrap border-1 border-black-200 rounded-24 text-12 font-bold leading-20 px-8 py-2">{{- 'customer.account.default_address' | t -}}</div>
+                {%- endif -%}
+              </div>
+              <div class="body-3 mb-4 text-grey-600">
+                {{- address.first_name -}}
+                &nbsp;
+                {{- address.last_name -}}
+              </div>
+              <div class="body-3 mb-4 text-grey-600">
+                {{- customer.email -}}
+              </div>
+              <div class="body-3 mb-4 text-grey-600">
+                {{- address.address2 -}}
+              </div>
+              <div class="body-3 mb-4 text-grey-600">
+                {{- address.phone -}}
+              </div>
+              <div class="flex justify-between items-center mt-16">
+                <div class="js-account-info-address-edit-{{ address.id }}--desktop button button--secondary button--small !px-24 !py-8">
+                  {%- render 'icon_v2', icon: 'update' -%}
+                  {{- 'customer.account.form.update' | t -}}
+                </div>
+                <button data-address-id="{{- address.id -}}" class="js-delete-address flex items-center label-text text-grey-600 uppercase">
+                  {%- render 'icon_v2', icon: 'delete-icon', class: 'mr-8' -%}
+                  {{- 'customer.account.form.delete' | t -}}
+                </button>
+              </div>
+
+              {%- capture edit_form_fields -%}
+                <input type="hidden" name="return_to" value="{{- routes.account_url -}}" />
+
+                <div class="grid grid-cols-2 gap-16">
+                  <div class="input-wrapper dark">
+                    <input
+                      type="text"
+                      id="desktop_edit_address[first_name]"
+                      name="address[first_name]"
+                      class="input"
+                      aria-label="{{- 'customer.account.form.first_name' | t -}}"
+                      placeholder="{{- 'customer.account.form.first_name' | t -}}"
+                      value="{{- address.first_name -}}"
+                      autocomplete="given-name"
+                      required
+                    />
+                    <label class="input-label" for="desktop_edit_address[first_name]">{{- 'customer.account.form.first_name' | t -}}</label>
+                    {%- render 'warning-message-box', text: first_name_error_message -%}
+                  </div>
+                  <div class="input-wrapper dark">
+                    <input
+                      type="text"
+                      id="desktop_edit_address[last_name]"
+                      name="address[last_name]"
+                      class="input"
+                      aria-label="{{- 'customer.account.form.last_name' | t -}}"
+                      placeholder="{{- 'customer.account.form.last_name' | t -}}"
+                      value="{{- address.last_name -}}"
+                      autocomplete="family-name"
+                      required
+                    />
+                    <label class="input-label" for="desktop_edit_address[last_name]">{{- 'customer.account.form.last_name' | t -}}</label>
+                    {%- render 'warning-message-box', text: last_name_error_message -%}
+                  </div>
+                </div>
+                <div class="input-wrapper dark mb-16">
+                  <input
+                    type="text"
+                    id="desktop_edit_address[company]"
+                    name="address[company]"
+                    class="input"
+                    aria-label="{{- 'customer.account.form.company' | t -}}"
+                    placeholder="{{- 'customer.account.form.company' | t -}}"
+                    value="{{- address.company -}}"
+                    autocomplete="organization"
+                  />
+                  <label class="input-label" for="desktop_edit_address[company]">{{- 'customer.account.form.company' | t -}}</label>
+                  {%- render 'warning-message-box', text: company_error_message -%}
+                </div>
+                <div class="input-wrapper dark mb-16">
+                  <input
+                    type="text"
+                    id="desktop_edit_address[address1]"
+                    name="address[address1]"
+                    class="input"
+                    aria-label="{{- 'customer.account.form.address1' | t -}}"
+                    placeholder="{{- 'customer.account.form.address1' | t -}}"
+                    value="{{- address.address1 -}}"
+                    autocomplete="address-line1"
+                    required
+                  />
+                  <label class="input-label" for="desktop_edit_address[address1]">{{- 'customer.account.form.address1' | t -}}</label>
+                  {%- render 'warning-message-box', text: address1_error_message -%}
+                </div>
+                <div class="input-wrapper dark mb-16">
+                  <input
+                    type="text"
+                    id="desktop_edit_address[address2]"
+                    name="address[address2]"
+                    class="input"
+                    aria-label="{{- 'customer.account.form.address2' | t -}}"
+                    placeholder="{{- 'customer.account.form.address2' | t -}}"
+                    value="{{- address.address2 -}}"
+                    autocomplete="address-line2"
+                  />
+                  <label class="input-label" for="desktop_edit_address[address2]">{{- 'customer.account.form.address2' | t -}}</label>
+                  {%- render 'warning-message-box', text: address2_error_message -%}
+                </div>
+                <div class="input-wrapper dark mb-16">
+                  <input
+                    type="text"
+                    id="desktop_edit_address[city]"
+                    name="address[city]"
+                    class="input"
+                    aria-label="{{- 'customer.account.form.city' | t -}}"
+                    placeholder="{{- 'customer.account.form.city' | t -}}"
+                    value="{{- address.city -}}"
+                    autocomplete="address-level2"
+                    required
+                  />
+                  <label class="input-label" for="desktop_edit_address[city]">{{- 'customer.account.form.city' | t -}}</label>
+                  {%- render 'warning-message-box', text: city_error_message -%}
+                </div>
+                <div class="input-wrapper dark mb-16">
+                  <input
+                    type="text"
+                    id="desktop_edit_address[zip]"
+                    name="address[zip]"
+                    class="input"
+                    aria-label="{{- 'customer.account.form.zip' | t -}}"
+                    placeholder="{{- 'customer.account.form.zip' | t -}}"
+                    value="{{- address.zip -}}"
+                    autocapitalize="characters"
+                    autocomplete="postal-code"
+                    required
+                  />
+                  <label class="input-label" for="desktop_edit_address[zip]">{{- 'customer.account.form.zip' | t -}}</label>
+                  {%- render 'warning-message-box', text: zip_error_message -%}
+                </div>
+                <div class="input-wrapper dark mb-16">
+                  <input
+                    type="tel"
+                    id="desktop_edit_address[phone]"
+                    name="address[phone]"
+                    class="input"
+                    aria-label="{{- 'customer.account.form.phone' | t -}}"
+                    placeholder="{{- 'customer.account.form.phone' | t -}}"
+                    value="{{- address.phone -}}"
+                    autocomplete="tel"
+                    required
+                  />
+                  <label class="input-label" for="desktop_edit_address[phone]">{{- 'customer.account.form.phone' | t -}}</label>
+                  {%- render 'warning-message-box', text: phone_error_message -%}
+                </div>
+
+                {%- liquid
+                  assign checkbox_label = "customer.account.form.default" | t
+                  render 'checkbox', is_dark: true, label: checkbox_label, name: "address[default]", class: "my-24"
+                -%}
+
+                <button type="submit" class="button button--primary button--w-full">{{- 'customer.account.form.save' | t -}}</button>
+              {%- endcapture -%}
+
+              {%- capture edit_address_modal -%}
+                <div class="w-[330px] lg:w-[420px]">
+                  <div class="flex justify-between mb-24">
+                    <h5 class="uppercase">
+                      {{- 'customer.account.edit_address' | t -}}
+                    </h5>
+                    <button class="js-account-info-edit-address-close-{{ address.id }}--desktop [&_path]:fill-grey-300">
+                      {%- render 'icon_v2', icon: 'close' -%}
+                    </button>
+                  </div>
+                  <form-validation>
+                    {%- form 'customer_address', address -%}
+                      {{- edit_form_fields -}}
+                    {%- endform -%}
+                  </form-validation>
+                </div>
+              {%- endcapture -%}
+
+              {%- liquid
+                assign trigger = "js-account-info-address-edit-" | append: address.id | prepend: "." | append: "--desktop"
+                assign close_trigger = "js-account-info-edit-address-close-" | append:  address.id | prepend: "." | append: "--desktop"
+                
+                render 'modal', trigger: trigger, close_trigger: close_trigger, position: 'right', content: edit_address_modal
+              -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endcapture -%}
+
+    {%- capture personal_info_mobile -%}
+      <div>
+        <div class="flex justify-between items-center mt-40 mb-24 lg:mt-0 lg:mb-40">
+          <h4 class="hidden lg:block uppercase">
+            {{- 'customer.account.personal_info' | t -}}
+          </h4>
+          <button class="js-account-info-add-address--mobile button button--bordered button--small !body-2 !font-regular !font-medium !normal-case [&_path]:stroke-black-200 ">
+            {%- render 'icon_v2', icon: 'plus' -%}
+            {{- 'customer.account.add_new_address' | t -}}
+          </button>
+        </div>
+
+        {%- capture add_form_fields -%}
+          <input type="hidden" name="return_to" value="{{- routes.account_url -}}" />
+
+          <div class="grid grid-cols-2 gap-16">
+            <div class="input-wrapper dark">
+              <input
+                type="text"
+                id="mobile_add_address[first_name]"
+                name="address[first_name]"
+                class="input"
+                aria-label="{{- 'customer.account.form.first_name' | t -}}"
+                placeholder="{{- 'customer.account.form.first_name' | t -}}"
+                value="{{- form.first_name -}}"
+                autocomplete="given-name"
+                required
+              />
+              <label class="input-label" for="mobile_add_address[first_name]">{{- 'customer.account.form.first_name' | t -}}</label>
+              {%- render 'warning-message-box', text: first_name_error_message -%}
+            </div>
+            <div class="input-wrapper dark">
+              <input
+                type="text"
+                id="mobile_add_address[last_name]"
+                name="address[last_name]"
+                class="input"
+                id="{{- 'customer.account.form.last_name' | t -}}"
+                placeholder="{{- 'customer.account.form.last_name' | t -}}"
+                aria-label="{{- 'customer.account.form.last_name' | t -}}"
+                value="{{- form.last_name -}}"
+                autocomplete="family-name"
+                required
+              />
+              <label class="input-label" for="mobile_add_address[last_name]">{{- 'customer.account.form.last_name' | t -}}</label>
+              {%- render 'warning-message-box', text: last_name_error_message -%}
+            </div>
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <input
+              type="text"
+              id="mobile_add_address[company]"
+              name="address[company]"
+              class="input"
+              placeholder="{{- 'customer.account.form.company' | t -}}"
+              aria-label="{{- 'customer.account.form.company' | t -}}"
+              value="{{- form.company -}}"
+              autocomplete="organization"
+            />
+            <label class="input-label" for="mobile_add_address[company]">{{- 'customer.account.form.company' | t -}}</label>
+            {%- render 'warning-message-box', text: company_error_message -%}
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <input
+              disabled
+              type="email"
+              id="mobile_add_address[email]"
+              name="address[email]"
+              class="input"
+              placeholder="{{- 'customer.account.form.email' | t -}}"
+              aria-label="{{- 'customer.account.form.email' | t -}}"
+              value="{{- customer.email -}}"
+              autocomplete="email"
+              required
+            />
+            <label class="input-label" for="mobile_add_address[email]">{{- 'customer.account.form.email' | t -}}</label>
+            {%- render 'warning-message-box', text: email_error_message -%}
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <input
+              type="text"
+              id="mobile_add_address[address1]"
+              name="address[address1]"
+              class="input"
+              placeholder="{{- 'customer.account.form.address1' | t -}}"
+              aria-label="{{- 'customer.account.form.address1' | t -}}"
+              value="{{- form.address1 -}}"
+              autocomplete="address-line1"
+              required
+            />
+            <label class="input-label" for="mobile_add_address[address1]">{{- 'customer.account.form.address1' | t -}}</label>
+            {%- render 'warning-message-box', text: address1_error_message -%}
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <input
+              type="text"
+              id="mobile_add_address[address2]"
+              name="address[address2]"
+              class="input"
+              placeholder="{{- 'customer.account.form.address2' | t -}}"
+              aria-label="{{- 'customer.account.form.address2' | t -}}"
+              value="{{- form.address2 -}}"
+              autocomplete="address-line2"
+            />
+            <label class="input-label" for="mobile_add_address[address2]">{{- 'customer.account.form.address2' | t -}}</label>
+            {%- render 'warning-message-box', text: address2_error_message -%}
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <input
+              type="text"
+              id="mobile_add_address[city]"
+              name="address[city]"
+              class="input"
+              placeholder="{{- 'customer.account.form.city' | t -}}"
+              aria-label="{{- 'customer.account.form.city' | t -}}"
+              value="{{- form.city -}}"
+              autocomplete="address-level2"
+              required
+            />
+            <label class="input-label" for="mobile_add_address[city]">{{- 'customer.account.form.city' | t -}}</label>
+            {%- render 'warning-message-box', text: city_error_message -%}
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <select 
+              id="mobile_add_address[country]"
+              name="address[country]"
+              data-default="{{ form.country }}"
+              autocomplete="country"
+              class="select-input w-full"
+              required
+            >
+              {{- all_country_option_tags -}}
+            </select>
+            <label class="input-label" for="mobile_add_address[country]">{{- 'customer.account.form.country' | t -}}</label>
+            {%- render 'warning-message-box', text: country_error_message -%}
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <select 
+              id="mobile_add_address[province]"
+              name="address[province]"
+              data-default="{{ form.province }}"
+              autocomplete="address-level1"
+              class="select-input w-full"
+              required
+            ></select>
+            <label class="input-label" for="mobile_add_address[province]">{{- 'customer.account.form.province' | t -}}</label>
+            {%- render 'warning-message-box', text: province_error_message -%}
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <input
+              type="text"
+              id="mobile_add_address[zip]"
+              name="address[zip]"
+              class="input"
+              placeholder="{{- 'customer.account.form.zip' | t -}}"
+              aria-label="{{- 'customer.account.form.zip' | t -}}"
+              value="{{- form.zip -}}"
+              autocapitalize="characters"
+              autocomplete="postal-code"
+              required
+            />
+            <label class="input-label" for="mobile_add_address[zip]">{{- 'customer.account.form.zip' | t -}}</label>
+            {%- render 'warning-message-box', text: zip_error_message -%}
+          </div>
+          <div class="input-wrapper dark mb-16">
+            <input
+              type="tel"
+              id="mobile_add_address[phone]"
+              name="address[phone]"
+              class="input"
+              placeholder="{{- 'customer.account.form.phone' | t -}}"
+              aria-label="{{- 'customer.account.form.phone' | t -}}"
+              value="{{- form.phone -}}"
+              autocomplete="tel"
+              required
+            />
+            <label class="input-label" for="mobile_add_address[phone]">{{- 'customer.account.form.phone' | t -}}</label>
+            {%- render 'warning-message-box', text: phone_error_message -%}
+          </div>
+
+          {%- liquid
+            assign checkbox_label = "customer.account.form.default" | t
+            render 'checkbox', is_dark: true, label: checkbox_label, name: "address[default]", class: "my-24"
+          -%}
+
+          <button class="button button--primary button--w-full">{{- 'customer.account.form.save' | t -}}</button>
+        {%- endcapture -%}
+
+        {%- capture add_address_modal -%}
+          <div class="w-[330px] lg:w-[420px]">
+            <div class="flex justify-between mb-24">
+              <h5 class="uppercase">
+                {{- 'customer.account.add_address' | t -}}
+              </h5>
+              <button class="js-account-info-add-address-close--mobile [&_path]:fill-grey-300">
+                {%- render 'icon_v2', icon: 'close' -%}
+              </button>
+            </div>
+            <form-validation>
+              {%- form 'customer_address', customer.new_address -%}
+                {{- add_form_fields -}}
+              {%- endform -%}
+            </form-validation>
+          </div>
+        {%- endcapture -%}
+
+        {%- render 'modal', trigger: ".js-account-info-add-address--mobile", close_trigger: ".js-account-info-add-address-close--mobile", content: add_address_modal, position: "right" -%}
+
+        <div class="grid lg:grid-cols-3">
+          {%- for address in customer.addresses -%}
+            <div class="p-24 border-t-1 lg:border-l-1 border-black-200{% if forloop.first %} lg:!border-l-0{% endif %}">
+              <div class="flex justify-between items-center mb-16">
+                <h6 class="uppercase text-black-200">{{- address.address1 -}}</h6>
+
+                {%- if customer.default_address.id == address.id -%}
+                  <div class="ml-10 uppercase text-nowrap border-1 border-black-200 rounded-24 text-12 font-bold leading-20 px-8 py-2">{{- 'customer.account.default_address' | t -}}</div>
+                {%- endif -%}
+              </div>
+              <div class="body-3 mb-4 text-grey-600">
+                {{- address.first_name -}}
+                &nbsp;
+                {{- address.last_name -}}
+              </div>
+              <div class="body-3 mb-4 text-grey-600">
+                {{- customer.email -}}
+              </div>
+              <div class="body-3 mb-4 text-grey-600">
+                {{- address.address2 -}}
+              </div>
+              <div class="body-3 mb-4 text-grey-600">
+                {{- address.phone -}}
+              </div>
+              <div class="flex justify-between items-center mt-16">
+                <div class="js-account-info-address-edit-{{ address.id }}--mobile button button--secondary button--small !px-24 !py-8">
+                  {%- render 'icon_v2', icon: 'update' -%}
+                  {{- 'customer.account.form.update' | t -}}
+                </div>
+                <button data-address-id="{{- address.id -}}" class="js-delete-address flex items-center label-text text-grey-600 uppercase">
+                  {%- render 'icon_v2', icon: 'delete-icon', class: 'mr-8' -%}
+                  {{- 'customer.account.form.delete' | t -}}
+                </button>
+              </div>
+
+              {%- capture edit_form_fields -%}
+                <input type="hidden" name="return_to" value="{{- routes.account_url -}}" />
+
+                <div class="grid grid-cols-2 gap-16">
+                  <div class="input-wrapper dark">
+                    <input
+                      type="text"
+                      id="mobile_edit_address[first_name]"
+                      name="address[first_name]"
+                      class="input"
+                      placeholder="{{- 'customer.account.form.first_name' | t -}}"
+                      aria-label="{{- 'customer.account.form.first_name' | t -}}"
+                      value="{{- address.first_name -}}"
+                      autocomplete="given-name"
+                      required
+                    />
+                    <label class="input-label" for="mobile_edit_address[first_name]">{{- 'customer.account.form.first_name' | t -}}</label>
+                    {%- render 'warning-message-box', text: first_name_error_message -%}
+                  </div>
+                  <div class="input-wrapper dark">
+                    <input
+                      type="text"
+                      id="mobile_edit_address[last_name]"
+                      name="address[last_name]"
+                      class="input"
+                      placeholder="{{- 'customer.account.form.last_name' | t -}}"
+                      aria-label="{{- 'customer.account.form.last_name' | t -}}"
+                      value="{{- address.last_name -}}"
+                      autocomplete="family-name"
+                      required
+                    />
+                    <label class="input-label" for="mobile_edit_address[last_name]">{{- 'customer.account.form.last_name' | t -}}</label>
+                    {%- render 'warning-message-box', text: last_name_error_message -%}
+                  </div>
+                </div>
+                <div class="input-wrapper dark mb-16">
+                  <input
+                    type="text"
+                    id="mobile_edit_address[company]"
+                    name="address[company]"
+                    class="input"
+                    placeholder="{{- 'customer.account.form.company' | t -}}"
+                    aria-label="{{- 'customer.account.form.company' | t -}}"
+                    value="{{- address.company -}}"
+                    autocomplete="organization"
+                  />
+                  <label class="input-label" for="mobile_edit_address[company]">{{- 'customer.account.form.company' | t -}}</label>
+                  {%- render 'warning-message-box', text: company_error_message -%}
+                </div>
+                <div class="input-wrapper dark mb-16">
+                  <input
+                    type="text"
+                    id="mobile_edit_address[address1]"
+                    name="address[address1]"
+                    class="input"
+                    placeholder="{{- 'customer.account.form.address1' | t -}}"
+                    aria-label="{{- 'customer.account.form.address1' | t -}}"
+                    value="{{- address.address1 -}}"
+                    autocomplete="address-line1"
+                    required
+                  />
+                  <label class="input-label" for="mobile_edit_address[address1]">{{- 'customer.account.form.address1' | t -}}</label>
+                  {%- render 'warning-message-box', text: address1_error_message -%}
+                </div>
+                <div class="input-wrapper dark mb-16">
+                  <input
+                    type="text"
+                    id="mobile_edit_address[address2]"
+                    name="address[address2]"
+                    class="input"
+                    placeholder="{{- 'customer.account.form.address2' | t -}}"
+                    aria-label="{{- 'customer.account.form.address2' | t -}}"
+                    value="{{- address.address2 -}}"
+                    autocomplete="address-line2"
+                  />
+                  <label class="input-label" for="mobile_edit_address[address2]">{{- 'customer.account.form.address2' | t -}}</label>
+                  {%- render 'warning-message-box', text: address2_error_message -%}
+                </div>
+                <div class="input-wrapper dark mb-16">
+                  <input
+                    type="text"
+                    id="mobile_edit_address[city]"
+                    name="address[city]"
+                    class="input"
+                    placeholder="{{- 'customer.account.form.city' | t -}}"
+                    aria-label="{{- 'customer.account.form.city' | t -}}"
+                    value="{{- address.city -}}"
+                    autocomplete="address-level2"
+                    required
+                  />
+                  <label class="input-label" for="mobile_edit_address[city]">{{- 'customer.account.form.city' | t -}}</label>
+                  {%- render 'warning-message-box', text: city_error_message -%}
+                </div>
+                <div class="input-wrapper dark mb-16">
+                  <input
+                    type="text"
+                    id="mobile_edit_address[zip]"
+                    name="address[zip]"
+                    class="input"
+                    placeholder="{{- 'customer.account.form.zip' | t -}}"
+                    aria-label="{{- 'customer.account.form.zip' | t -}}"
+                    value="{{- address.zip -}}"
+                    autocapitalize="characters"
+                    autocomplete="postal-code"
+                    required
+                  />
+                  <label class="input-label" for="mobile_edit_address[zip]">{{- 'customer.account.form.zip' | t -}}</label>
+                  {%- render 'warning-message-box', text: zip_error_message -%}
+                </div>
+                <div class="input-wrapper dark mb-16">
+                  <input
+                    type="tel"
+                    id="mobile_edit_address[phone]"
+                    name="address[phone]"
+                    class="input"
+                    placeholder="{{- 'customer.account.form.phone' | t -}}"
+                    aria-label="{{- 'customer.account.form.phone' | t -}}"
+                    value="{{- address.phone -}}"
+                    autocomplete="tel"
+                    required
+                  />
+                  <label class="input-label" for="mobile_edit_address[phone]">{{- 'customer.account.form.phone' | t -}}</label>
+                  {%- render 'warning-message-box', text: phone_error_message -%}
+                </div>
+
+                {%- liquid
+                  assign checkbox_label = "customer.account.form.default" | t
+                  render 'checkbox', is_dark: true, label: checkbox_label, name: "address[default]", class: "my-24"
+                -%}
+
+                <button type="submit" class="button button--primary button--w-full">{{- 'customer.account.form.save' | t -}}</button>
+              {%- endcapture -%}
+
+              {%- capture edit_address_modal -%}
+                <div class="w-[330px] lg:w-[420px]">
+                  <div class="flex justify-between mb-24">
+                    <h5 class="uppercase">
+                      {{- 'customer.account.edit_address' | t -}}
+                    </h5>
+                    <button class="js-account-info-edit-address-close-{{ address.id }}--mobile [&_path]:fill-grey-300">
+                      {%- render 'icon_v2', icon: 'close' -%}
+                    </button>
+                  </div>
+                  <form-validation>
+                    {%- form 'customer_address', address -%}
+                      {{- edit_form_fields -}}
+                    {%- endform -%}
+                  </form-validation>
+                </div>
+              {%- endcapture -%}
+
+              {%- liquid
+                assign trigger = "js-account-info-address-edit-" | append: address.id | prepend: "." | append: "--mobile"
+                assign close_trigger = "js-account-info-edit-address-close-" | append:  address.id | prepend: "." | append: "--mobile"
+                
+                render 'modal', trigger: trigger, close_trigger: close_trigger, position: 'right', content: edit_address_modal
+              -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endcapture -%}
+
+    {%- capture my_orders -%}
+      <div>
+        <h4 class="hidden lg:block uppercase mb-40">{{- "customer.account.my_orders" | t -}}</h4>
+
+        <div class="mt-40">
+          {% if customer.orders.size > 0 %}
+            {%- for order in customer.orders -%}
+              {%- liquid
+                assign order_date = order.created_at | date: '%B %d, %Y'
+
+                case order.fulfillment_status
+                  when "partial"
+                    assign order_status_color = "text-progress"
+                  when "unfulfilled"
+                    assign order_status_color = "text-progress"
+                  when "restocked"
+                    assign order_status_color = "text-progress"
+                  when "fulfilled"
+                    assign order_status_color = "text-complete"
+                  when "complete"
+                    assign order_status_color = "text-complete"
+                endcase
+              -%}
+
+              <details class="child border-1 border-grey-100 open:border-black-200 transition-colors rounded-8 p-16 lg:px-24 lg:py-32 mb-8">
+                <summary class="flex flex-col lg:flex-row justify-between lg:items-center cursor-pointer">
+                  <div class="flex flex-col lg:flex-row gap-8 lg:gap-100">
+                    <div>
+                      <div class="text-grey-600 body-3 mb-4 flex justify-between lg:block">
+                        {{- "customer.account.orders.order_title" | t: number: order.id, date: order_date -}}
+                        {%- render 'icon_v2': icon: 'expand', class: 'ml-8 [&_path]:stroke-grey-600 child-open:rotate-180 transition-all lg:hidden' -%}
+                      </div>
+                      <div class="flex justify-between items-center mb-16 lg:mb-0 lg:block">  
+                        <ul class="list-inside list-[square] body-3 {{ order_status_color }}"><li>{{- order.fulfillment_status_label -}}</li></ul>
+                        <div class="body-3 text-black-200 lg:hidden">{{- order.total_price | money_without_currency | prepend: cart.currency.symbol -}}</div>
+                      </div>
+                    </div>
+                    <div class="hidden lg:block">
+                      <div class="text-grey-600 body-3 mb-4">{{- "customer.account.orders.total" | t -}}</div>
+                      <div class="body-3 text-black-200">{{- order.total_price | money_without_currency | prepend: cart.currency.symbol -}}</div>
+                    </div>
+                  </div>
+                  <div class="flex items-center">
+                    <div class="flex items-center lg:mr-32">
+                      {% if order.line_items.size > 3 %}
+                        <div class="mr-24 text-grey-600 body-3">+{{- order.line_items.size | minus: 3 -}}</div>
+                      {% endif %}
+                      {%- for item in order.line_items limit: 3 -%}
+                        {%- assign image = item.image | default: item.product.featured_image -%}
+                        {%- render 'responsive-image-dynamic_v2', image: image, class: 'mr-8 last:mr-0 w-56 lg:w-64' -%}
+                      {%- endfor -%}
+                    </div>                      
+
+                    {%- render 'icon_v2': icon: 'expand', class: 'ml-8 [&_path]:stroke-grey-600 child-open:rotate-180 transition-all hidden lg:block' -%}
+                  </div>
+                </summary>
+                <div class="mt-24 lg:mt-16 flex flex-col-reverse gap-24 lg:grid lg:grid-cols-[2fr_1fr] lg:gap-40">
+                  <div>
+                    {%- for item in order.line_items -%}
+                      <div class="border-t-1 lg:border-t-0 first:border-b-0 lg:first:border-b-1 border-b-1 border-grey-100 py-16 flex justify-between items-end lg:items-start lg:gap-8">
+                        <div class="flex items-start">
+                          {%- assign image = item.image | default: item.product.featured_image -%}
+                          {%- render 'responsive-image-dynamic_v2', image: image, class: 'mr-8 w-64' -%}
+                          <div class="flex flex-col lg:grid lg:grid-cols-[minmax(0,350px)_1fr]">
+                            <div >
+                              <div class="body-3 font-bold text-black-200 mb-4 max-w-[350px] w-full">{{- item.product.title -}}</div>
+                              <div class="body-3 text-grey-600 mb-4 lg:mb-0">{{- item.variant.title -}}</div>
+                            </div>
+                            <div class="body-3 text-black-200 lg:ml-24 flex-[1_0_auto]">
+                              {{- 'customer.account.orders.count' | t: count: item.quantity -}}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="body-3 text-black-200">
+                          {{ item.original_price | money_without_currency | prepend: cart.currency.symbol }}
+                        </div>
+                      </div>
+                    {%- endfor -%}
+                    <div class="mt-24">
+                      <div class="flex justify-between items-center body-3 text-black-200 mb-2">
+                        {{- 'customer.account.orders.subtotal' | t -}}
+                        <span>{{- order.line_items_subtotal_price | money_without_currency | prepend: cart.currency.symbol -}}</span>
+                      </div>
+                      <div class="flex justify-between items-center body-3 text-black-200 mb-2">
+                        {{- 'customer.account.orders.discount' | t -}}
+                        <span>{{- order.total_discounts | money_without_currency | prepend: cart.currency.symbol -}}</span>
+                      </div>
+                      <div class="flex justify-between items-center body-3 text-black-200">
+                        {{- 'customer.account.orders.shipping' | t -}}
+                        <span>{{- order.shipping_price | money_without_currency | prepend: cart.currency.symbol -}}</span>
+                      </div>
+                      <h6 class="flex justify-between items-center my-16 uppercase lg:mb-72">
+                        {{- 'customer.account.orders.total' | t -}}
+                        <span>{{- order.total_price | money_without_currency | prepend: cart.currency.symbol -}}</span>
+                      </h6>
+                      {%- render 'reorder-button', order: order -%}
+                    </div>
+                  </div>
+                  <div>
+                    {%- if order.fulfillment.tracking_number != blank -%}
+                      <div class="text-black-200 body-3 font-medium flex items-center justify-center mb-16">
+                        {{- "customer.account.orders.tracking_number" | t -}}
+                        <span class="text-grey-600 font-[400] underline">{{- order.fulfillment.tracking_number -}}</span>
+                      </div>
+                    {%- endif -%}
+                    {%- if order.fulfillment.tracking_url != blank -%}
+                      <a href="{{- order.fulfillment.tracking_url -}}" target="_blank" class="text-black-200 flex items-center button-text-2 mb-24 uppercase">
+                        {{- "customer.account.orders.tracking_status" | t -}}
+                        {%- render: 'icon_v2', icon: 'link', class: 'ml-8' -%}
+                      </a>
+                    {%- endif -%}
+
+                    {% if order.shipping_address != blank %}
+                      <div>
+                        <div class="text-black-200 body-3 font-medium mb-8">
+                          {{- "customer.account.orders.shipping_address" | t -}}
+                        </div>
+                        <div class="body-3 text-grey-600 mb-4">
+                          {{- order.shipping_address.first_name -}}&nbsp;{{- order.shipping_address.last_name -}}
+                        </div>
+                        <div class="body-3 text-grey-600 mb-4">
+                          {{- order.customer.email -}}
+                        </div>
+                        <div class="body-3 text-grey-600 mb-4">
+                          {{- order.shipping_address.address1 -}}
+                        </div>
+                        <div class="body-3 text-grey-600 mb-4">
+                          {{- order.shipping_address.phone -}}
+                        </div>
+                      </div>
+                    {% endif %}
+
+                    {%- if order.billing_address != blank -%}
+                      <div class="mt-24">
+                        <div class="text-black-200 body-3 font-medium mb-8">
+                          {{- "customer.account.orders.shipping_address" | t -}}
+                        </div>
+                        <div class="body-3 text-grey-600 mb-4">
+                          {{- order.billing_address.first_name -}}&nbsp;{{- order.billing_address.last_name -}}
+                        </div>
+                        <div class="body-3 text-grey-600 mb-4">
+                          {{- order.customer.email -}}
+                        </div>
+                        <div class="body-3 text-grey-600 mb-4">
+                          {{- order.billing_address.address1 -}}
+                        </div>
+                        <div class="body-3 text-grey-600 mb-4">
+                          {{- order.billing_address.phone -}}
+                        </div>
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </details>
+              
+            {%- endfor -%}
+          {% else %}
+            <div class="body-3 lg:mt-8 text-grey-600 mb-24 lg:mb-32 lg:text-left text-center">{{- "customer.account.no_orders" | t -}}</div>
+            <a href="{{- routes.all_products_collection_url -}}" class="button button--primary button--centered lg:ml-0">{{- 'customer.account.continue_shopping' | t -}}</a>
+          {% endif %}
+        </div>
+      </div>
+    {%- endcapture -%}
+
+    <account-info>
+      <div class="hidden lg:block">
+        <div class="flex gap-[140px]">
+          <div class="w-full max-w-[210px]">
+            <div
+              class="js-account-info-tab cursor-pointer py-16 text-14 font-bold leading-22 uppercase border-r-3 border-transparent  transition-colors [&.active]:text-orange-100 [&.active]:border-orange-100 active"
+              data-tab="{{- 'customer.account.personal_info' | t -}}"
+            >
+              {{- 'customer.account.personal_info' | t -}}
+            </div>
+            <div
+              class="js-account-info-tab cursor-pointer py-16 text-14 font-bold leading-22 uppercase border-r-3 border-transparent  transition-colors [&.active]:text-orange-100 [&.active]:border-orange-100"
+              data-tab="{{- 'customer.account.my_orders' | t -}}"
+            >
+              {{- 'customer.account.my_orders' | t -}}
+            </div>
+            <a
+              href="{{- routes.account_logout_url -}}"
+              class="block mt-54 py-16 text-14 font-bold leading-22 uppercase text-grey-300"
+            >
+              {{- 'customer.account.logout' | t -}}
+            </a>
+          </div>
+          <div
+            class="js-account-info-tab-content w-full"
+            data-tab="{{- 'customer.account.personal_info' | t -}}"
+          >
+            {{- personal_info_desktop -}}
+          </div>
+          <div
+            class="js-account-info-tab-content w-full hidden"
+            data-tab="{{- 'customer.account.my_orders' | t -}}"
+          >
+            {{- my_orders -}}
+          </div>
+        </div>
+      </div>
+      <div class="lg:hidden">
+        <details class="group">
+          <summary class="py-24 border-b-1 border-black-200 group-open:border-b-0 flex justify-between items-center">
+            <span class="h5 text-black-200  group-open:text-grey-300 uppercase transition-colors">
+              {{- 'customer.account.personal_info' | t -}}
+            </span>
+            {%- render 'icon_v2': icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180 transition-all' -%}
+          </summary>
+          <div class="global-inner-spacing">
+            {{- personal_info_mobile -}}
+          </div>
+        </details>
+        <details class="group">
+          <summary class="py-24 border-b-1 border-black-200 group-open:border-b-0 flex justify-between items-center">
+            <span class="h5 text-black-200  group-open:text-grey-300 uppercase transition-colors">
+              {{- 'customer.account.my_orders' | t -}}
+            </span>
+            {%- render 'icon_v2': icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180 transition-all' -%}
+          </summary>
+          <div class="global-inner-spacing">
+            {{- my_orders -}}
+          </div>
+        </details>
+        <a
+          href="{{- routes.account_logout_url -}}"
+          class="block mt-24 h5 text-grey-300 uppercase"
+        >
+          {{- 'customer.account.logout' | t -}}
+        </a>
+      </div>
+
+      {%- liquid
+        assign create_text = 'customer.account.form.added' | t
+        assign deleted_text = 'customer.account.form.deleted' | t
+
+        render 'tooltip', text: create_text, class: 'js-tooltip-create', icon: 'tooltip-done'
+        render 'tooltip', text: deleted_text, class: 'js-tooltip-delete', icon: 'tooltip-info'
+      -%}
+    </account-info>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Account info",
+  "class": "global-outer-spacing",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Outer Spaces"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Margin top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Margin bottom",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Margin top",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Margin bottom",
+      "default": 72
+    }
+  ],
+  "presets": [
+    {
+      "name": "Account info"
+    }
+  ]
+}
+{% endschema %}

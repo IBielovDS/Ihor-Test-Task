@@ -1,0 +1,62 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main-product": {
+      "type": "main-product",
+      "blocks": {
+        "tag_with_stars_dTt9x7": {
+          "type": "tag_with_stars",
+          "settings": {}
+        },
+        "title_DDqHmj": {
+          "type": "title",
+          "settings": {
+            "title": "{{ product.title }}"
+          }
+        },
+        "price_88TqHD": {
+          "type": "price",
+          "settings": {}
+        },
+        "product_form_HNbrU7": {
+          "type": "product_form",
+          "settings": {}
+        },
+        "richtext_KbWzWw": {
+          "type": "richtext",
+          "settings": {
+            "text": "<p>Not sure if this is the best product for you?</p><p><a href=\"/pages/contact\">Contact Us</a> and we will help you find the right product for you.</p>"
+          }
+        },
+      },
+      "block_order": [
+        "tag_with_stars_dTt9x7",
+        "title_DDqHmj",
+        "price_88TqHD",
+        "product_form_HNbrU7",
+        "richtext_KbWzWw",
+      ],
+      "settings": {
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 0,
+        "margin_top": 0,
+        "margin_bottom": 20,
+        "margin_top_mobile": 0,
+        "margin_bottom_mobile": 20
+      }
+    }
+  },
+  "order": [
+    "main-product"
+  ]
+}

@@ -1,0 +1,12 @@
+<quick-view-modal class="modal modal--center quick-view-modal [&_a:has(.loox-rating)]:pointer-events-none">
+  <div class="modal__inner !p-16 lg:!p-32 w-full lg:!max-w-[1026px] transition-all duration-300 lg:min-h-[73dvh] lg:max-h-[85dvh] lg:h-auto h-[90dvh]">
+    <div
+      class="modal__close js-quick-view-modal-close !right-0 !top-0 !p-10 "
+    >
+      {%- render 'icon_v2', icon: 'close', class: '[&_path]:fill-grey-300 [&_path]:!stroke-none' -%}
+    </div>
+    <div class="js-quick-view-modal-content loading-spinner [&.loading-spinner]:absolute [&.loading-spinner]:top-1/2 [&.loading-spinner]:left-1/2 [&.loading-spinner]:-translate-x-1/2 [&.loading-spinner]:-translate-y-1/2 [&_div.product-media-gallery__mobile-nav]:hidden">
+      {%- render 'loader', visible: true -%}
+    </div>
+  </div>
+</quick-view-modal>

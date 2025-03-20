@@ -1,0 +1,296 @@
+{%- liquid
+  assign padding_top = section.settings.padding_top
+  assign padding_bottom = section.settings.padding_bottom
+  assign padding_top_mobile = section.settings.padding_top_mobile
+  assign padding_bottom_mobile = section.settings.padding_bottom_mobile
+  assign margin_top = section.settings.margin_top
+  assign margin_bottom = section.settings.margin_bottom
+  assign margin_top_mobile = section.settings.margin_top_mobile
+  assign margin_bottom_mobile = section.settings.margin_bottom_mobile
+  assign section_id = section.settings.section_id
+-%}
+
+{%- if section.blocks.size > 0 -%}
+  <style>
+    :root #shopify-section-{{section.id}} {
+      --padding-top: {{- padding_top -}}px;
+      --padding-bottom: {{- padding_bottom -}}px;
+      --padding-top-mobile: {{- padding_top_mobile -}}px;
+      --padding-bottom-mobile: {{- padding_bottom_mobile -}}px;
+      --margin-top: {{- margin_top -}}px;
+      --margin-bottom: {{- margin_bottom -}}px;
+      --margin-top-mobile: {{- margin_top_mobile -}}px;
+      --margin-bottom-mobile: {{- margin_bottom_mobile -}}px;
+    }
+  </style>
+
+  {%- capture section_content -%}
+    <product-compatibility-list>
+      {%- if section.settings.title != blank -%}
+        <h3 class="mb-48 hidden lg:block">{{- section.settings.title -}}</h3>
+      {%- endif -%}
+
+      {%- if section.blocks.size == 1 -%}
+        {%- for block in section.blocks limit: 1 -%}
+          {%- if block.settings.list_models == blank -%}
+            <div
+              class="bg-grey rounded-8 grid lg:grid-cols-[1.75fr_1fr]"
+              {{ block.shopify_attributes }}
+            >
+              <div class="flex flex-col justify-between p-24 lg:py-96 lg:px-40">
+                {%- if block.settings.empty_title != blank -%}
+                  <h5 class="mb-40">{{- block.settings.empty_title -}}</h5>
+                {%- endif -%}
+
+                <div class="max-w-[480px]">
+                  {%- if block.settings.empty_subtitle != blank -%}
+                    <div class="subtitle-text font-bold [&_strong]:text-orange-100 mb-16">
+                      {{- block.settings.empty_subtitle -}}
+                    </div>
+                  {%- endif -%}
+
+                  {%- if block.settings.empty_text != blank -%}
+                    <div class="body-2">{{- block.settings.empty_text -}}</div>
+                  {%- endif -%}
+                </div>
+              </div>
+              {%- if block.settings.image != blank -%}
+                {%- render 'responsive-image-dynamic_v2', image: block.settings.image, class: 'w-full h-full object-contain bg-white' -%}
+              {%- endif -%}
+            </div>
+          {%- else -%}
+            <div class="bg-grey rounded-8">
+              <div
+                class="grid items-center lg:grid-cols-[1.75fr_1fr] js-tab-content{% if forloop.index != 1 %} hidden{% endif %}"
+                data-tab="{{- block.settings.brand -}}"
+                {{ block.shopify_attributes }}
+              >
+                <div class="order-2 [&_ul]:list-inside [&_ul]:list-[square] [&_ul]:grid [&_ul]:grid-cols-1 [&_ul]:lg:grid-cols-2 [&_ul]:max-h-[300px] [&_ul]:overflow-auto [&_ul]:my-8 [&_ul]:mx-16 [&_ul]:lg:m-40 [&_ul]:lg:columns-2 [&_ul]:original-scrollbar [&_ul_li]:body-1 [&_ul_li]:font-medium [&_ul_li]:py-8 [&_ul_li]:border-b-1 [&_ul_li]:border-grey-100">
+                  {%- if block.settings.list_models != blank -%}
+                    {{block.settings.list_models }}
+                  {%- endif -%}
+                </div>
+                {%- if block.settings.image != blank -%}
+                  {%- render 'responsive-image-dynamic_v2',
+                    image: block.settings.image,
+                    class: 'order-1 lg:order-3 w-[50%] block mx-auto lg:w-full'
+                  -%}
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
+        <div class="grid gap-24 lg:grid-cols-[1fr_5.5fr]">
+          <div class="flex overflow-x-auto lg:flex-col original-scrollbar">
+            {%- for block in section.blocks -%}
+              {%- if block.settings.brand != blank -%}
+                <div
+                  class="tab-item tab-item--reverse grey-bg{% if forloop.first %} active{% endif %} mr-8 last:mr-0 lg:mr-0 lg:mb-8 lg:last:mb-0 !w-full !font-medium js-tab-item"
+                  data-tab="{{- block.settings.brand -}}"
+                  {{ block.shopify_attributes }}
+                >
+                  {{- block.settings.brand -}}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+          <div class="bg-grey rounded-8">
+            {%- for block in section.blocks -%}
+              <div
+                class="grid items-center lg:grid-cols-[1.75fr_1fr] js-tab-content{% if forloop.index != 1 %} hidden{% endif %}"
+                data-tab="{{- block.settings.brand -}}"
+                {{ block.shopify_attributes }}
+              >
+                <div class="order-2">
+                  {%- if block.settings.list_models != blank -%}
+                    <div class="[&_ul]:list [&_ul]:max-h-[300px] [&_ul]:overflow-auto [&_ul]:lg:max-h-none [&_ul]:my-8 [&_ul]:mx-16 [&_ul]:lg:m-40 [&_ul]:lg:columns-2 [&_ul]:original-scrollbar [&_li]:body-1 [&_li]:font-medium [&_li]:py-8 [&_li]:border-b-1 [&_li]:border-grey-100">
+                      {{- block.settings.list_models -}}
+                    </div>
+                  {%- endif -%}
+                </div>
+                {%- if block.settings.image != blank -%}
+                  {%- render 'responsive-image-dynamic_v2',
+                    image: block.settings.image,
+                    class: 'order-1 lg:order-3 w-[50%] block mx-auto lg:w-full lg:h-full lg:object-cover lg:aspect-[1/1]'
+                  -%}
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </product-compatibility-list>
+  {%- endcapture -%}
+
+  <div
+    id="{{- section_id -}}"
+    class="container"
+  >
+    <div class="lg:hidden">
+      <details class="group">
+        <summary class="py-24 border-b-1 border-black-200 group-open:border-b-0 flex justify-between items-center">
+          <span class="h5 text-black-200  group-open:text-grey-600 uppercase transition-colors">
+            {{- section.settings.title -}}
+          </span>
+          {%- render 'icon_v2': icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180 transition-all' -%}
+        </summary>
+        <div class="global-inner-spacing">
+          {{- section_content -}}
+        </div>
+      </details>
+    </div>
+    <div class="hidden lg:block global-inner-spacing">{{- section_content -}}</div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product compatibility",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID",
+      "default": "product-compatibility-list"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "COMPATIBILITY LIST"
+    },
+    {
+      "type": "header",
+      "content": "Outer Spaces"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Margin bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Margin bottom",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Inner Spaces"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Desktop) Padding bottom",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding top",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "(Mobile) Padding bottom",
+      "default": 16
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "brand",
+          "label": "Brand"
+        },
+        {
+          "type": "richtext",
+          "id": "list_models",
+          "label": "List Models"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "empty_title",
+          "label": "Empty title"
+        },
+        {
+          "type": "richtext",
+          "id": "empty_subtitle",
+          "label": "Empty subtitle"
+        },
+        {
+          "type": "richtext",
+          "id": "empty_text",
+          "label": "Empty text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product compatibility"
+    }
+  ]
+}
+{% endschema %}

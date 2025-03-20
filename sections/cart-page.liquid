@@ -1,0 +1,253 @@
+{% liquid
+  assign show_discount_input = section.settings.show_discount_input
+  assign continue_selling_url = section.settings.continue_selling_url
+  assign padding_top = section.settings.padding_top
+  assign padding_bottom = section.settings.padding_bottom
+  assign padding_top_mobile = section.settings.padding_top_mobile
+  assign padding_bottom_mobile = section.settings.padding_bottom_mobile
+  assign margin_top = section.settings.margin_top
+  assign margin_bottom = section.settings.margin_bottom
+  assign margin_top_mobile = section.settings.margin_top_mobile
+  assign margin_bottom_mobile = section.settings.margin_bottom_mobile
+%}
+
+<style>
+  :root #shopify-section-{{section.id}} {
+    --padding-top: {{- padding_top -}}px;
+    --padding-bottom: {{- padding_bottom -}}px;
+    --padding-top-mobile: {{- padding_top_mobile -}}px;
+    --padding-bottom-mobile: {{- padding_bottom_mobile -}}px;
+    --margin-top: {{- margin_top -}}px;
+    --margin-bottom: {{- margin_bottom -}}px;
+    --margin-top-mobile: {{- margin_top_mobile -}}px;
+    --margin-bottom-mobile: {{- margin_bottom_mobile -}}px;
+  }
+</style>
+
+<div
+  class="container cart-page-container [&.loading]:pointer-events-none [&.loading_>.loader-container]:block relative"
+  data-ajax-cart-section
+>
+  <div class="page-header flex flex-col lg:flex-row justify-between items-start lg:items-center mb-24 lg:mb-48 pb-24 border-b-1 border-solid border-black-200 lg:border-none">
+    <h1 class="text-black-200 uppercase mb-24 lg:mb-0 ">
+      {{- 'cart.general.cart' | t -}}
+      <span class="text-orange-100"
+        >(
+        {{- cart.item_count -}}
+        )</span
+      >
+    </h1>
+
+    {%- if continue_selling_url != blank -%}
+      <a
+        href="{{- continue_selling_url -}}"
+        class="flex gap-8 items-center body-3 tracking-0.5 font-heading"
+        aria-label="{{- 'cart.general.continue_shopping' | t -}}"
+      >
+        {%- render 'icon_v2', icon: 'back-arrow' -%}
+        <span>{{- 'cart.general.continue_shopping' | t -}}</span>
+      </a>
+    {%- endif -%}
+  </div>
+
+  <div class="page-items">
+    {%- if cart.empty? -%}
+      <span>{{- 'cart.general.empty' | t -}}</span>
+    {%- else -%}
+      <div class="items-header hidden lg:grid grid-cols-cart-page-desktop border-b-1 border-solid border-black-200 pb-8 mb-32">
+        <span class="text-black-200 uppercase label-text">{{- 'cart.general.product' | t -}}</span>
+        <span class="text-black-200 uppercase label-text">{{- 'cart.general.price' | t -}}</span>
+        <span class="text-black-200 uppercase label-text">{{- 'cart.general.quantity' | t -}}</span>
+      </div>
+
+      <div>
+        {%- for line_item in cart.items -%}
+          {%- assign line_item_index = forloop.index -%}
+          {%- render 'cart-page-item', line_item: line_item, line_item_index: line_item_index -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- unless cart.empty? -%}
+    <div class="page-footer flex flex-col lg:flex-row justify-between mt-8 lg:items-start lg:mt-48">
+      {%- if show_discount_input -%}
+        {%- render 'discount-input', cart: cart, class: '!mx-0 max-w-[443px] w-full !items-center lg:!mt-0' -%}
+      {%- endif -%}
+
+      <div class="p-16 md:p-32 bg-grey-700 flex flex-col rounded-8 mt-32 lg:mt-0 lg:max-w-[443px] ">
+        {%- if cart.total_discount > 0 -%}
+          <div
+            role="status"
+            class="flex justify-between items-center mb-8"
+          >
+            <span class="label-text  text-grey-600">{{- 'cart.general.discount' | t -}}</span>
+            <p
+              class="label-text  text-grey-600"
+              data-ajax-cart-bind="total_discount | money_with_currency"
+            >
+              {{- cart.total_discount | money_with_currency -}}
+            </p>
+          </div>
+        {%- endif -%}
+
+        <div
+          role="status"
+          class="flex justify-between items-center mb-8"
+        >
+          <span class="body-1 uppercase font-heading font-normal tracking-0.5">
+            {{- 'cart.general.subtotal' | t -}}
+          </span>
+
+          <p
+            class="body-1 uppercase font-heading font-normal tracking-0.5"
+          >
+            {{- cart.total_price | money_without_currency | prepend: cart.currency.symbol -}}
+          </p>
+        </div>
+
+        <span class="text-grey-600 text-center label-text mb-8">{{- 'cart.general.shipping_message' | t -}}</span>
+
+        {%- form 'cart', cart, id: 'my-ajax-cart-form' -%}
+          <button
+            type="submit"
+            name="checkout"
+            class="button button--primary !w-full !max-w-full"
+          >
+            {{- 'cart.general.checkout' | t -}}
+          </button>
+
+          {%- unless shop.enabled_payment_types == empty -%}
+            <div class="flex items-center">
+              <ul class="flex flex-wrap items-center gap-8 justify-center mt-16">
+                <span class="mr-8 label-text text-grey-600">{{- 'cart.general.secured_pay' | t -}}</span>
+                {%- for type in shop.enabled_payment_types -%}
+                  <li>
+                    {{- type | payment_type_svg_tag: class: 'icon icon--full-color' -}}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endunless -%}
+        {%- endform -%}
+      </div>
+    </div>
+  {%- endunless -%}
+
+  <div class="loader-container hidden absolute inset-0 items-center justify-center opacity-50 pointer-events-none transition-opacity duration-300 z-10 bg-white">
+    {%- render 'loader', visible: true -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Cart Page",
+  "class": "cart-page global-spacing",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Side Cart"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount_input",
+      "label": "Show discount input",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "continue_selling_url",
+      "label": "Continue selling URL"
+    },
+    {
+      "type": "header",
+      "content": "Inner Spaces"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Padding bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Padding bottom",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Outer Spaces"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Margin top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Desktop) Margin bottom",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Margin top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "(Mobile) Margin bottom",
+      "default": 20
+    }
+  ]
+}
+{% endschema %}

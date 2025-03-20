@@ -1,0 +1,97 @@
+{% comment %}
+  DESCRIPTION:
+  This Liquid template defines the structure and behavior of the side cart section in the Shopify store.
+  It includes settings for displaying upsells and a discount input field, and renders modals for the
+  side cart and an add-to-cart (ATC) handler.
+
+  SETTINGS:
+  - show_upsells (checkbox): Determines whether upsell products should be displayed in the side cart.
+  - upsells (product_list): A list of upsell products to be shown in the side cart, with a limit of 5 products.
+  - show_discount_input (checkbox): Determines whether a discount input field should be displayed in the side cart.
+
+  COMPONENTS:
+  - side-cart: The main container for the side cart section.
+  - cart-content: A partial template that renders the content of the cart, including upsells and discount input.
+  - atc-handler: A partial template that handles the add-to-cart functionality.
+  - modal: A reusable modal component used to display the side cart and ATC handler.
+
+  MODAL CONFIGURATIONS:
+  - atc-handler modal:
+    - Trigger: [data-show-handler]
+    - Position: right
+    - Modal ID: atc-handler
+    - Inner Class: max-w-[443px] w-full flex flex-col !overflow-visible
+    - Modal Class: md:!items-start !items-end !px-[27px] md:!px-32 md:pt-32 [&_[data-modal-close]]:-top-[7%] [&_[data-modal-close]]:-right-[6%] [&_[data-modal-close]_path]:fill-white [&_[data-modal-close]]:p-0
+
+  - side-cart modal:
+    - Trigger: [data-show-cart]
+    - Position: right
+    - Modal ID: side-cart
+    - Inner Class: max-w-[359px] md:max-w-[467px] w-full !h-full !pt-16 md:!pt-32 !pb-0 !px-0 flex flex-col
+    - Modal Class: [&_[data-modal-close]]:top-16 [&_[data-modal-close]]:right-16 [&_[data-modal-close]_path]:fill-grey-300 [&_[data-modal-close]]:p-0
+{% endcomment %}
+
+{%- liquid
+  assign show_upsells = section.settings.show_upsells
+  assign upsells = section.settings.upsells
+  assign show_discount_input = section.settings.show_discount_input
+-%}
+
+<side-cart data-ajax-cart-section>
+  {%- capture side_cart_content -%}
+    {%- render 'cart-content', cart: cart, show_upsells: show_upsells, upsells: upsells, show_discount_input: show_discount_input -%}
+  {%- endcapture -%}
+
+  {%- capture atc_handler_content -%}
+    {%- render 'atc-handler' -%}
+  {%- endcapture -%}
+
+  {%- render 'modal',
+    content: atc_handler_content,
+    trigger: '[data-show-handler]',
+    position: 'right',
+    modal_id: 'atc-handler',
+    inner_class: 'max-w-[443px] w-full flex flex-col !overflow-visible',
+    modal_class: 'md:!items-start !items-end !px-[27px] md:!px-32 md:pt-32 [&_[data-modal-close]]:-top-[7%] [&_[data-modal-close]]:-right-[6%] [&_[data-modal-close]_path]:fill-white [&_[data-modal-close]]:p-0'
+  -%}
+
+  {%- render 'modal',
+    content: side_cart_content,
+    trigger: '[data-show-cart]',
+    position: 'right',
+    modal_id: 'side-cart',
+    inner_class: 'max-w-[359px] md:max-w-[467px] w-full !h-full !pt-16 md:!pt-32 !pb-0 !px-0 flex flex-col !overflow-y-hidden',
+    modal_class: '[&_[data-modal-close]]:top-16 [&_[data-modal-close]]:right-16 [&_[data-modal-close]_path]:fill-grey-300 [&_[data-modal-close]]:p-0'
+  -%}
+</side-cart>
+
+{% schema %}
+{
+  "name": "Side Cart",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Side Cart"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_upsells",
+      "label": "Show upsells",
+      "default": true
+    },
+    {
+      "type": "product_list",
+      "id": "upsells",
+      "label": "Upsells",
+      "limit": 5
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount_input",
+      "label": "Show discount input",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

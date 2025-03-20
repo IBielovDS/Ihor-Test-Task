@@ -1,0 +1,58 @@
+{%- liquid
+  assign products_count = 0
+  for product in block.settings.products
+    if product.available
+      assign products_count = products_count | plus: 1
+    endif
+  endfor
+-%}
+
+<complementary-products
+  class="flex flex-col"
+  data-one-item="{{ block.settings.atc_text_1_item }}"
+  data-original-text="{{ block.settings.atc_text }}"
+>
+  {%- if block.settings.title != blank -%}
+    <h5 class="mb-24 lg:mb-32 uppercase">
+      {{- block.settings.title -}}
+    </h5>
+  {%- endif -%}
+  <div class="complementary-products__wrapper grid grid-cols-1 {% if products_count < 3 %} xl:grid-cols-[1.4fr_0.6fr] {% endif %} ">
+    <div class="complementary-products__wrapper--products flex flex-col gap-32 xl:flex-row">
+      {%- liquid
+        for complementary_product in block.settings.products limit: 3
+          if complementary_product.available == false
+            continue
+          endif
+          render 'complementary-product-card', product: complementary_product
+        endfor
+      -%}
+    </div>
+    <div
+      class="complementary-products__wrapper--text flex flex-col w-full lg:w-fit m-auto items-center justify-center gap-16 {% if products_count > 2 %} mt-24 {% else %} lg:ml-24 {% endif %}"
+    >
+      <div class="complementary-products__wrapper--total flex gap-8">
+        <span class="body-2 text-grey-600">
+          {{- block.settings.total_text -}}
+        </span>
+        <div class="flex gap-8 items-start">
+          <h6 class="total-price my-auto"></h6>
+          <span class="body-3 compare-at-price line-through text-grey-600"></span>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="button--primary flex flex-row rounded-8 gap-8 py-16 justify-center items-center w-full {% if products_count > 2 %}lg:min-w-[232px]{% endif %}"
+      >
+        <span class="text-white font-normal font-heading uppercase tracking-[0.03em] {% if products_count < 3 %}px-6{% else %}px-20{% endif %}">
+          {{- block.settings.atc_text | replace: '[x]', products_count -}}
+        </span>
+      </button>
+      {%- if block.settings.bottom_text != blank -%}
+        <p class="text-center text-grey-600 body-3">
+          {{- block.settings.bottom_text -}}
+        </p>
+      {%- endif -%}
+    </div>
+  </div>
+</complementary-products>

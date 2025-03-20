@@ -1,0 +1,55 @@
+<complementary-product-card
+  data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+  class="group relative grid grid-cols-[115px_1fr] gap-16 p-8 lg:p-16 lg:grid-cols-1 border border-solid border-grey-300 is-checked"
+>
+  <div
+    href="{{ product.url }}"
+    class="block w-full h-auto  m-auto lg:mt-0 lg:mb-16 relative"
+  >
+    <button class="complementary-product-card__checkbox absolute top-0 right-0 [&_path]:fill-transparent group-[&.is-checked]:[&_path]:fill-black-200">
+      {%- render 'icon_v2', icon: 'complementary-checkbox' -%}
+    </button>
+    {%- liquid
+      if product.featured_image != blank
+        render 'responsive-image-dynamic_v2', image: product.featured_image, alt_text: alt_text, loading: 'lazy', class: 'product-card__image object-cover aspect-square md:max-h-80 md:object-contain xl:max-h-none xl:object-cover'
+      else
+        echo 'product-1' | placeholder_svg_tag
+      endif
+    -%}
+  </div>
+  <a
+    href="{{ product.url }}"
+    class="product-card__bottom flex flex-col gap-8"
+  >
+    {% comment %} Added height for CLS score since the rating is loaded asynchronously {% endcomment %}
+    <div
+      class="loox-rating h-20 [&_svg]:text-orange-100 [&_span]:text-orange-grey-300 [&_span]:text-12 [&_span]:relative [&_span]:top-2"
+      data-id="{{ product.id }}"
+      data-rating="{{ product.metafields.loox.avg_rating }}"
+      data-raters="{{ product.metafields.loox.num_reviews }}"
+    ></div>
+    <div class="body-3 font-bold">
+      {{- product.title -}}
+    </div>
+    <div class="product-card__bottom__meta-price flex gap-2 flex-row">
+      <p
+        class="product-card__bottom__meta-price-main body-3"
+        data-price="{{- product.selected_or_first_available_variant.price -}}"
+      >
+        {{-
+          product.selected_or_first_available_variant.price
+          | money_without_currency
+          | prepend: cart.currency.symbol
+        -}}
+      </p>
+      {%- if product.selected_or_first_available_variant.compare_at_price != blank
+        and product.selected_or_first_available_variant.compare_at_price
+          > product.selected_or_first_available_variant.price
+      -%}
+        <p class="product-card__bottom__meta-price-compare body-3 text-grey-300 line-through">
+          {{- product.compare_at_price | money_without_currency | prepend: cart.currency.symbol -}}
+        </p>
+      {%- endif -%}
+    </div>
+  </a>
+</complementary-product-card>

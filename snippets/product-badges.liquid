@@ -1,0 +1,20 @@
+{% comment %}
+  Usage:
+  {% render 'product-badges', product: product, selected_variant: selected_variant %}
+  Classes optional
+{% endcomment %}
+{% liquid
+  assign selected_variant = selected_variant | default: product.selected_or_first_available_variant
+  assign sale = false
+  if selected_variant.compare_at_price > selected_variant.price and selected_variant.compare_at_price != blank
+    assign sale = true
+  endif
+
+  assign common_badge_class = badge_class | default: 'body-3 px-16 py-4 uppercase font-medium border border-black-200 rounded-24'
+%}
+
+{%- if sale -%}
+  <div class="product-badges flex flex-col {{ classes }}" aria-label="{{ 'accessibility.product_badges' | t }}" tabindex="0">
+    <span class="badge {{ common_badge_class }} badge--sale" aria-label="{{ 'accessibility.sale_badge' | t }}">{{ 'products.badges.sale' | t }}</span>
+  </div>
+{%- endif -%}

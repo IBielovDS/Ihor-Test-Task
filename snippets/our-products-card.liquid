@@ -1,0 +1,24 @@
+<div class="relative bg-grey rounded-8 overflow-hidden">
+  {%- render 'responsive-image-dynamic_v2',
+    image: image_desktop,
+    image_mobile: image_mobile,
+    alt_text: image_desktop.alt,
+    class: 'w-full min-h-[310px] lg:min-h-0'
+  -%}
+
+  <a
+    href="{{- link -}}"
+    class="absolute left-0 top-0 w-full h-full p-24 lg:p-32 flex flex-col justify-between items-center"
+  >
+    <{{ tag }}
+      style="color: {{- title_color -}}"
+      class="text-center lg:text-left lg:mr-auto lg:ml-0"
+    >
+      {{- title -}}
+    </{{ tag }}>
+
+    {%- if button_text != blank -%}
+      <span class="button button--primary lg:hidden">{{- button_text -}}</span>
+    {%- endif -%}
+  </a>
+</div>

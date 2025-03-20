@@ -1,0 +1,35 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+ {
+  "sections": {
+    "404_qxNFdD": {
+      "type": "404",
+      "settings": {
+        "image_desktop": "shopify://shop_images/bg_v2.png",
+        "image_mobile": "shopify://shop_images/bg_404_mobile_1.png",
+        "title": "404",
+        "subtitle": "WE COULDN'T FIND THE PAGE YOU WERE LOOKING FOR",
+        "button_text": "BACK TO HOMEPAGE",
+        "button_link": "/",
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "margin_top_mobile": 0,
+        "margin_bottom_mobile": 0,
+        "padding_top": 120,
+        "padding_bottom": 100,
+        "padding_top_mobile": 120,
+        "padding_bottom_mobile": 100
+      }
+    }
+  },
+  "order": [
+    "404_qxNFdD"
+  ]
+}

@@ -1,0 +1,51 @@
+{%- if section.blocks.size > 0 -%}
+  <product-tabs class="hidden lg:block bg-black-100 w-full z-40">
+    <div class="container">
+      <div class="flex items-center gap-40">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.title != blank and block.settings.section_id != blank -%}
+            <a
+              href="#{{- block.settings.section_id -}}"
+              class="uppercase text-grey-200 text-14 font-bold leading-22 py-16 border-b-3 border-transparent transition-colors [&.active]:text-white [&.active]:border-orange-100{% if forloop.first %} active{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              {{- block.settings.title -}}
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </product-tabs>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product Tabs",
+  "settings": [],
+  "class": "sticky z-10",
+  "tag": "section",
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "text",
+          "id": "section_id",
+          "label": "Section ID"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Tabs"
+    }
+  ]
+}
+{% endschema %}

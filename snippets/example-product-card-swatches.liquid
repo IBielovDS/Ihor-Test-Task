@@ -1,0 +1,49 @@
+{%- liquid
+  assign swatch_count = product.options_with_values | map: 'values' | map: 'swatch' | compact | size
+-%}
+
+{%- if swatch_count > 0 -%}
+  <example-product-card-swatches class="block mb-15">
+    {%- for option in product.options_with_values -%}
+      {%- if option.name == 'Color' and option.values.size > 0 -%}
+        <ul class="example-product-card-swatches flex flex-wrap gap-8" role="radiogroup" aria-label="{{ 'accessibility.swatches.select_color' | t: option: option.name, title: product.title }}" data-swatches-container>
+          {%- for value in option.values -%}
+            {%- if value.swatch -%}
+              {%- liquid
+                if value.swatch.image
+                  assign swatch_image = value.swatch.image
+                elsif value.swatch.color
+                  assign swatch_value = 'rgb(' | append: value.swatch.color.rgb | append: ')'
+                else
+                  assign swatch_value = null
+                endif
+
+                assign is_selected = false
+                if selected_variant.option1 == value.name
+                  assign is_selected = true
+                endif
+              -%}
+
+              <li 
+                class="example-product-card-swatch{% if is_selected %} active{% endif %} [&.active]:after:opacity-100 cursor-pointer relative w-20 h-20 rounded-full after:content-[''] after:absolute after:w-24 after:h-24 after:-top-2 after:-left-2 after:inset-0 after:rounded-full after:border-1 after:border-blue-light after:opacity-0 after:transition-opacity after:duration-300 after:ease-in-out hover:after:opacity-100" 
+                style="background: {{ swatch_value }};" 
+                data-swatch-id="{{- value.id -}}" 
+                data-swatch-value="{{- value.name -}}"
+                aria-label="{% if is_selected %}{{ 'accessibility.swatches.selected_color' | t: option: option.name, value: value.name }}{% if swatch_value %}{{ 'accessibility.swatches.with_swatch_value' | t: swatch_value: swatch_value }}{% endif %}{% else %}{{ 'accessibility.swatches.color_value' | t: option: option.name, value: value.name }}{% if swatch_value %}{{ 'accessibility.swatches.with_swatch_value' | t: swatch_value: swatch_value }}{% endif %}{% endif %}"
+                data-swatch
+                role="radio"
+                tabindex="0"
+                aria-checked="{{- is_selected -}}"
+              >
+                <span class="sr-only">{{ 'accessibility.swatches.color_value' | t: option: option.name, value: value.name }}{% if swatch_value %}{{ 'accessibility.swatches.with_swatch_value' | t: swatch_value: swatch_value }}{% endif %}</span>
+                {%- if swatch_image -%}
+                  {%- render 'responsive-image-dynamic_v2', image: swatch_image, classes: 'w-full h-full object-cover' -%}
+                {%- endif -%}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    {%- endfor -%}
+  </example-product-card-swatches>
+{%- endif -%}
