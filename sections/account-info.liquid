@@ -870,7 +870,7 @@
                     <div>
                       <div class="text-grey-600 body-3 mb-4 flex justify-between lg:block">
                         {{- "customer.account.orders.order_title" | t: number: order.id, date: order_date -}}
-                        {%- render 'icon_v2': icon: 'expand', class: 'ml-8 [&_path]:stroke-grey-600 child-open:rotate-180 transition-all lg:hidden' -%}
+                        {%- render 'icon_v2', icon: 'expand', class: 'ml-8 [&_path]:stroke-grey-600 child-open:rotate-180 transition-all lg:hidden' -%}
                       </div>
                       <div class="flex justify-between items-center mb-16 lg:mb-0 lg:block">  
                         <ul class="list-inside list-[square] body-3 {{ order_status_color }}"><li>{{- order.fulfillment_status_label -}}</li></ul>
@@ -893,7 +893,7 @@
                       {%- endfor -%}
                     </div>                      
 
-                    {%- render 'icon_v2': icon: 'expand', class: 'ml-8 [&_path]:stroke-grey-600 child-open:rotate-180 transition-all hidden lg:block' -%}
+                    {%- render 'icon_v2', icon: 'expand', class: 'ml-8 [&_path]:stroke-grey-600 child-open:rotate-180 transition-all hidden lg:block' -%}
                   </div>
                 </summary>
                 <div class="mt-24 lg:mt-16 flex flex-col-reverse gap-24 lg:grid lg:grid-cols-[2fr_1fr] lg:gap-40">
@@ -948,7 +948,7 @@
                     {%- if order.fulfillment.tracking_url != blank -%}
                       <a href="{{- order.fulfillment.tracking_url -}}" target="_blank" class="text-black-200 flex items-center button-text-2 mb-24 uppercase">
                         {{- "customer.account.orders.tracking_status" | t -}}
-                        {%- render: 'icon_v2', icon: 'link', class: 'ml-8' -%}
+                        {%- render 'icon_v2', icon: 'link', class: 'ml-8' -%}
                       </a>
                     {%- endif -%}
 
@@ -1047,7 +1047,7 @@
             <span class="h5 text-black-200  group-open:text-grey-300 uppercase transition-colors">
               {{- 'customer.account.personal_info' | t -}}
             </span>
-            {%- render 'icon_v2': icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180 transition-all' -%}
+            {%- render 'icon_v2', icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180 transition-all' -%}
           </summary>
           <div class="global-inner-spacing">
             {{- personal_info_mobile -}}
@@ -1058,7 +1058,7 @@
             <span class="h5 text-black-200  group-open:text-grey-300 uppercase transition-colors">
               {{- 'customer.account.my_orders' | t -}}
             </span>
-            {%- render 'icon_v2': icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180 transition-all' -%}
+            {%- render 'icon_v2', icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180 transition-all' -%}
           </summary>
           <div class="global-inner-spacing">
             {{- my_orders -}}
@@ -1140,3 +1140,33 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{%- render 'icon_v2': icon: 'expand', class: 'ml-8 [&_path]:stroke-grey-600
+    child-open:rotate-180 transition-all lg:hidden' -%}"
+  to: "{%- render 'icon_v2', icon: 'expand', class: 'ml-8 [&_path]:stroke-grey-600
+    child-open:rotate-180 transition-all lg:hidden' -%}"
+  position: 42552..42679
+- from: "{%- render 'icon_v2': icon: 'expand', class: 'ml-8 [&_path]:stroke-grey-600
+    child-open:rotate-180 transition-all hidden lg:block' -%}"
+  to: "{%- render 'icon_v2', icon: 'expand', class: 'ml-8 [&_path]:stroke-grey-600
+    child-open:rotate-180 transition-all hidden lg:block' -%}"
+  position: 44231..44364
+- from: "{%- render: 'icon_v2', icon: 'link', class: 'ml-8' -%}"
+  to: "{%- render 'icon_v2', icon: 'link', class: 'ml-8' -%}"
+  position: 48256..48309
+- from: "{%- render 'icon_v2': icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180
+    transition-all' -%}"
+  to: "{%- render 'icon_v2', icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180
+    transition-all' -%}"
+  position: 52925..53037
+- from: "{%- render 'icon_v2': icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180
+    transition-all' -%}"
+  to: "{%- render 'icon_v2', icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180
+    transition-all' -%}"
+  position: 53517..53629
+{% endcomment %}

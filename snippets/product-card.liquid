@@ -151,7 +151,7 @@
             data-variant="{{ variant | json | escape }}"
           >
             <div class="w-[16px] h-[16px] overflow-hidden">
-              {%- render 'responsive-image-dynamic_v2': image: swatch_image, class: 'object-cover scale-[2]' -%}
+              {%- render 'responsive-image-dynamic_v2', image: swatch_image, class: 'object-cover scale-[2]' -%}
             </div>
           </div>
         {%- endfor -%}
@@ -175,3 +175,15 @@
 {%- if is_slider -%}
   </div>
 {%- endif -%}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{%- render 'responsive-image-dynamic_v2': image: swatch_image, class: 'object-cover
+    scale-[2]' -%}"
+  to: "{%- render 'responsive-image-dynamic_v2', image: swatch_image, class: 'object-cover
+    scale-[2]' -%}"
+  position: 7126..7224
+{% endcomment %}

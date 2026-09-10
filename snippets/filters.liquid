@@ -133,7 +133,7 @@
                           assign class = class | append: ' opacity-30 pointer-events-none'
                         endif
 
-                        render 'checkbox', label: filter_value.label, name : filter_value.param_name, id : input_id, is_dark : true, value : filter_value.value | escape, disabled : disabled, checked : filter_value.active, class : class, label_class : "!text-16 !leading-24 font-regular !text-grey-600",
+                        render 'checkbox', label: filter_value.label, name: filter_value.param_name, id: input_id, is_dark: true, value: filter_value.value, disabled: disabled, checked: filter_value.active, class: class, label_class: "!text-16 !leading-24 font-regular !text-grey-600"
                       -%}
                     {%- endfor -%}
 
@@ -164,7 +164,7 @@
                                 assign class = class | append: ' opacity-30 pointer-events-none'
                               endif
 
-                              render 'checkbox', label: filter_value.label, name: filter_value.param_name, id: input_id, is_dark: true, value: filter_value.value | escape, disabled: disabled, checked: filter_value.active, class: class, label_class: "!text-16 !leading-24 font-regular !text-grey-600",
+                              render 'checkbox', label: filter_value.label, name: filter_value.param_name, id: input_id, is_dark: true, value: filter_value.value, disabled: disabled, checked: filter_value.active, class: class, label_class: "!text-16 !leading-24 font-regular !text-grey-600"
                             -%}
                           {%- endfor -%}
                         </div>
@@ -291,7 +291,7 @@
                               assign class = class | append: ' opacity-30 pointer-events-none'
                             endif
 
-                            render 'checkbox', label: filter_value.label, name : filter_value.param_name, id : input_id, is_dark : true, value : filter_value.value | escape, disabled : disabled, checked : filter_value.active, class : class, label_class : "!text-16 !leading-24 font-regular !text-grey-600",
+                            render 'checkbox', label: filter_value.label, name: filter_value.param_name, id: input_id, is_dark: true, value: filter_value.value, disabled: disabled, checked: filter_value.active, class: class, label_class: "!text-16 !leading-24 font-regular !text-grey-600"
                           -%}
                         {%- endfor -%}
 
@@ -322,7 +322,7 @@
                                     assign class = class | append: ' opacity-30 pointer-events-none'
                                   endif
 
-                                  render 'checkbox', label: filter_value.label, name: filter_value.param_name, id: input_id, is_dark: true, value: filter_value.value | escape, disabled: disabled, checked: filter_value.active, class: class, label_class: "!text-16 !leading-24 font-regular !text-grey-600",
+                                  render 'checkbox', label: filter_value.label, name: filter_value.param_name, id: input_id, is_dark: true, value: filter_value.value, disabled: disabled, checked: filter_value.active, class: class, label_class: "!text-16 !leading-24 font-regular !text-grey-600"
                                 -%}
                               {%- endfor -%}
                             </div>
@@ -351,3 +351,46 @@
     </template>
   </facet-filters>
 {% endif %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: '                        render ''checkbox'', label: filter_value.label, name
+    : filter_value.param_name, id : input_id, is_dark : true, value : filter_value.value
+    | escape, disabled : disabled, checked : filter_value.active, class : class, label_class
+    : "!text-16 !leading-24 font-regular !text-grey-600",'
+  to: '                        render ''checkbox'', label: filter_value.label, name:
+    filter_value.param_name, id: input_id, is_dark: true, value: filter_value.value,
+    disabled: disabled, checked: filter_value.active, class: class, label_class: "!text-16
+    !leading-24 font-regular !text-grey-600"'
+  position: 6099..6383
+- from: '                              render ''checkbox'', label: filter_value.label,
+    name: filter_value.param_name, id: input_id, is_dark: true, value: filter_value.value
+    | escape, disabled: disabled, checked: filter_value.active, class: class, label_class:
+    "!text-16 !leading-24 font-regular !text-grey-600",'
+  to: '                              render ''checkbox'', label: filter_value.label,
+    name: filter_value.param_name, id: input_id, is_dark: true, value: filter_value.value,
+    disabled: disabled, checked: filter_value.active, class: class, label_class: "!text-16
+    !leading-24 font-regular !text-grey-600"'
+  position: 7859..8149
+- from: '                            render ''checkbox'', label: filter_value.label,
+    name : filter_value.param_name, id : input_id, is_dark : true, value : filter_value.value
+    | escape, disabled : disabled, checked : filter_value.active, class : class, label_class
+    : "!text-16 !leading-24 font-regular !text-grey-600",'
+  to: '                            render ''checkbox'', label: filter_value.label,
+    name: filter_value.param_name, id: input_id, is_dark: true, value: filter_value.value,
+    disabled: disabled, checked: filter_value.active, class: class, label_class: "!text-16
+    !leading-24 font-regular !text-grey-600"'
+  position: 14102..14390
+- from: '                                  render ''checkbox'', label: filter_value.label,
+    name: filter_value.param_name, id: input_id, is_dark: true, value: filter_value.value
+    | escape, disabled: disabled, checked: filter_value.active, class: class, label_class:
+    "!text-16 !leading-24 font-regular !text-grey-600",'
+  to: '                                  render ''checkbox'', label: filter_value.label,
+    name: filter_value.param_name, id: input_id, is_dark: true, value: filter_value.value,
+    disabled: disabled, checked: filter_value.active, class: class, label_class: "!text-16
+    !leading-24 font-regular !text-grey-600"'
+  position: 15962..16256
+{% endcomment %}

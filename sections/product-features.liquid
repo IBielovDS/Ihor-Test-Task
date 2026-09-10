@@ -69,7 +69,7 @@
             <span class="h5 text-black-200  group-open:text-grey-600 uppercase transition-colors">
               {{- mobile_title -}}
             </span>
-            {%- render 'icon_v2': icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180 transition-all' -%}
+            {%- render 'icon_v2', icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180 transition-all' -%}
           </summary>
           <div class="global-inner-spacing">
             {{- section_content -}}
@@ -222,3 +222,15 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{%- render 'icon_v2': icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180
+    transition-all' -%}"
+  to: "{%- render 'icon_v2', icon: 'expand', class: '[&_path]:stroke-grey-600 group-open:rotate-180
+    transition-all' -%}"
+  position: 2759..2871
+{% endcomment %}

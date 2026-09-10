@@ -52,7 +52,7 @@
                   {{- product.title -}}
                 </a>
               </li>
-            {%- when 'collection' and collection.handle -%}
+            {%- when 'collection' -%}
               {%- if current_tags -%}
                 <li class="{{ li_classes }}">
                   {{ collection.title | link_to: collection.url, class: a_classes }}
@@ -150,3 +150,13 @@
   }
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{%- when 'collection' and collection.handle -%}"
+  to: "{%- when 'collection' -%}"
+  position: 2499..2524
+{% endcomment %}
